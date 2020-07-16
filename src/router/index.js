@@ -4,22 +4,16 @@ import VueRouter from "vue-router";
 Vue.use(VueRouter);
 
 const routes = [
-  {
-    path: "/",
+  /* {
+    path: "/maintenance",
     name: "Maintenance",
     component: () =>
-      import(/* webpackChunkName: "maintenance" */ "../views/Maintenance.vue"),
-  },
+      import(/* webpackChunkName: "maintenance" */ /*"../views/Maintenance.vue"),
+  }, */
   {
-    path: "/home",
+    path: "/",
     name: "Home",
     component: () => import(/* webpackChunkName: "home" */ "../views/Home.vue"),
-  },
-  {
-    path: "/brief",
-    name: "Brief",
-    component: () =>
-      import(/* webpackChunkName: "brief" */ "../views/Brief.vue"),
   },
 ];
 
