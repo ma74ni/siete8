@@ -95,10 +95,10 @@ export default {
         .join("&");
     },
     onSubmit() {
-      fetch("/", {
+      fetch("/home", {
         method: "post",
         headers: {
-          "Content-type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/x-www-form-urlencoded",
         },
         body: this.encode({
           "form-name": "contact",
