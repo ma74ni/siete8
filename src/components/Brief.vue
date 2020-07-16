@@ -1,6 +1,6 @@
 <template>
   <div id="brief">
-    <div class="contenedor">
+    <b-container>
       <div class="title-content">
         <h2>Soluciones Brindadas</h2>
         <p>
@@ -30,7 +30,7 @@
           </b-card-group>
         </div>
       </div>
-    </div>
+    </b-container>
   </div>
 </template>
 

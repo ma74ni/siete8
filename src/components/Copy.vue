@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="copy">
-      <div class="container">
+      <b-container>
         <div class="copy-content">
           <div class="copyrights">
             &#169; 2020 Siete8
@@ -14,16 +14,16 @@
             </p>
           </div>
         </div>
-      </div>
+      </b-container>
     </div>
     <div class="data-content">
-      <div class="container">
+      <b-container>
         <p class="text-center">
           Ilustraciones:
           <a href="https://dribbble.com/thierryfousse">Thierry Fousse</a> from
           <a href="https://icons8.com/">Icons8</a>
         </p>
-      </div>
+      </b-container>
     </div>
   </div>
 </template>

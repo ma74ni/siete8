@@ -1,21 +1,23 @@
 <template>
-  <div class="contenedor">
-    <div class="slide">
-      <div class="img-content">
-        <img src="../assets/slide.png" alt="" />
-      </div>
-      <div class="slide-title">
-        <h2>Soluciones en</h2>
-      </div>
-      <div class="word-slide">
-        <ul class="word-content">
-          <li v-for="(item, index) of words" :key="index">
-            <span>{{ item.text }}</span>
-          </li>
-        </ul>
-      </div>
-      <div class="btn-content">
-        <a href="#contact" class="btn">Conversemos</a>
+  <div>
+    <div class="contenedor">
+      <div class="slide">
+        <div class="img-content">
+          <b-img src="../assets/slide.png" fluid alt="Idea"></b-img>
+        </div>
+        <div class="slide-title">
+          <h2>Soluciones en</h2>
+        </div>
+        <div class="word-slide">
+          <ul class="word-content">
+            <li v-for="(item, index) of words" :key="index">
+              <span>{{ item.text }}</span>
+            </li>
+          </ul>
+        </div>
+        <div class="btn-content">
+          <a href="#contact" class="btn">Conversemos</a>
+        </div>
       </div>
     </div>
   </div>
@@ -53,6 +55,7 @@ export default {
 }
 .slide .img-content {
   grid-area: img-content;
+  justify-self: center;
 }
 .slide .slide-title {
   grid-area: slide-title;
@@ -121,9 +124,17 @@ span {
     transform: translateY(0);
   }
 }
+@media (max-width: 576px) {
+  .slide {
+    margin: 80px 0 0;
+  }
+}
 @media (min-width: 576px) {
   .word-content {
     text-align: left;
+  }
+  .btn {
+    margin: 0;
   }
   .slide {
     min-height: 415px;

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="contenedor">
+    <b-container>
       <div class="menu-content">
         <div class="logo-content">
           <a href="/"
@@ -38,7 +38,7 @@
           </b-sidebar>
         </div>
       </div>
-    </div>
+    </b-container>
   </div>
 </template>
 <style scope>

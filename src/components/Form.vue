@@ -1,77 +1,82 @@
 <template>
   <div id="contact" class="form">
-    <div class="container">
+    <b-container>
       <div class="title-content">
         <h2>Contacto</h2>
       </div>
-      <div class="form-content">
-        <div class="form-img">
-          <img src="../assets/contact.png" alt="" />
-        </div>
-        <div class="contact-form">
-          <b-form
-            @submit.prevent="onSubmit"
-            v-if="show"
-            name="contact"
-            method="POST"
-            netlify-honeypot="bot-field"
-            data-netlify="true"
-          >
-            <p class="hidden">
-              <label
-                >Si eres humano, no llenes este campo XD:
-                <input name="bot-field"
-              /></label>
-            </p>
+      <b-row>
+        <b-col sm="12" md="6" class="d-sm-none d-md-block">
+          <div class="form-img">
+            <b-img src="../assets/contact.png" fluid alt="Idea"></b-img>
+          </div>
+        </b-col>
+        <b-col sm="12" md="6">
+          <div class="contact-form">
+            <b-form
+              @submit.prevent="handleSubmit"
+              name="contact"
+              method="POST"
+              netlify-honeypot="bot-field"
+              data-netlify="true"
+            >
+              <p class="hidden">
+                <label
+                  >Si eres humano, no llenes este campo XD:
+                  <input name="bot-field"
+                /></label>
+              </p>
 
-            <b-form-group label="Nombre" label-for="name">
-              <b-form-input
-                id="name"
-                name="name"
-                v-model="form.name"
-                required
-              ></b-form-input>
-            </b-form-group>
+              <b-form-group label="Nombre" label-for="name">
+                <b-form-input
+                  id="name"
+                  name="name"
+                  v-model="form.name"
+                  required
+                ></b-form-input>
+              </b-form-group>
 
-            <b-form-group label="Correo Electrónico" label-for="email">
-              <b-form-input
-                id="email"
-                name="email"
-                v-model="form.email"
-                type="email"
-                required
-              ></b-form-input>
-            </b-form-group>
+              <b-form-group label="Correo Electrónico" label-for="email">
+                <b-form-input
+                  id="email"
+                  name="email"
+                  v-model="form.email"
+                  type="email"
+                  required
+                ></b-form-input>
+              </b-form-group>
 
-            <b-form-group label="Celular" label-for="mobile">
-              <b-form-input
-                id="mobile"
-                name="mobile"
-                v-model="form.mobile"
-                type="text"
-                required
-              ></b-form-input>
-            </b-form-group>
+              <b-form-group label="Celular" label-for="mobile">
+                <b-form-input
+                  id="mobile"
+                  name="mobile"
+                  v-model="form.mobile"
+                  type="text"
+                  required
+                ></b-form-input>
+              </b-form-group>
 
-            <b-form-group label="Mensaje" label-for="message">
-              <b-form-textarea
-                id="message"
-                name="message"
-                v-model="form.message"
-                rows="3"
-                max-rows="6"
-                required
-              ></b-form-textarea>
-            </b-form-group>
-            <b-button type="submit" class="btn float-right">Enviar</b-button>
-          </b-form>
-        </div>
-      </div>
-    </div>
+              <b-form-group label="Mensaje" label-for="message">
+                <b-form-textarea
+                  id="message"
+                  name="message"
+                  v-model="form.message"
+                  rows="3"
+                  max-rows="6"
+                  required
+                ></b-form-textarea>
+              </b-form-group>
+              <b-button type="submit" class="btn float-right">Enviar</b-button>
+            </b-form>
+          </div>
+        </b-col>
+      </b-row>
+    </b-container>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "Form",
   data() {
@@ -82,31 +87,28 @@ export default {
         mobile: "",
         message: "",
       },
-      show: true,
     };
   },
   methods: {
     encode(data) {
       return Object.keys(data)
         .map(
-          (key) =>
-            `${encodeURIComponent(key)} = ${encodeURIComponent(data[key])} `
+          (key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`
         )
         .join("&");
     },
-    onSubmit() {
-      fetch("/home", {
-        method: "post",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: this.encode({
+    handleSubmit() {
+      const axiosConfig = {
+        header: { "Content-Type": "application/x-www-form-urlencoded" },
+      };
+      axios.post(
+        "/",
+        this.encode({
           "form-name": "contact",
           ...this.form,
         }),
-      })
-        .then(() => console.log("successfully sent"))
-        .catch((e) => console.log(e));
+        axiosConfig
+      );
     },
   },
 };
@@ -135,11 +137,5 @@ export default {
 }
 .hidden {
   display: none;
-}
-.form-content {
-  display: grid;
-  grid-gap: 20px;
-  grid-template-columns: 350px 1fr;
-  align-items: center;
 }
 </style>

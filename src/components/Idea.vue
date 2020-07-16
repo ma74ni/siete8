@@ -1,19 +1,23 @@
 <template>
   <div class="idea">
-    <div class="container">
-      <div class="idea-content">
-        <div class="text-content">
-          <h4>
-            <b>Nuevas</b> ideas<br />
-            <b>Solucionan</b> grandes problemas
-          </h4>
-          <a href="#contact" class="btn">Lo Quiero</a>
-        </div>
-        <div class="img-content">
-          <img src="../assets/top.png" alt="Idea" />
-        </div>
-      </div>
-    </div>
+    <b-container>
+      <b-row>
+        <b-col md="6" sm="12">
+          <div class="text-content">
+            <h4>
+              <b>Nuevas</b> ideas<br />
+              <b>Solucionan</b> grandes problemas
+            </h4>
+            <a href="#contact" class="btn">Lo Quiero</a>
+          </div>
+        </b-col>
+        <b-col md="6" sm="12">
+          <div class="img-content">
+            <b-img src="../assets/top.png" fluid alt="Idea"></b-img>
+          </div>
+        </b-col>
+      </b-row>
+    </b-container>
   </div>
 </template>
 <script>
@@ -29,22 +33,28 @@ export default {
   text-align: center;
   padding: 90px 0;
 }
-.idea-content h4 {
-  font-size: 2em;
+.text-content h4 {
+  font-size: 1em;
 }
 .btn {
   margin-top: 40px;
   border-radius: 24px;
   border: 2px solid #7c253e;
   padding: 10px 30px;
-  font-size: 14px;
+  font-size: 1em;
   line-height: 14px;
   margin-bottom: 15px;
 }
-.idea-content {
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: 1fr 350px;
-  align-items: center;
+@media (min-width: 576px) {
+  .text-content h4,
+  .btn {
+    font-size: 1.5em;
+  }
+}
+@media (min-width: 768px) {
+  .text-content h4,
+  .btn {
+    font-size: 2em;
+  }
 }
 </style>
