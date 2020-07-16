@@ -9,10 +9,25 @@
           <img src="../assets/contact.png" alt="" />
         </div>
         <div class="contact-form">
-          <b-form @submit="onSubmit" v-if="show">
+          <b-form
+            @submit.prevent="onSubmit"
+            v-if="show"
+            name="contact"
+            method="POST"
+            netlify-honeypot="bot-field"
+            data-netlify="true"
+          >
+            <p class="hidden">
+              <label
+                >Si eres humano, no llenes este campo XD:
+                <input name="bot-field"
+              /></label>
+            </p>
+
             <b-form-group label="Nombre" label-for="name">
               <b-form-input
                 id="name"
+                name="name"
                 v-model="form.name"
                 required
               ></b-form-input>
@@ -21,6 +36,7 @@
             <b-form-group label="Correo Electrónico" label-for="email">
               <b-form-input
                 id="email"
+                name="email"
                 v-model="form.email"
                 type="email"
                 required
@@ -30,8 +46,9 @@
             <b-form-group label="Celular" label-for="mobile">
               <b-form-input
                 id="mobile"
-                v-model="form.phone"
-                type="phone"
+                name="mobile"
+                v-model="form.mobile"
+                type="text"
                 required
               ></b-form-input>
             </b-form-group>
@@ -39,6 +56,7 @@
             <b-form-group label="Mensaje" label-for="message">
               <b-form-textarea
                 id="message"
+                name="message"
                 v-model="form.message"
                 rows="3"
                 max-rows="6"
@@ -68,9 +86,27 @@ export default {
     };
   },
   methods: {
-    onSubmit(evt) {
-      evt.preventDefault();
-      alert(JSON.stringify(this.form));
+    encode(data) {
+      return Object.keys(data)
+        .map(
+          (key) =>
+            `$(encodeURIComponen(key)} = ${encodeURIComponent(data[key])} `
+        )
+        .join("&");
+    },
+    onSubmit() {
+      fetch("/", {
+        method: "post",
+        headers: {
+          "Content-type": "application/x-www-urlencoded",
+        },
+        body: this.encode({
+          "form-name": "contact",
+          ...this.form,
+        }),
+      })
+        .then(() => console.log("successfully sent"))
+        .catch((e) => console.log(e));
     },
   },
 };
@@ -96,6 +132,9 @@ export default {
   font-size: 18px;
   margin-bottom: 15px;
   color: #222222;
+}
+.hidden {
+  display: none;
 }
 .form-content {
   display: grid;
