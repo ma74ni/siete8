@@ -4,6 +4,8 @@
     <Slide />
     <Brief />
     <Idea />
+    <Form />
+    <Copy />
   </div>
 </template>
 
@@ -13,6 +15,8 @@ import Nav from "@/components/Nav";
 import Slide from "@/components/Slide";
 import Brief from "@/components/Brief";
 import Idea from "@/components/Idea";
+import Form from "@/components/Form";
+import Copy from "@/components/Copy";
 
 export default {
   name: "Home",
@@ -21,6 +25,8 @@ export default {
     Slide,
     Brief,
     Idea,
+    Form,
+    Copy,
   },
 };
 </script>

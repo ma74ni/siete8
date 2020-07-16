@@ -41,33 +41,86 @@ export default {
     return {
       brief: [
         {
-          name: "Constelaciones Ecuador",
+          name: "Aplicación WEB Bypass Aplicaciones BI",
           img01:
-            "http://drive.google.com/uc?export=view&id=1MIjPKLHFaPKFhfctJx581OQhZYFCTBVf",
+            "http://drive.google.com/uc?export=view&id=1NCO6OTeSDUP4Vp7Vmf-zBsHMRGei_JeK",
           desc:
-            "Sitio web creado para Constelaciones Ecuador, especializada en terapias de parejas.",
-          link: "https://constelacionesecuador.com",
-          tech: "Wordpress / MySql",
+            "Aplicación WEB de gestión y administracion de aplicaciones de Businnes Intelligence.",
+          link: "https://baypass-mstr.firebaseapp.com/login",
+          tech: "Angular, Firebase, MicroStrategy",
         },
         {
-          name: "Proyecto 2",
-          img: "",
-          desc: "",
-          tech: "",
+          name: "Aplicación WEB Encuestas A100",
+          img01:
+            "http://drive.google.com/uc?export=view&id=1DWUnCPLsQCBLwVljfmpkVkwU79PSg8Sa",
+          desc:
+            "Aplicación WEB de Administración, Gestión y Tabulación de Encuestas.",
+          tech: "MVC PHP, SQL Server, PDI, MicroStrategy",
+        },
+        {
+          name: "Aplicación WEB Encuestas Hospitalarias",
+          img01:
+            "http://drive.google.com/uc?export=view&id=1R7W687kg6ZsBln9IsZtvrw_0UDD16LSr",
+          desc:
+            "Aplicación WEB de Administración, Gestión y Tabulación de Encuestas Hospitalarias.",
+          tech: "MVC PHP, SQL Server, Oracle, PDI, MicroStrategy",
+        },
+        {
+          name: "DWH y Piloto de BI con Hypercards",
+          img01:
+            "http://drive.google.com/uc?export=view&id=12M_QknJw_Jyj7YKtritl5nBuREV2T_Te",
+          desc:
+            "Creación del DWH de la Institución acompañado de un piloto de BI con Hypercards.",
+          tech: "SQL Server, MySQL, PDI, MicroStrategy",
+        },
+        {
+          name: "BI de Seguros y Estructuras a las Entidades de Control",
+          img01:
+            "http://drive.google.com/uc?export=view&id=1tF6nGwDwCDILyqVzrmXvisF35vSBa3fr",
+          desc:
+            "Proyecto de BI de Seguros y Reportes a las Entidades de Control del Ecuador.",
+          tech: "SQL Server, PDI, MicroStrategy",
         },
 
         {
-          name: "Proyecto 1",
-          img: "",
-          desc: "",
-          link: "",
-          tech: "",
+          name: "Sitio WEB Constelaciones",
+          img01:
+            "http://drive.google.com/uc?export=view&id=1wTTrmeVqdV9PS_K2qJh_7VBrBIxqfmRZ",
+          desc:
+            "Sitio WEB de Constelaciones Ecuador, empresa especializada en terapia de constelaciones familiares",
+          link: "https://www.constelacionesecuador.com",
+          tech: "Wordpress, MySQL",
         },
         {
-          name: "Proyecto 2",
-          img: "",
-          desc: "",
-          tech: "",
+          name: "Piloto de BI con Hypercards",
+          img01:
+            "http://drive.google.com/uc?export=view&id=1VhlmpPPF0vVYLOb25sWUrPxjRkOYmJGv",
+          desc: "Piloto de BI con Hypercards.",
+          tech: "SQL Server, MicroStrategy",
+        },
+        {
+          name: "Sitio WEB FIGLAC",
+          img01:
+            "http://drive.google.com/uc?export=view&id=1rlOMQm300p_iIlueFOAUgp1B39Tg9Vua",
+          desc:
+            "Sitio WEB para gestionar la información de FIGLAC que es una Organización sin fines de Lucro especializada en brindar servicios de a Instituciones de Micro Finanzas.",
+          link: "https://web.figlac.org/",
+          tech: "Wordpress, MySQL",
+        },
+        {
+          name: "DWH y Proyecto de BI",
+          img01:
+            "http://drive.google.com/uc?export=view&id=19CGN1ML26EW94GhSw_ixH0DNijDMlJ1K",
+          desc: "Creación del DWH y BI de la Institución.",
+          tech: "SQL Server, PDI, MicroStrategy",
+        },
+        {
+          name: "Landing Page C&G Comercio Exterior",
+          img01:
+            "http://drive.google.com/uc?export=view&id=1iN40tgpnG_EcZXKScofTXUOHg8SHeYDy",
+          desc:
+            "Landing Page para gestionar la información de C&G Comercio Exterior Empresa que se dedica a Exportaciones e Importaciones en el Ecuador.",
+          tech: "Wordpress, MySQL",
         },
       ],
     };
@@ -86,8 +139,7 @@ export default {
   font-weight: 700;
   color: #222222;
 }
-.title-content h2,
-.title-content p {
+.title-content {
   text-align: center;
   margin: 0 0 45px;
 }
