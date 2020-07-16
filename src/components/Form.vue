@@ -90,7 +90,7 @@ export default {
       return Object.keys(data)
         .map(
           (key) =>
-            `${npmencodeURIComponent(key)} = ${encodeURIComponent(data[key])} `
+            `${encodeURIComponent(key)} = ${encodeURIComponent(data[key])} `
         )
         .join("&");
     },
