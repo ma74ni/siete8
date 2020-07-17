@@ -20,11 +20,17 @@
             />
             <hr />
             <div class="px-3 py-2">
-              <b-navbar-nav>
-                <b-nav-item href="#">Inicio</b-nav-item>
-                <b-nav-item href="#brief">Portafolio</b-nav-item>
-                <b-nav-item href="#contact">Contacto</b-nav-item>
-              </b-navbar-nav>
+              <ul class="menu">
+                <li>
+                  <a href="#">Inicio</a>
+                </li>
+                <li>
+                  <a href="#brief">Portafolio</a>
+                </li>
+                <li>
+                  <a href="#contact">Contacto</a>
+                </li>
+              </ul>
             </div>
             <hr />
             <p class="px-3 py-2 text-center">
@@ -55,6 +61,9 @@
   color: #222222;
   padding: 10px;
   cursor: pointer;
+}
+.menu a {
+  color: #222222;
 }
 .logo {
   width: 250px;

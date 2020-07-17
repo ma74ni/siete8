@@ -1,0 +1,79 @@
+{
+  "1": {
+    "name": "Aplicación WEB Bypass de Aplicaciones BI",
+    "img01": "http://drive.google.com/uc?export=view&id=1NCO6OTeSDUP4Vp7Vmf-zBsHMRGei_JeK",
+    "desc": "Aplicación WEB de gestión y administracion de aplicaciones de Businnes Intelligence.",
+    "link": "https://baypass-mstr.firebaseapp.com/login",
+    "tech": "Angular, Firebase, MicroStrategy"
+  },
+  "2": {
+    "name": "Aplicación WEB Encuestas A100",
+    "img01": "http://drive.google.com/uc?export=view&id=1DWUnCPLsQCBLwVljfmpkVkwU79PSg8Sa",
+    "desc": "Aplicación WEB de administración, gestión y tabulación de Encuestas.",
+    "tech": "MVC PHP, SQL Server, PDI, MicroStrategy"
+  },
+  "3": {
+    "name": "Aplicación WEB Encuestas Hospitalarias",
+    "img01": "http://drive.google.com/uc?export=view&id=1R7W687kg6ZsBln9IsZtvrw_0UDD16LSr",
+    "desc": "Aplicación WEB de administración, gestión y tabulación de encuestas hospitalarias.",
+    "tech": "MVC PHP, SQL Server, Oracle, web services con las aplicaciones de la Clínica, PDI, MicroStrategy"
+  },
+  "4": {
+    "name": "DWH y Piloto de BI con Hypercards",
+    "img01": "http://drive.google.com/uc?export=view&id=12M_QknJw_Jyj7YKtritl5nBuREV2T_Te",
+    "desc": "Creación del DWH de la Empresa acompañado de un piloto de Businnes Intelligence con Hypercards.",
+    "tech": "SQL Server, MySQL, web service con las aplicaciones de la Empresa, PDI, MicroStrategy"
+  },
+  "5": {
+    "name": "BI de Seguros y Estructuras a las Entidades de Control",
+    "img01": "http://drive.google.com/uc?export=view&id=1tF6nGwDwCDILyqVzrmXvisF35vSBa3fr",
+    "desc": "Proyecto de Businnes Intelligence de Seguros y Reportería a todas  las Entidades de Control del Ecuador.",
+    "tech": "SQL Server, web services con las aplicaciones del Banco, PDI, MicroStrategy"
+  },
+
+  "6": {
+    "name": "Sitio WEB Constelaciones",
+    "img01": "http://drive.google.com/uc?export=view&id=1wTTrmeVqdV9PS_K2qJh_7VBrBIxqfmRZ",
+    "desc": "Sitio WEB de Constelaciones Ecuador, Empresa especializada en terapia de constelaciones familiares.",
+    "link": "https://www.constelacionesecuador.com",
+    "tech": "Wordpress, MySQL"
+  },
+  "7": {
+    "name": "Piloto de BI con Hypercards",
+    "img01": "http://drive.google.com/uc?export=view&id=1VhlmpPPF0vVYLOb25sWUrPxjRkOYmJGv",
+    "desc": "Piloto de BI con Hypercards.",
+    "tech": "SQL Server, web services con las aplicaciones del Banco, MicroStrategy"
+  },
+  "8": {
+    "name": "Sitio WEB FIGLAC",
+    "img01": "http://drive.google.com/uc?export=view&id=1rlOMQm300p_iIlueFOAUgp1B39Tg9Vua",
+    "desc": "Sitio WEB para gestionar la información de FIGLAC una Organización sin fines de lucro especializada en brindar servicios a Instituciones de Micro Finanzas.",
+    "link": "https://web.figlac.org/",
+    "tech": "Wordpress, MySQL"
+  },
+  "9": {
+    "name": "DWH y BI",
+    "img01": "http://drive.google.com/uc?export=view&id=19CGN1ML26EW94GhSw_ixH0DNijDMlJ1K",
+    "desc": "Implemantación del DWH y Businnes Intelligence de la Empresa.",
+    "tech": "SQL Server, PDI, MicroStrategy"
+  },
+  "10": {
+    "name": "Landing Page C&G Comercio Exterior",
+    "img01": "http://drive.google.com/uc?export=view&id=1iN40tgpnG_EcZXKScofTXUOHg8SHeYDy",
+    "desc": "Landing Page para gestionar la información de C&G Comercio Exterior Empresa que brinda servicios de exportaciones e importaciones en el Ecuador.",
+    "tech": "Wordpress, MySQL"
+  },
+  "11": {
+    "name": "Sitio WEB MBS Connection Flower",
+    "img01": "http://drive.google.com/uc?export=view&id=1GiXhu2RDPnJcm1jSL66eEJiGlPZm7I7w",
+    "desc": "Sitio WEB de MBS Connection Flower, Empresa especializada en exportaciones de Flores",
+    "tech": "Wordpress, MySQL"
+  },
+  "12": {
+    "name": "Sitio WEB Banco de Motos",
+    "img01": "http://drive.google.com/uc?export=view&id=1Pm6kAGrcKL3VrIMUQLRF8jIYz5SY2zaz",
+    "desc": "Aplicación WEB, Empresa especializada en venta y reparación de motocicletas nueva y usadas.",
+    "tech": "Laravel, MySQL",
+    "link": "https://bancodemotos.com.ec/"
+  }
+}
