@@ -9,7 +9,9 @@ Sitio público, blog, portafolio y panel de administración de Siete8, estudio t
 Este repo está conectado a Netlify: cada push a `master` despliega a producción. Antes tenía el sitio anterior en Vue 2; el sitio nuevo en Next.js lo **reemplaza por completo en este mismo repo** (el código Vue se eliminó en E0-01 y solo queda en el historial de git).
 
 - `dev` es la rama de integración: todas las tareas se fusionan ahí. `master` solo recibe un PR desde `dev` cuando se quiere desplegar a producción; nunca se hace commit directo a `master`.
-- La configuración de build de Netlify se declara en `netlify.toml`, no en la interfaz de Netlify.
+- La configuración de build de Netlify se declara en `netlify.toml`, no en la interfaz de Netlify. El adaptador `@netlify/plugin-nextjs` va declarado ahí y fijado en `package.json`, y necesita `publish = ".next"`; sin él Netlify publica la carpeta `.next` como estática y todo da 404.
+- En la interfaz de Netlify, la versión de Node debe ser 22 (Dependency management): los plugins de build usan esa versión, no la del `netlify.toml`.
+- `dev` y `master` exigen dos checks para fusionar: `CI` y `netlify/siete8/deploy-preview`.
 - `public/ce24dd8215336358aaaadd8607c5a049.txt` es la verificación de dominio de Mailjet del sitio anterior. No se borra sin confirmarlo con el usuario.
 
 ## Documentos del proyecto
@@ -50,6 +52,7 @@ pnpm db:stop      # lo apaga
 pnpm db:reset     # recrea la base local desde las migraciones y la semilla
 pnpm db:migration <nombre>  # crea una migración nueva en supabase/migrations
 pnpm db:status    # URLs y claves de la instancia local
+pnpm db:test      # pruebas pgTAP de supabase/tests contra la base local
 ```
 
 ## Forma de trabajar
@@ -129,6 +132,8 @@ La variable de analítica se agrega cuando se decida la herramienta (SRS: Plausi
 ## Base de datos
 
 - `.env.local` apunta al proyecto **remoto** de Supabase. La base local (Docker) solo se usa para probar migraciones con `pnpm db:reset`.
+- Cada tabla nueva activa Row Level Security en la misma migración que la crea, aunque sus políticas lleguen después.
+- Las restricciones de datos (precios, slugs, estados) van también en la base con `check`, y se prueban con pgTAP en `supabase/tests/`.
 - Todo cambio de esquema es una migración nueva en `supabase/migrations` creada con `pnpm db:migration`. Nunca se edita una migración ya fusionada ni se cambia el esquema desde el panel de Supabase.
 - `pnpm db:reset` solo actúa sobre la base local. Nunca uses `supabase db reset --linked` ni `supabase db push` contra el remoto sin que el usuario lo pida: borran o cambian datos reales.
 - La versión de Postgres local (`major_version` en `supabase/config.toml`) debe coincidir con la del proyecto remoto.
