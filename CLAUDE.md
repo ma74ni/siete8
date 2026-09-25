@@ -50,7 +50,7 @@ pnpm format       # Prettier (format:check para solo verificar)
 pnpm db:start     # levanta Supabase local en Docker
 pnpm db:stop      # lo apaga
 pnpm db:reset     # recrea la base local desde las migraciones y la semilla
-pnpm db:migration <nombre>  # crea una migración nueva en supabase/migrations
+pnpm db:migration <nombre>  # crea una migración nueva en supabase/migrations (sin terminal interactiva, agrega `< /dev/null`: si no, espera el SQL por stdin)
 pnpm db:status    # URLs y claves de la instancia local
 pnpm db:test      # pruebas pgTAP de supabase/tests contra la base local
 ```

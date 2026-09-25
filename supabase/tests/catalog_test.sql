@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(23);
+select plan(24);
 
 -- Tables and RLS
 select has_table('public', t, t || ' exists')
@@ -16,10 +16,10 @@ from unnest(array['category', 'service', 'plan', 'requirement']) as t;
 
 -- Fixtures
 insert into public.category (id, name, slug)
-values ('00000000-0000-0000-0000-000000000001', 'Trámites', 'tramites');
+values ('00000000-0000-0000-0000-000000000001', 'Categoría de prueba', 'test-category');
 
 insert into public.service (id, category_id, name, slug)
-values ('00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', 'Firma electrónica', 'firma-electronica');
+values ('00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', 'Servicio de prueba', 'test-service');
 
 -- Valid plan: price without VAT plus VAT rate
 select lives_ok(
@@ -66,13 +66,18 @@ select throws_ok(
 );
 
 select throws_ok(
-  $$insert into public.category (name, slug) values ('x', 'tramites')$$,
+  $$insert into public.category (name, slug) values ('x', 'test-category')$$,
   '23505', null, 'rejects a duplicate slug'
 );
 
+select lives_ok(
+  $$insert into public.service (category_id, kind, name, slug) values ('00000000-0000-0000-0000-000000000001', 'own_product', 'Producto oculto', 'producto-oculto')$$,
+  'a hidden own_product may have no external_app_url'
+);
+
 select throws_ok(
-  $$insert into public.service (category_id, kind, name, slug) values ('00000000-0000-0000-0000-000000000001', 'own_product', 'Facturador', 'facturador')$$,
-  '23514', null, 'own_product requires external_app_url'
+  $$insert into public.service (category_id, kind, name, slug, visible) values ('00000000-0000-0000-0000-000000000001', 'own_product', 'Producto visible', 'producto-visible', true)$$,
+  '23514', null, 'a visible own_product requires external_app_url'
 );
 
 select throws_ok(
@@ -96,8 +101,14 @@ select is(
 
 -- Cascades
 delete from public.service where id = '00000000-0000-0000-0000-000000000002';
-select is((select count(*) from public.plan)::int, 0, 'deleting a service deletes its plans');
-select is((select count(*) from public.requirement)::int, 0, 'deleting a plan deletes its requirements');
+select is(
+  (select count(*) from public.plan where service_id = '00000000-0000-0000-0000-000000000002')::int,
+  0, 'deleting a service deletes its plans'
+);
+select is(
+  (select count(*) from public.requirement where plan_id = '00000000-0000-0000-0000-000000000003')::int,
+  0, 'deleting a plan deletes its requirements'
+);
 
 select * from finish();
 rollback;
