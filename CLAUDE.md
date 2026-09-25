@@ -2,14 +2,15 @@
 
 Sitio público, blog, portafolio y panel de administración de Siete8, estudio tecnológico de Quito. Este archivo manda sobre cualquier suposición: léelo completo al empezar cada sesión.
 
+@AGENTS.md
+
 ## Estado del repositorio
 
-Este repo contiene el sitio anterior en Vue 2 (Vue CLI, Bootstrap-Vue, npm) y está conectado a Netlify: cada push a `master` despliega a producción. El sitio nuevo en Next.js lo **reemplaza por completo en este mismo repo** (tarea E0-01).
+Este repo está conectado a Netlify: cada push a `master` despliega a producción. Antes tenía el sitio anterior en Vue 2; el sitio nuevo en Next.js lo **reemplaza por completo en este mismo repo** (el código Vue se eliminó en E0-01 y solo queda en el historial de git).
 
-- El código Vue (`src/`, `public/`, `vue.config.js`, `babel.config.js`, `.browserslistrc`, `package-lock.json`, `_redirects`) es heredado. No se mantiene ni se migra: E0-01 lo elimina.
 - Hasta que el sitio nuevo esté listo para salir, nada se fusiona a `master`. Se trabaja en ramas y se revisa en las vistas previas de Netlify.
-- La configuración de build de Netlify (comando, carpeta publicada, gestor de paquetes) cambia de Vue a Next.js en E0-01/E7-01. Se declara en `netlify.toml`, no en la interfaz de Netlify.
-- `ce24dd8215336358aaaadd8607c5a049.txt` es la verificación de dominio de Mailjet del sitio anterior. No se borra sin confirmarlo con el usuario.
+- La configuración de build de Netlify se declara en `netlify.toml`, no en la interfaz de Netlify.
+- `public/ce24dd8215336358aaaadd8607c5a049.txt` es la verificación de dominio de Mailjet del sitio anterior. No se borra sin confirmarlo con el usuario.
 
 ## Documentos del proyecto
 
@@ -27,11 +28,12 @@ Las rutas de esta tabla son relativas a la raíz del repo.
 
 ## Stack
 
-- Next.js (App Router) con TypeScript estricto, pnpm.
+- Next.js 16 (App Router) con TypeScript estricto (`strict`, `noUncheckedIndexedAccess`), pnpm y Node 22. Next 16 cambia APIs respecto a versiones anteriores: consulta `node_modules/next/dist/docs/` antes de usar una API (ver `AGENTS.md`).
 - Tailwind CSS con los tokens de `docs/DESIGN.md` como variables CSS. Panel con shadcn/ui.
 - Supabase: Postgres, Auth, Storage. Migraciones con Supabase CLI en `supabase/migrations`.
 - Zod para validar entradas y variables de entorno.
-- Vitest para pruebas unitarias; Playwright para extremo a extremo.
+- ESLint (config de Next) y Prettier (con orden de clases de Tailwind).
+- Vitest para pruebas unitarias (`src/**/*.test.ts(x)`); Playwright para extremo a extremo (aún no instalado).
 - Despliegue en Netlify con el adaptador oficial de Next.js.
 
 ## Comandos
@@ -39,11 +41,10 @@ Las rutas de esta tabla son relativas a la raíz del repo.
 ```
 pnpm dev          # servidor local
 pnpm build        # build de producción
-pnpm typecheck    # tsc --noEmit
+pnpm typecheck    # genera tipos de rutas (next typegen) y corre tsc --noEmit
 pnpm lint         # ESLint
 pnpm test         # Vitest
-pnpm e2e          # Playwright
-supabase db reset # recrea la base local desde las migraciones y la semilla
+pnpm format       # Prettier (format:check para solo verificar)
 ```
 
 ## Forma de trabajar

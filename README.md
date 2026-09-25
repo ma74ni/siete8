@@ -1,19 +1,22 @@
-# siete8
+# Siete8
 
-## Project setup
-```
-npm install
-```
+Sitio público, blog, portafolio y panel de administración de Siete8.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+Stack: Next.js 16 (App Router), TypeScript, Tailwind CSS, Supabase y Netlify. Las reglas del proyecto están en [`CLAUDE.md`](CLAUDE.md) y la documentación en [`docs/`](docs/).
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## Requisitos
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- Node 22 (`.nvmrc`)
+- pnpm 10 (`corepack enable`)
+
+## Comandos
+
+```
+pnpm install
+pnpm dev           # servidor local en http://localhost:3000
+pnpm build         # build de producción
+pnpm typecheck     # tipos
+pnpm lint          # ESLint
+pnpm test          # Vitest
+pnpm format        # Prettier
+```
