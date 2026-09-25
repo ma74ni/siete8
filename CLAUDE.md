@@ -88,6 +88,9 @@ pnpm db:test      # pruebas pgTAP de supabase/tests contra la base local
 - Row Level Security en todas las tablas. Lectura anónima solo de lo publicado y visible.
 - La clave secreta de Supabase (`SUPABASE_SECRET_KEY`) y la de Anthropic solo existen en código de servidor. Nunca en componentes cliente ni en variables `NEXT_PUBLIC_*`.
 - Toda escritura del panel se valida con Zod en el servidor y verifica el rol admin.
+- Las políticas de RLS viven en migraciones y se prueban en `supabase/tests/rls_test.sql` como anónimo, usuario sin rol y admin. Toda tabla nueva agrega su política de lectura pública (si aplica), la de admin (`public.is_admin()`) y sus pruebas.
+- `anon` no tiene permisos de escritura en ninguna tabla. Los leads se insertan desde el servidor con la clave secreta, después de validar Turnstile y el consentimiento; nunca con una política de inserción anónima.
+- El rol admin se asigna solo por SQL; no existe política de escritura sobre `profile`.
 
 **Diseño**
 - Mobile-first. Contraste WCAG 2.1 AA: los naranjas y amarillos de marca nunca van como texto sobre fondo blanco.
