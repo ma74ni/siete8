@@ -17,9 +17,11 @@
     "db:reset": "supabase db reset",
     "db:status": "supabase status",
     "db:migration": "supabase migration new",
-    "db:test": "supabase test db"
+    "db:test": "supabase test db",
+    "db:types": "supabase gen types typescript --local --schema public > src/lib/database.types.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.117.2",
     "next": "16.3.6",
     "react": "19.2.8",
     "react-dom": "19.2.8",

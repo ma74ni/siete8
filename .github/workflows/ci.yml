@@ -18,8 +18,12 @@ jobs:
     name: CI
     runs-on: ubuntu-latest
     env:
-      # Not a secret: required by the env validation in next.config.ts.
+      # Not secrets: placeholders for the env validation in next.config.ts.
+      # No job step talks to Supabase.
       NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_ci
+      SUPABASE_SECRET_KEY: sb_secret_ci
     steps:
       - uses: actions/checkout@v4
 
@@ -69,3 +73,9 @@ jobs:
 
       - name: Test database
         run: pnpm db:test
+
+      # Fails when a migration changed the schema without `pnpm db:types`.
+      - name: Check generated types
+        run: |
+          pnpm db:types
+          git diff --exit-code -- src/lib/database.types.ts
