@@ -4,3 +4,8 @@
 
 [build.environment]
   NODE_VERSION = "22"
+
+# The site was created for the previous Vue app, so Netlify never auto-installed
+# the Next.js adapter. Declare it explicitly (version pinned in package.json).
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
