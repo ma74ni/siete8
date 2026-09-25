@@ -58,7 +58,7 @@ pnpm format       # Prettier (format:check para solo verificar)
 ## Definición de terminado
 
 - Cumple los criterios de aceptación de la tarea.
-- `pnpm typecheck`, `pnpm lint` y `pnpm test` pasan sin errores.
+- `pnpm typecheck`, `pnpm lint` y `pnpm test` pasan sin errores, y el check de CI del PR está en verde.
 - Textos tomados de `docs/COPY.md`.
 - Estilos solo con tokens de `docs/DESIGN.md`.
 - Revisado a 360 px y 1440 px, con teclado y con `prefers-reduced-motion`.
