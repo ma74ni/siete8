@@ -8,7 +8,7 @@ Sitio público, blog, portafolio y panel de administración de Siete8, estudio t
 
 Este repo está conectado a Netlify: cada push a `master` despliega a producción. Antes tenía el sitio anterior en Vue 2; el sitio nuevo en Next.js lo **reemplaza por completo en este mismo repo** (el código Vue se eliminó en E0-01 y solo queda en el historial de git).
 
-- Hasta que el sitio nuevo esté listo para salir, nada se fusiona a `master`. Se trabaja en ramas y se revisa en las vistas previas de Netlify.
+- `dev` es la rama de integración: todas las tareas se fusionan ahí. `master` solo recibe un PR desde `dev` cuando se quiere desplegar a producción; nunca se hace commit directo a `master`.
 - La configuración de build de Netlify se declara en `netlify.toml`, no en la interfaz de Netlify.
 - `public/ce24dd8215336358aaaadd8607c5a049.txt` es la verificación de dominio de Mailjet del sitio anterior. No se borra sin confirmarlo con el usuario.
 
@@ -53,7 +53,7 @@ pnpm format       # Prettier (format:check para solo verificar)
 2. Antes de escribir código, propón un plan corto en pasos y espera aprobación.
 3. No toques archivos fuera del alcance de la tarea. Si algo fuera del alcance está roto, avísalo en vez de arreglarlo.
 4. Al terminar, verifica la definición de terminado y resume qué cambió y cómo probarlo.
-5. Una tarea por rama: `feat/<id>-<nombre-corto>`, creada desde `master`. `master` es la rama de producción en Netlify.
+5. Una tarea por rama: `feat/<id>-<nombre-corto>`, creada desde `dev` y fusionada de vuelta a `dev`. Para desplegar se abre un PR de `dev` a `master` (producción en Netlify).
 
 ## Definición de terminado
 

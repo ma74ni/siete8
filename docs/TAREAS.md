@@ -8,11 +8,11 @@ Tareas del MVP en orden de ejecución, derivadas del SRS, el DESIGN.md, el copy 
 
 ### Flujo con Claude Code
 
-1. Una tarea por sesión o por rama. Rama `feat/<id>-<nombre>`, por ejemplo `feat/E3-04-pagina-servicio`.
+1. Una tarea por sesión o por rama. Rama `feat/<id>-<nombre>` creada desde `dev`, por ejemplo `feat/E3-04-pagina-servicio`.
 2. Claude Code lee el `CLAUDE.md` de la raíz y los documentos de `/docs` antes de escribir código.
 3. Primero propone un plan corto de la tarea; se revisa y se aprueba antes de implementar.
 4. Al terminar, ejecuta las verificaciones de la definición de terminado y resume qué cambió.
-5. Se revisa la vista previa de Netlify de la rama y se fusiona a `master` (rama de producción en Netlify).
+5. Se revisa la vista previa de Netlify de la rama y se fusiona a `dev`. Para desplegar, se abre un PR de `dev` a `master` (rama de producción en Netlify).
 
 ### Estructura de `/docs` en el repositorio
 
