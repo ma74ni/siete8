@@ -99,6 +99,8 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 - El motivo del logo (7 = `111`, tres barras; 8 = `1000`, un módulo sólido y tres huecos) se reproduce con la geometría de `docs/DESIGN.md`, nunca deformado.
 - Sin etiquetas en mayúsculas sobre títulos, sin separadores con punto medio, sin fuente monoespaciada en la interfaz pública.
 - Una sola animación automática: el hero de la portada.
+- Los tokens viven en `src/app/globals.css`, único archivo de `src/` con colores literales. Los componentes usan los colores semánticos (`bg`, `surface`, `fg`, `fg-muted`, `accent`, `action`, `action-hover`, `on-action`, `border`, `focus`), que ya cambian con el modo oscuro: no se usa `dark:` salvo excepción. La paleta de Tailwind está desactivada. El texto secundario (`fg-muted`) no va sobre `surface` (no pasa AA); ahí se usa `fg`. `src/app/design-tokens.test.ts` verifica contraste, colores literales y esa regla.
+- Tipografía: `text-display`, `text-h2`, `text-h3`, `text-h4`, `text-body` y `text-small`, fluidas entre 360 y 1440 px. `h1`–`h4` ya traen ancho, peso y tamaño por defecto.
 
 **SEO**
 - Las páginas públicas se generan estáticamente o en servidor; el HTML trae el contenido completo.
