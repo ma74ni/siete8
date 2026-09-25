@@ -100,22 +100,47 @@ pnpm format       # Prettier (format:check para solo verificar)
 
 ## Variables de entorno
 
+Se validan con Zod al arrancar: `next.config.ts` importa `src/env/schema.ts`, así que `pnpm dev`, `pnpm build` y `pnpm start` fallan si falta una variable exigida. Para desarrollo local, copia `.env.example` a `.env.local`.
+
+- En el código se usan solo `serverEnv` (`@/env/server`) y `clientEnv` (`@/env/client`). Nunca se lee `process.env` fuera de `src/env/` y `next.config.ts`.
+- `@/env/server` importa `server-only`: si un componente cliente lo importa, el build falla. Los secretos van solo ahí.
+- `@/env/client` solo tiene variables `NEXT_PUBLIC_*`, leídas por su nombre completo para que Next las incruste en el build.
+- Cada tarea que integra un servicio agrega sus variables al esquema y a `.env.example`. No se declaran antes de usarse.
+- En Netlify, si `NEXT_PUBLIC_SITE_URL` no está definida, se usa la URL del despliegue (`URL` en producción, `DEPLOY_PRIME_URL` en vistas previas).
+
+| Variable | Tipo | Se agrega en |
+| --- | --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | pública | E0-03 (exigida) |
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | pública | E1-01 |
+| `SUPABASE_SERVICE_ROLE_KEY` | secreta | E1-01 |
+| `RESEND_API_KEY`, `ADMIN_NOTIFICATION_EMAIL`, `TURNSTILE_SECRET_KEY` | secreta | E3-08 |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | pública | E3-08 |
+| `REVALIDATE_SECRET` | secreta | primera ruta de revalidación bajo demanda |
+| `NEXT_PUBLIC_SENTRY_DSN` | pública | E7-06 |
+| `SENTRY_AUTH_TOKEN` | secreta (solo build, source maps) | E7-06 |
+
+La variable de analítica se agrega cuando se decida la herramienta (SRS: Plausible o GA4). `ANTHROPIC_API_KEY` (secreta) se agrega recién en la fase 1.1 (asistente).
+
+## Estructura de carpetas
+
 ```
-NEXT_PUBLIC_SITE_URL=
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-REVALIDATE_SECRET=
-TURNSTILE_SECRET_KEY=
-NEXT_PUBLIC_TURNSTILE_SITE_KEY=
-RESEND_API_KEY=
-ADMIN_NOTIFICATION_EMAIL=
-NEXT_PUBLIC_SENTRY_DSN=
-SENTRY_AUTH_TOKEN=
+src/
+  app/           Rutas (App Router). Sitio público en el grupo (sitio), panel en admin/, API en api/.
+  components/    ui/ (shadcn/ui), sitio/ (sitio público), admin/ (panel).
+  lib/           Utilidades puras sin acceso a datos: precios con IVA, formatos, slugs.
+  server/        Código solo de servidor: acceso a datos, Server Actions, integraciones. Cada archivo importa "server-only".
+  env/           Variables de entorno validadas.
+supabase/        Migraciones y semilla (Supabase CLI).
+docs/            Documentación del proyecto.
 ```
 
-`SENTRY_AUTH_TOKEN` solo se usa en el build para subir source maps. La variable de analítica se agrega cuando se decida la herramienta (SRS: Plausible o GA4). `ANTHROPIC_API_KEY` se agrega recién en la fase 1.1 (asistente).
+Las carpetas se crean cuando tienen su primer archivo, no antes. Alias único: `@/*` → `src/*`.
 
-## Pendiente de completar
+## Convenciones de código
 
-- Estructura de carpetas, alias de rutas y convenciones de código: se documentan aquí al cerrar E0-01 y E0-03 (lo exige el criterio de E0-02).
+- Server Components por defecto. `"use client"` solo en el componente que necesita estado, efectos o eventos, lo más abajo posible del árbol.
+- Datos: se leen en Server Components desde `src/server/`; las escrituras van por Server Actions o rutas de `api/`, validadas con Zod.
+- Nombres de archivos en kebab-case (`plan-card.tsx`); componentes en PascalCase; funciones y variables en camelCase.
+- Pruebas junto al archivo que prueban: `price.ts` → `price.test.ts`.
+- Next.js 16 cambia APIs respecto a versiones anteriores: antes de usar una API, revisa `node_modules/next/dist/docs/`.
+- Commits en inglés, en imperativo y con una línea de resumen corta.

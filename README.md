@@ -12,6 +12,7 @@ Stack: Next.js 16 (App Router), TypeScript, Tailwind CSS, Supabase y Netlify. La
 ## Comandos
 
 ```
+cp .env.example .env.local   # variables locales (validadas al arrancar)
 pnpm install
 pnpm dev           # servidor local en http://localhost:3000
 pnpm build         # build de producción
