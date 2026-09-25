@@ -92,3 +92,9 @@ from (values
   ('correo-corporativo', 'Correo Pro', 179.00, 4)
 ) as p (service_slug, name, price, sort_order)
 join public.service s on s.slug = p.service_slug;
+
+-- Site settings (E1-04), from CLAUDE.md and docs/COPY.md. All public.
+insert into public.site_settings (key, value, is_public) values
+  ('whatsapp', '{"number": "0961128233", "wa_me": "593961128233", "hours": {"from": "07:00", "to": "20:00"}}', true),
+  ('social', '{"facebook": "https://www.facebook.com/siete8.ec", "instagram": "https://www.instagram.com/siete8.ec", "linkedin": "https://www.linkedin.com/company/siete8.ec"}', true),
+  ('assistant_enabled', 'false', true);
