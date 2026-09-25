@@ -30,7 +30,7 @@ Las rutas de esta tabla son relativas a la raíz del repo.
 
 - Next.js 16 (App Router) con TypeScript estricto (`strict`, `noUncheckedIndexedAccess`), pnpm y Node 22. Next 16 cambia APIs respecto a versiones anteriores: consulta `node_modules/next/dist/docs/` antes de usar una API (ver `AGENTS.md`).
 - Tailwind CSS con los tokens de `docs/DESIGN.md` como variables CSS. Panel con shadcn/ui.
-- Supabase: Postgres, Auth, Storage. Migraciones con Supabase CLI en `supabase/migrations`.
+- Supabase: Postgres, Auth, Storage, con las claves nuevas (publishable y secret). Migraciones con Supabase CLI (devDependency, se usa con `pnpm exec supabase`) en `supabase/migrations`.
 - Zod para validar entradas y variables de entorno.
 - ESLint (config de Next) y Prettier (con orden de clases de Tailwind).
 - Vitest para pruebas unitarias (`src/**/*.test.ts(x)`); Playwright para extremo a extremo (aún no instalado).
@@ -45,6 +45,11 @@ pnpm typecheck    # genera tipos de rutas (next typegen) y corre tsc --noEmit
 pnpm lint         # ESLint
 pnpm test         # Vitest
 pnpm format       # Prettier (format:check para solo verificar)
+pnpm db:start     # levanta Supabase local en Docker
+pnpm db:stop      # lo apaga
+pnpm db:reset     # recrea la base local desde las migraciones y la semilla
+pnpm db:migration <nombre>  # crea una migración nueva en supabase/migrations
+pnpm db:status    # URLs y claves de la instancia local
 ```
 
 ## Forma de trabajar
@@ -78,7 +83,7 @@ pnpm format       # Prettier (format:check para solo verificar)
 
 **Seguridad**
 - Row Level Security en todas las tablas. Lectura anónima solo de lo publicado y visible.
-- La clave service role de Supabase y la de Anthropic solo existen en código de servidor. Nunca en componentes cliente ni en variables `NEXT_PUBLIC_*`.
+- La clave secreta de Supabase (`SUPABASE_SECRET_KEY`) y la de Anthropic solo existen en código de servidor. Nunca en componentes cliente ni en variables `NEXT_PUBLIC_*`.
 - Toda escritura del panel se valida con Zod en el servidor y verifica el rol admin.
 
 **Diseño**
@@ -111,8 +116,8 @@ Se validan con Zod al arrancar: `next.config.ts` importa `src/env/schema.ts`, as
 | Variable | Tipo | Se agrega en |
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | pública | E0-03 (exigida) |
-| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | pública | E1-01 |
-| `SUPABASE_SERVICE_ROLE_KEY` | secreta | E1-01 |
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | pública | E1-06 |
+| `SUPABASE_SECRET_KEY` | secreta | E1-06 |
 | `RESEND_API_KEY`, `ADMIN_NOTIFICATION_EMAIL`, `TURNSTILE_SECRET_KEY` | secreta | E3-08 |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | pública | E3-08 |
 | `REVALIDATE_SECRET` | secreta | primera ruta de revalidación bajo demanda |
@@ -120,6 +125,13 @@ Se validan con Zod al arrancar: `next.config.ts` importa `src/env/schema.ts`, as
 | `SENTRY_AUTH_TOKEN` | secreta (solo build, source maps) | E7-06 |
 
 La variable de analítica se agrega cuando se decida la herramienta (SRS: Plausible o GA4). `ANTHROPIC_API_KEY` (secreta) se agrega recién en la fase 1.1 (asistente).
+
+## Base de datos
+
+- `.env.local` apunta al proyecto **remoto** de Supabase. La base local (Docker) solo se usa para probar migraciones con `pnpm db:reset`.
+- Todo cambio de esquema es una migración nueva en `supabase/migrations` creada con `pnpm db:migration`. Nunca se edita una migración ya fusionada ni se cambia el esquema desde el panel de Supabase.
+- `pnpm db:reset` solo actúa sobre la base local. Nunca uses `supabase db reset --linked` ni `supabase db push` contra el remoto sin que el usuario lo pida: borran o cambian datos reales.
+- La versión de Postgres local (`major_version` en `supabase/config.toml`) debe coincidir con la del proyecto remoto.
 
 ## Estructura de carpetas
 
@@ -130,7 +142,7 @@ src/
   lib/           Utilidades puras sin acceso a datos: precios con IVA, formatos, slugs.
   server/        Código solo de servidor: acceso a datos, Server Actions, integraciones. Cada archivo importa "server-only".
   env/           Variables de entorno validadas.
-supabase/        Migraciones y semilla (Supabase CLI).
+supabase/        config.toml, migrations/ y seed.sql (Supabase CLI).
 docs/            Documentación del proyecto.
 ```
 
