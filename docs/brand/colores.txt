@@ -1,0 +1,5 @@
+#5b2447
+#90213d
+#be1d36
+Difunimado: #e84235 - #eb6e33 - #f0952c - #f5b71b
+Gris texto: #292325
