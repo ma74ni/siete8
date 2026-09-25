@@ -66,7 +66,7 @@ pnpm db:test      # pruebas pgTAP de supabase/tests contra la base local
 ## Definición de terminado
 
 - Cumple los criterios de aceptación de la tarea.
-- `pnpm typecheck`, `pnpm lint` y `pnpm test` pasan sin errores, y el check de CI del PR está en verde.
+- `pnpm typecheck`, `pnpm lint` y `pnpm test` pasan sin errores, y los checks del PR están en verde (`CI`, `Database` y el preview de Netlify).
 - Textos tomados de `docs/COPY.md`.
 - Estilos solo con tokens de `docs/DESIGN.md`.
 - Revisado a 360 px y 1440 px, con teclado y con `prefers-reduced-motion`.
