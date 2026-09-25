@@ -142,6 +142,7 @@ La variable de analítica se agrega cuando se decida la herramienta (SRS: Plausi
 - Todo cambio de esquema es una migración nueva en `supabase/migrations` creada con `pnpm db:migration`. Nunca se edita una migración ya fusionada ni se cambia el esquema desde el panel de Supabase.
 - Después de cada migración, `pnpm db:reset` y `pnpm db:types`, y se sube `src/lib/database.types.ts` con la migración. CI falla si los tipos no coinciden con el esquema.
 - Clientes de Supabase en `src/server/supabase/`: `createPublicClient()` (clave publishable, sin sesión, sujeto a RLS) para lecturas públicas, `createSessionClient()` (cookies del usuario conectado, sujeto a RLS) para el panel, `createProxyClient()` solo para `src/proxy.ts`, y `createAdminClient()` (clave secreta, salta RLS) solo después de validar con Zod y verificar permisos. Ningún componente cliente importa `@/server/*` ni `@supabase/*`; lo verifica `src/server/client-boundary.test.ts`.
+- Imágenes en el bucket público `images` de Storage, solo en `posts/` y `projects/`: JPEG, PNG, WebP o AVIF (sin SVG), hasta 2 MB. Se leen por URL pública; solo admin escribe. Sus políticas se prueban en `supabase/tests/storage_test.sql`.
 - `pnpm db:reset` solo actúa sobre la base local. Nunca uses `supabase db reset --linked` ni `supabase db push` contra el remoto sin que el usuario lo pida: borran o cambian datos reales.
 - La versión de Postgres local (`major_version` en `supabase/config.toml`) debe coincidir con la del proyecto remoto.
 
