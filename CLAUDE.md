@@ -89,6 +89,7 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 - Row Level Security en todas las tablas. Lectura anónima solo de lo publicado y visible.
 - La clave secreta de Supabase (`SUPABASE_SECRET_KEY`) y la de Anthropic solo existen en código de servidor. Nunca en componentes cliente ni en variables `NEXT_PUBLIC_*`.
 - Toda escritura del panel se valida con Zod en el servidor y verifica el rol admin.
+- El panel (`/admin`) se protege en dos capas: `src/proxy.ts` (el middleware de Next 16) redirige al login sin sesión y responde 403 sin rol admin; además, el layout del panel y **toda** Server Action del panel llaman primero a `requireAdmin()` (`@/server/auth`). Los registros públicos de Supabase Auth están cerrados; las cuentas del panel se crean a mano.
 - Las políticas de RLS viven en migraciones y se prueban en `supabase/tests/rls_test.sql` como anónimo, usuario sin rol y admin. Toda tabla nueva agrega su política de lectura pública (si aplica), la de admin (`public.is_admin()`) y sus pruebas.
 - `anon` no tiene permisos de escritura en ninguna tabla. Los leads se insertan desde el servidor con la clave secreta, después de validar Turnstile y el consentimiento; nunca con una política de inserción anónima.
 - El rol admin se asigna solo por SQL; no existe política de escritura sobre `profile`.
@@ -140,7 +141,7 @@ La variable de analítica se agrega cuando se decida la herramienta (SRS: Plausi
 - Las restricciones de datos (precios, slugs, estados) van también en la base con `check`, y se prueban con pgTAP en `supabase/tests/`.
 - Todo cambio de esquema es una migración nueva en `supabase/migrations` creada con `pnpm db:migration`. Nunca se edita una migración ya fusionada ni se cambia el esquema desde el panel de Supabase.
 - Después de cada migración, `pnpm db:reset` y `pnpm db:types`, y se sube `src/lib/database.types.ts` con la migración. CI falla si los tipos no coinciden con el esquema.
-- Clientes de Supabase en `src/server/supabase/`: `createPublicClient()` (clave publishable, sin sesión, sujeto a RLS) para lecturas públicas, y `createAdminClient()` (clave secreta, salta RLS) solo después de validar con Zod y verificar permisos. Ningún componente cliente importa `@/server/*` ni `@supabase/*`; lo verifica `src/server/client-boundary.test.ts`.
+- Clientes de Supabase en `src/server/supabase/`: `createPublicClient()` (clave publishable, sin sesión, sujeto a RLS) para lecturas públicas, `createSessionClient()` (cookies del usuario conectado, sujeto a RLS) para el panel, `createProxyClient()` solo para `src/proxy.ts`, y `createAdminClient()` (clave secreta, salta RLS) solo después de validar con Zod y verificar permisos. Ningún componente cliente importa `@/server/*` ni `@supabase/*`; lo verifica `src/server/client-boundary.test.ts`.
 - `pnpm db:reset` solo actúa sobre la base local. Nunca uses `supabase db reset --linked` ni `supabase db push` contra el remoto sin que el usuario lo pida: borran o cambian datos reales.
 - La versión de Postgres local (`major_version` en `supabase/config.toml`) debe coincidir con la del proyecto remoto.
 
