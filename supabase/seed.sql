@@ -1,0 +1,2 @@
+-- Local seed data, loaded by `supabase db reset` after the migrations.
+-- The initial catalog (SRS annexes A, B, D and E) is added in E1-09.
