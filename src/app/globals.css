@@ -55,6 +55,8 @@
   --action-hover: var(--granate);
   --on-action: var(--paper);
   --border: var(--line);
+  /* Form field outline: needs 3:1 against the page, which `line` lacks. */
+  --field-border: var(--muted);
   --focus: var(--carmin);
 
   color-scheme: light;
@@ -69,6 +71,7 @@
     /* carmin on night is 2.9:1: links and focus switch to grad-4. */
     --accent: var(--grad-4);
     --border: color-mix(in srgb, var(--mist) 15%, var(--night));
+    --field-border: var(--night-muted);
     --focus: var(--grad-4);
 
     color-scheme: dark;
@@ -105,6 +108,7 @@
   --color-action-hover: var(--action-hover);
   --color-on-action: var(--on-action);
   --color-border: var(--border);
+  --color-field-border: var(--field-border);
   --color-focus: var(--focus);
 
   --radius-control: var(--radius-control);
