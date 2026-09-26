@@ -86,9 +86,10 @@ function Hero() {
           "Trámites y cumplimiento",
           "Desarrollo y datos",
         ]}
-        // Sized by the screen height so it never pushes the hero past the
-        // first screen; never distorted (0.7961 = logo width / height).
-        className="lg:order-2 lg:w-[min(100%,calc((100svh-10.5rem)*0.7961))] lg:justify-self-end"
+        // Desktop only: on phones the title and the WhatsApp button come
+        // first. Sized by the screen height so the hero fits the first
+        // screen; never distorted (0.7961 = logo width / height).
+        className="hidden lg:order-2 lg:block lg:w-[min(100%,calc((100svh-10.5rem)*0.7961))] lg:justify-self-end"
       />
       <div className="@container flex flex-col items-start gap-6">
         {/* Shrinks on short or narrow desktop screens so the hero fits. */}
