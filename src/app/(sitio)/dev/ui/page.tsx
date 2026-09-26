@@ -112,7 +112,7 @@ export default function DevUiPage() {
   if (serverEnv.CONTEXT === "production") notFound();
 
   return (
-    <main>
+    <div>
       <ReadingProgress />
 
       <Section title="Motivo del hero">
@@ -230,6 +230,6 @@ export default function DevUiPage() {
           />
         </form>
       </Section>
-    </main>
+    </div>
   );
 }

@@ -78,6 +78,23 @@
   }
 }
 
+/* Dark floor in both schemes (DESIGN §5.1: the footer sits on `ink`). The
+   semantic tokens switch so links, buttons and focus keep their contrast. */
+.on-ink {
+  --bg: var(--ink);
+  --surface: var(--night);
+  --fg: var(--night-fg);
+  --fg-muted: var(--night-muted);
+  --accent: var(--grad-4);
+  --border: color-mix(in srgb, var(--mist) 15%, var(--ink));
+  --field-border: var(--night-muted);
+  --focus: var(--grad-4);
+
+  color-scheme: dark;
+  background-color: var(--bg);
+  color: var(--fg);
+}
+
 /* Tailwind theme ----------------------------------------------------------- */
 
 @theme inline {

@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(12);
+select plan(14);
 
 select is((select count(*) from public.category)::int, 5, '5 categories');
 select is((select count(*) from public.service)::int, 15, '15 services (annex D)');
@@ -74,6 +74,15 @@ select is(
   (select count(*) from public.plan p join public.service s on s.id = p.service_id
    where s.slug in ('hosting', 'correo-corporativo') and p.visible)::int,
   0, 'hosting and email plans are hidden until validated'
+);
+
+select is(
+  (select count(*) from public.category where description is not null)::int, 3,
+  'the three COPY categories have their menu description'
+);
+select throws_ok(
+  $$update public.category set description = '  ' where slug = 'soporte'$$,
+  '23514', null, 'a category description cannot be blank'
 );
 
 select * from finish();
