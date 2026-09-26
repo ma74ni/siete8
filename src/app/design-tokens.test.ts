@@ -22,9 +22,13 @@ function declarations(block: string): Record<string, string> {
   );
 }
 
-function tokens(scheme: "light" | "dark"): Record<string, string> {
+function tokens(scheme: "light" | "dark" | "on-ink"): Record<string, string> {
   const light = declarations(/:root\s*\{([\s\S]*?)\n\}/.exec(css)?.[1] ?? "");
   if (scheme === "light") return light;
+  if (scheme === "on-ink") {
+    const ink = /\.on-ink\s*\{([\s\S]*?)\n\}/.exec(css)?.[1];
+    return { ...light, ...declarations(ink ?? "") };
+  }
   const dark =
     /prefers-color-scheme:\s*dark\)\s*\{\s*:root\s*\{([\s\S]*?)\}/.exec(
       css,
@@ -75,7 +79,7 @@ const pairs: [string, string, number][] = [
   ["--field-border", "--surface", 3],
 ];
 
-describe.each(["light", "dark"] as const)("%s mode contrast", (scheme) => {
+describe.each(["light", "dark", "on-ink"] as const)("%s contrast", (scheme) => {
   const vars = tokens(scheme);
 
   it.each(pairs)("%s on %s is at least %s:1", (fg, bg, min) => {

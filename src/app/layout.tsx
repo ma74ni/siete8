@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Archivo } from "next/font/google";
 
 import "./globals.css";
@@ -12,6 +12,12 @@ const archivo = Archivo({
 
 export const metadata: Metadata = {
   title: "Siete8",
+};
+
+// Lets the page reach the screen edges so fixed elements can use the
+// safe-area insets (floating WhatsApp button).
+export const viewport: Viewport = {
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

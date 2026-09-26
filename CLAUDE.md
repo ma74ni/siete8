@@ -103,6 +103,10 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 - Tipografía: `text-display`, `text-h2`, `text-h3`, `text-h4`, `text-body` y `text-small`, fluidas entre 360 y 1440 px. `h1`–`h4` ya traen ancho, peso y tamaño por defecto.
 - Componentes base en `src/components/sitio/`: `Button` (principal o secundario, como botón o enlace), `TextLink`, `PlanTable`, `Tabs`, `Faq` y `FormField`. No se escriben estilos de botón, tabla de planes ni campo a mano. Muestra en `/dev/ui` (con `pnpm dev` y en los previews; 404 en producción).
 - Los precios se muestran solo con `formatPriceWithVat` de `@/lib/price` (o `PlanTable`, que la usa).
+- Los enlaces de WhatsApp se arman solo con `@/lib/whatsapp` (`whatsappUrl` y los mensajes de COPY §2); nunca se escribe un `wa.me` a mano.
+- Las páginas públicas viven en el grupo `src/app/(sitio)/`, cuyo layout pone encabezado, pie y botón flotante, y ya envuelve el contenido en `<main id="contenido">`: las páginas no renderizan su propio `<main>`. El menú Servicios se lee de la base (`getServiceMenu`), así que la visibilidad y el orden se controlan desde el panel.
+- Una sección sobre fondo `ink` usa la clase `.on-ink`, que ajusta los tokens semánticos para mantener el contraste.
+- El logo es el componente `Logo` (de `docs/brand/logo_horizontal.svg`); no se usa como imagen.
 
 **SEO**
 - Las páginas públicas se generan estáticamente o en servidor; el HTML trae el contenido completo.

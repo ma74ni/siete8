@@ -5,12 +5,14 @@
 
 -- Categories (annex D). Marketing digital is hidden: none of its services are
 -- visible at launch.
-insert into public.category (name, slug, visible, sort_order) values
-  ('Presencia digital', 'presencia-digital', true, 1),
-  ('Trámites y cumplimiento', 'tramites-y-cumplimiento', true, 2),
-  ('Desarrollo y datos', 'desarrollo-y-datos', true, 3),
-  ('Marketing digital', 'marketing-digital', false, 4),
-  ('Soporte', 'soporte', true, 5);
+-- Descriptions from docs/COPY.md §2 (also set by the category_description
+-- migration for databases seeded before it).
+insert into public.category (name, slug, visible, sort_order, description) values
+  ('Presencia digital', 'presencia-digital', true, 1, 'Para que tu negocio se vea profesional y te encuentren en internet.'),
+  ('Trámites y cumplimiento', 'tramites-y-cumplimiento', true, 2, 'Para cumplir con el SRI y firmar documentos sin filas ni papeles.'),
+  ('Desarrollo y datos', 'desarrollo-y-datos', true, 3, 'Para procesos que ya no caben en una hoja de cálculo.'),
+  ('Marketing digital', 'marketing-digital', false, 4, null),
+  ('Soporte', 'soporte', true, 5, null);
 
 -- Services (annex D) with their launch visibility.
 insert into public.service (category_id, kind, name, slug, visible, sort_order)
