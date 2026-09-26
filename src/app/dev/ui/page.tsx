@@ -6,9 +6,14 @@ import { Button } from "@/components/sitio/button";
 import { Faq } from "@/components/sitio/faq";
 import { FormField } from "@/components/sitio/form-field";
 import { PlanTable, type PlanRow } from "@/components/sitio/plan-table";
+import { CategoryDivider } from "@/components/sitio/motif/category-divider";
+import { HeroMotif } from "@/components/sitio/motif/hero-motif";
+import { ReadingProgress } from "@/components/sitio/motif/reading-progress";
 import { Tabs } from "@/components/sitio/tabs";
 import { TextLink } from "@/components/sitio/text-link";
 import { serverEnv } from "@/env/server";
+
+import { Replay } from "./replay";
 
 /*
  * Component showcase (E2-02). Visible with `pnpm dev` and in Netlify deploy
@@ -108,6 +113,34 @@ export default function DevUiPage() {
 
   return (
     <main>
+      <ReadingProgress />
+
+      <Section title="Motivo del hero">
+        <Replay>
+          <HeroMotif
+            categories={[
+              "Presencia digital",
+              "Trámites y cumplimiento",
+              "Desarrollo y datos",
+            ]}
+            className="w-full lg:w-1/2"
+          />
+        </Replay>
+      </Section>
+
+      <Section title="Separador de categorías" surface>
+        {[
+          "Presencia digital",
+          "Trámites y cumplimiento",
+          "Desarrollo y datos",
+        ].map((category) => (
+          <div key={category} className="flex items-center gap-3">
+            <CategoryDivider />
+            <h3>{category}</h3>
+          </div>
+        ))}
+      </Section>
+
       <Section title="Botones">
         <div className="flex flex-wrap gap-4">
           <Button href="#whatsapp">Escríbenos por WhatsApp</Button>
