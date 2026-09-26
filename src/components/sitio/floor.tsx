@@ -15,7 +15,10 @@ export function Floor({
 }: {
   /** `mist` floor instead of `paper`. */
   alt?: boolean;
-  /** Desktop: fills the first screen under the 72 px header, content centered. */
+  /**
+   * First section of a page: tighter spacing on phones, and on desktop it
+   * fills the first screen under the 72 px header with the content centered.
+   */
   fitScreen?: boolean;
   className?: string;
   children: ReactNode;
@@ -24,10 +27,10 @@ export function Floor({
     <section {...props} className={alt ? "bg-surface" : "bg-bg"}>
       <div
         className={cx(
-          "mx-auto max-w-[1200px] px-5 py-16 lg:px-12",
+          "mx-auto max-w-[1200px] px-5 lg:px-12",
           fitScreen
-            ? "lg:flex lg:min-h-[calc(100svh-4.5rem)] lg:items-center lg:py-12"
-            : "lg:py-[120px]",
+            ? "py-10 lg:flex lg:min-h-[calc(100svh-4.5rem)] lg:items-center lg:py-12"
+            : "py-16 lg:py-[120px]",
           className,
         )}
       >

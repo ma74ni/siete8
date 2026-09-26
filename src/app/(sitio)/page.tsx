@@ -92,8 +92,9 @@ function Hero() {
         className="hidden lg:order-2 lg:block lg:w-[min(100%,calc((100svh-10.5rem)*0.7961))] lg:justify-self-end"
       />
       <div className="@container flex flex-col items-start gap-6">
-        {/* Shrinks on short or narrow desktop screens so the hero fits. */}
-        <h1 className="lg:text-[min(var(--text-display),calc((100svh-4.5rem)*0.075),9cqw)]">
+        {/* Shrinks on short or narrow screens so the title, the paragraph
+            and the WhatsApp button fit in the first screen. */}
+        <h1 className="text-[min(var(--text-display),10.5cqw,calc((100svh-4.5rem)*0.065))] lg:text-[min(var(--text-display),calc((100svh-4.5rem)*0.075),9cqw)]">
           Tu web, tu correo, tu firma y tus facturas, resueltos por un mismo
           equipo.
         </h1>
