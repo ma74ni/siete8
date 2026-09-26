@@ -1,0 +1,75 @@
+/*
+ * Hero load sequence (DESIGN §6), 900 ms in total: the bars light up left to
+ * right, then the modules appear top to bottom, solid first. The HTML already
+ * holds the final state; the animation only runs when motion is welcome.
+ */
+
+.hero {
+  container-type: inline-size;
+}
+
+/* Categories go inside the hollow modules only when the motif is wide enough
+   for the longest one at 14 px or more (about 440 px); below that, they are a
+   list under the clean motif. Only one of the two is ever displayed. */
+.inside {
+  display: none;
+}
+
+@container (min-width: 480px) {
+  .inside {
+    display: block;
+  }
+
+  .below {
+    display: none;
+  }
+}
+
+.label {
+  /* Scales with the motif so each label stays inside its module. */
+  font-size: clamp(0.875rem, 3.2cqw, 1.0625rem);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bar {
+    animation: motif-on 180ms ease-out backwards;
+  }
+
+  .module {
+    animation: motif-on 110ms ease-out backwards;
+  }
+}
+
+@keyframes motif-on {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Reading progress (DESIGN §6): 3 px, top edge, linked to the page scroll.
+   Browsers without scroll-driven animations do not show it. */
+.progress {
+  display: none;
+}
+
+@supports (animation-timeline: scroll()) {
+  .progress {
+    display: block;
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    height: 3px;
+    background: var(--brand-gradient);
+    clip-path: inset(0 100% 0 0);
+    /* Follows the reader's own scrolling. On a scroll timeline any duration,
+       including the reduced-motion override, spans the whole page. */
+    animation: progress-grow linear both;
+    animation-timeline: scroll(root);
+  }
+}
+
+@keyframes progress-grow {
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
