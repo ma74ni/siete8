@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(14);
+select plan(16);
 
 select is((select count(*) from public.category)::int, 5, '5 categories');
 select is((select count(*) from public.service)::int, 15, '15 services (annex D)');
@@ -83,6 +83,19 @@ select is(
 select throws_ok(
   $$update public.category set description = '  ' where slug = 'soporte'$$,
   '23514', null, 'a category description cannot be blank'
+);
+
+select results_eq(
+  $$select p.holder_type::text, p.name from public.plan p
+    join public.service s on s.id = p.service_id
+    where s.slug = 'firma-electronica' and p.recommended order by 1$$,
+  $$values ('legal_entity', '1 año'), ('natural', '1 año')$$,
+  'the 1-year signature plan is recommended for each holder type'
+);
+select throws_ok(
+  $$update public.plan set recommended = true
+    where name = '2 años' and holder_type = 'natural'$$,
+  '23505', null, 'only one recommended plan per service and holder type'
 );
 
 select * from finish();

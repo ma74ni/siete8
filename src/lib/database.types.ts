@@ -114,6 +114,7 @@ export type Database = {
           id: string
           name: string
           price_without_vat: number
+          recommended: boolean
           service_id: string
           sort_order: number
           updated_at: string
@@ -128,6 +129,7 @@ export type Database = {
           id?: string
           name: string
           price_without_vat: number
+          recommended?: boolean
           service_id: string
           sort_order?: number
           updated_at?: string
@@ -142,6 +144,7 @@ export type Database = {
           id?: string
           name?: string
           price_without_vat?: number
+          recommended?: boolean
           service_id?: string
           sort_order?: number
           updated_at?: string

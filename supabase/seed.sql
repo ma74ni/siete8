@@ -38,9 +38,11 @@ from (values
 ) as s (category_slug, kind, name, slug, visible, sort_order)
 join public.category c on c.slug = s.category_slug;
 
--- Signature plans (annex A): 15 % VAT, visible.
-insert into public.plan (service_id, name, holder_type, duration_value, duration_unit, price_without_vat, vat_rate, visible, sort_order)
-select s.id, p.name, p.holder::public.holder_type, p.duration_value, p.duration_unit::public.duration_unit, p.price, 0.15, true, p.sort_order
+-- Signature plans (annex A): 15 % VAT, visible. The 1-year plan of each
+-- holder type is the recommended one.
+insert into public.plan (service_id, name, holder_type, duration_value, duration_unit, price_without_vat, vat_rate, visible, sort_order, recommended)
+select s.id, p.name, p.holder::public.holder_type, p.duration_value, p.duration_unit::public.duration_unit, p.price, 0.15, true, p.sort_order,
+  p.duration_value = 1 and p.duration_unit = 'year'
 from (values
   ('7 días', 'natural', 7, 'day', 6.99, 1),
   ('30 días', 'natural', 30, 'day', 9.99, 2),
