@@ -9,13 +9,13 @@
 }
 
 /* Categories go inside the hollow modules only when the motif is wide enough
-   for the longest one at 14 px or more (about 440 px); below that, they are a
+   for the longest one at 14 px or more (about 410 px); below that, they are a
    list under the clean motif. Only one of the two is ever displayed. */
 .inside {
   display: none;
 }
 
-@container (min-width: 480px) {
+@container (min-width: 420px) {
   .inside {
     display: block;
   }

@@ -16,7 +16,7 @@ const cta = {
 export function Header({ categories }: { categories: MenuCategory[] }) {
   return (
     <header className="relative border-b border-border bg-bg">
-      <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-5 py-3 lg:px-12">
+      <div className="mx-auto flex h-[4.5rem] max-w-[1200px] items-center justify-between gap-4 px-5 lg:px-12">
         <Link href="/" className="flex min-h-11 items-center text-fg">
           <Logo className="h-10 w-auto" />
         </Link>

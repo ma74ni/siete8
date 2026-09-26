@@ -124,7 +124,14 @@ export function HeroMotif({ categories, className }: HeroMotifProps) {
           ))}
         </ul>
       </div>
-      <ul className={cx("mt-4 flex flex-col gap-2 font-medium", styles.below)}>
+      {/* On desktop the hero must fit the first screen; the categories are
+          repeated right below in "Qué resolvemos", so the list is skipped. */}
+      <ul
+        className={cx(
+          "mt-4 flex flex-col gap-2 font-medium lg:hidden",
+          styles.below,
+        )}
+      >
         {categories.map((category) => (
           <li key={category}>{category}</li>
         ))}

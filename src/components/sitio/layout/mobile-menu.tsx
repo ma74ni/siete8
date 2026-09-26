@@ -56,7 +56,7 @@ export function MobileMenu({ categories, cta }: MobileMenuProps) {
       <div
         id={panelId}
         hidden={!open}
-        className="absolute inset-x-0 top-full z-30 max-h-[calc(100dvh-4.5rem)] overflow-y-auto border-b border-border bg-bg"
+        className="absolute inset-x-0 top-full z-30 max-h-[calc(100dvh-4.5rem-1px)] overflow-y-auto border-b border-border bg-bg"
       >
         <nav className="flex flex-col gap-6 px-5 py-6">
           <div className="flex flex-col gap-4">

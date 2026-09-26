@@ -70,11 +70,8 @@ export default async function Home() {
   ].filter(Boolean);
 
   return sections.map((section, index) => (
-    <Floor
-      key={index}
-      alt={index % 2 === 1}
-      className={index === 0 ? "lg:py-24" : undefined}
-    >
+    // On desktop the whole hero fits in the first screen.
+    <Floor key={index} alt={index % 2 === 1} fitScreen={index === 0}>
       {section}
     </Floor>
   ));
@@ -82,17 +79,20 @@ export default async function Home() {
 
 function Hero() {
   return (
-    <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.15fr] lg:gap-12">
+    <div className="grid w-full items-center gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-12">
       <HeroMotif
         categories={[
           "Presencia digital",
           "Trámites y cumplimiento",
           "Desarrollo y datos",
         ]}
-        className="lg:order-2"
+        // Sized by the screen height so it never pushes the hero past the
+        // first screen; never distorted (0.7961 = logo width / height).
+        className="lg:order-2 lg:w-[min(100%,calc((100svh-10.5rem)*0.7961))] lg:justify-self-end"
       />
-      <div className="flex flex-col items-start gap-6">
-        <h1>
+      <div className="@container flex flex-col items-start gap-6">
+        {/* Shrinks on short or narrow desktop screens so the hero fits. */}
+        <h1 className="lg:text-[min(var(--text-display),calc((100svh-4.5rem)*0.075),9cqw)]">
           Tu web, tu correo, tu firma y tus facturas, resueltos por un mismo
           equipo.
         </h1>
