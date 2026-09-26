@@ -105,6 +105,8 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 - Los precios se muestran solo con `formatPriceWithVat` de `@/lib/price` (o `PlanTable`, que la usa).
 - Los enlaces de WhatsApp se arman solo con `@/lib/whatsapp` (`whatsappUrl` y los mensajes de COPY §2); nunca se escribe un `wa.me` a mano.
 - Las páginas públicas viven en el grupo `src/app/(sitio)/`, cuyo layout pone encabezado, pie y botón flotante, y ya envuelve el contenido en `<main id="contenido">`: las páginas no renderizan su propio `<main>`. El menú Servicios se lee de la base (`getServiceMenu`), así que la visibilidad y el orden se controlan desde el panel.
+- Cada sección de página es un `Floor` (piso `paper`/`mist` con el espaciado de DESIGN §5). Una sección sin contenido (sin proyectos, sin artículos) no se renderiza, y los pisos se alternan sobre las que quedan. Las tarjetas de portafolio usan `ProjectCard` y las etiquetas de estado de `@/lib/project-status`.
+- `pnpm build` borra `.next/cache/fetch-cache` antes de compilar: Next reutiliza ahí las respuestas de Supabase entre builds (y Netlify conserva `.next/cache`), lo que dejaría precios o menús viejos. No se usa `cache: "no-store"` en el cliente público porque vuelve dinámicas las páginas.
 - Una sección sobre fondo `ink` usa la clase `.on-ink`, que ajusta los tokens semánticos para mantener el contraste.
 - El logo es el componente `Logo` (de `docs/brand/logo_horizontal.svg`); no se usa como imagen.
 
