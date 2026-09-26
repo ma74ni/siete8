@@ -71,6 +71,8 @@ const pairs: [string, string, number][] = [
   ["--on-action", "--action-hover", 4.5],
   ["--focus", "--bg", 3],
   ["--focus", "--surface", 3],
+  ["--field-border", "--bg", 3],
+  ["--field-border", "--surface", 3],
 ];
 
 describe.each(["light", "dark"] as const)("%s mode contrast", (scheme) => {

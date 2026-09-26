@@ -12,6 +12,8 @@ import { z } from "zod";
 export const serverSchema = z.object({
   // Bypasses Row Level Security. Only used from `src/server/`.
   SUPABASE_SECRET_KEY: z.string().startsWith("sb_secret_"),
+  // Set by Netlify: production, deploy-preview, branch-deploy or dev.
+  CONTEXT: z.string().optional(),
 });
 
 export const clientSchema = z.object({
