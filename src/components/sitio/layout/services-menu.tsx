@@ -10,7 +10,8 @@ import type { MenuCategory } from "@/lib/menu";
 /**
  * "Servicios" dropdown for large screens (disclosure pattern): the button
  * toggles the panel; Escape, a click outside or leaving it with the keyboard
- * closes it.
+ * closes it. Each column is a category (linking to its section of the
+ * catalog) with its services as a plain list.
  */
 export function ServicesMenu({ categories }: { categories: MenuCategory[] }) {
   const [open, setOpen] = useState(false);
@@ -36,6 +37,8 @@ export function ServicesMenu({ categories }: { categories: MenuCategory[] }) {
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [open]);
+
+  const close = () => setOpen(false);
 
   return (
     <div
@@ -68,22 +71,25 @@ export function ServicesMenu({ categories }: { categories: MenuCategory[] }) {
       <div
         id={panelId}
         hidden={!open}
-        className="absolute top-full left-0 z-30 mt-2 w-[min(56rem,calc(100vw-6rem))] border border-border bg-bg p-6"
+        className="absolute top-full left-0 z-30 mt-3 border border-border bg-bg px-8 py-6"
       >
-        <ul className="grid grid-cols-2 gap-8 xl:grid-cols-4">
+        <ul className="flex gap-12">
           {categories.map((category) => (
-            <li key={category.slug} className="flex flex-col gap-2">
-              <p className="font-medium">{category.name}</p>
-              {category.description && (
-                <p className="text-small">{category.description}</p>
-              )}
-              <ul className="mt-1 flex flex-col">
+            <li key={category.slug} className="flex w-44 flex-col gap-3">
+              <Link
+                href={`/servicios#${category.slug}`}
+                onClick={close}
+                className="text-small font-medium text-fg-muted no-underline hover:text-fg"
+              >
+                {category.name}
+              </Link>
+              <ul className="flex flex-col gap-1">
                 {category.services.map((service) => (
                   <li key={service.slug}>
                     <Link
                       href={`/servicios/${service.slug}`}
-                      onClick={() => setOpen(false)}
-                      className="flex min-h-11 items-center"
+                      onClick={close}
+                      className="block py-1 text-small leading-snug text-fg no-underline hover:text-accent hover:underline"
                     >
                       {service.name}
                     </Link>
