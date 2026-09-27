@@ -9,7 +9,9 @@ Sitio público, blog, portafolio y panel de administración de Siete8, estudio t
 Este repo está conectado a Netlify: cada push a `master` despliega a producción. Antes tenía el sitio anterior en Vue 2; el sitio nuevo en Next.js lo **reemplaza por completo en este mismo repo** (el código Vue se eliminó en E0-01 y solo queda en el historial de git).
 
 - `dev` es la rama de integración: todas las tareas se fusionan ahí. `master` solo recibe un PR desde `dev` cuando se quiere desplegar a producción; nunca se hace commit directo a `master`.
-- La configuración de build de Netlify se declara en `netlify.toml`, no en la interfaz de Netlify.
+- La configuración de build de Netlify se declara en `netlify.toml`, no en la interfaz de Netlify. El adaptador `@netlify/plugin-nextjs` va declarado ahí y fijado en `package.json`, y necesita `publish = ".next"`; sin él Netlify publica la carpeta `.next` como estática y todo da 404.
+- En la interfaz de Netlify, la versión de Node debe ser 22 (Dependency management): los plugins de build usan esa versión, no la del `netlify.toml`.
+- `dev` y `master` exigen dos checks para fusionar: `CI` y `netlify/siete8/deploy-preview`.
 - `public/ce24dd8215336358aaaadd8607c5a049.txt` es la verificación de dominio de Mailjet del sitio anterior. No se borra sin confirmarlo con el usuario.
 
 ## Documentos del proyecto
@@ -30,7 +32,7 @@ Las rutas de esta tabla son relativas a la raíz del repo.
 
 - Next.js 16 (App Router) con TypeScript estricto (`strict`, `noUncheckedIndexedAccess`), pnpm y Node 22. Next 16 cambia APIs respecto a versiones anteriores: consulta `node_modules/next/dist/docs/` antes de usar una API (ver `AGENTS.md`).
 - Tailwind CSS con los tokens de `docs/DESIGN.md` como variables CSS. Panel con shadcn/ui.
-- Supabase: Postgres, Auth, Storage. Migraciones con Supabase CLI en `supabase/migrations`.
+- Supabase: Postgres, Auth, Storage, con las claves nuevas (publishable y secret). Migraciones con Supabase CLI (devDependency, se usa con `pnpm exec supabase`) en `supabase/migrations`.
 - Zod para validar entradas y variables de entorno.
 - ESLint (config de Next) y Prettier (con orden de clases de Tailwind).
 - Vitest para pruebas unitarias (`src/**/*.test.ts(x)`); Playwright para extremo a extremo (aún no instalado).
@@ -45,6 +47,13 @@ pnpm typecheck    # genera tipos de rutas (next typegen) y corre tsc --noEmit
 pnpm lint         # ESLint
 pnpm test         # Vitest
 pnpm format       # Prettier (format:check para solo verificar)
+pnpm db:start     # levanta Supabase local en Docker
+pnpm db:stop      # lo apaga
+pnpm db:reset     # recrea la base local desde las migraciones y la semilla
+pnpm db:migration <nombre>  # crea una migración nueva en supabase/migrations (sin terminal interactiva, agrega `< /dev/null`: si no, espera el SQL por stdin)
+pnpm db:status    # URLs y claves de la instancia local
+pnpm db:test      # pruebas pgTAP de supabase/tests contra la base local
+pnpm db:types     # regenera src/lib/database.types.ts desde la base local (después de cada migración)
 ```
 
 ## Forma de trabajar
@@ -58,7 +67,7 @@ pnpm format       # Prettier (format:check para solo verificar)
 ## Definición de terminado
 
 - Cumple los criterios de aceptación de la tarea.
-- `pnpm typecheck`, `pnpm lint` y `pnpm test` pasan sin errores, y el check de CI del PR está en verde.
+- `pnpm typecheck`, `pnpm lint` y `pnpm test` pasan sin errores, y los checks del PR están en verde (`CI`, `Database` y el preview de Netlify).
 - Textos tomados de `docs/COPY.md`.
 - Estilos solo con tokens de `docs/DESIGN.md`.
 - Revisado a 360 px y 1440 px, con teclado y con `prefers-reduced-motion`.
@@ -78,14 +87,28 @@ pnpm format       # Prettier (format:check para solo verificar)
 
 **Seguridad**
 - Row Level Security en todas las tablas. Lectura anónima solo de lo publicado y visible.
-- La clave service role de Supabase y la de Anthropic solo existen en código de servidor. Nunca en componentes cliente ni en variables `NEXT_PUBLIC_*`.
+- La clave secreta de Supabase (`SUPABASE_SECRET_KEY`) y la de Anthropic solo existen en código de servidor. Nunca en componentes cliente ni en variables `NEXT_PUBLIC_*`.
 - Toda escritura del panel se valida con Zod en el servidor y verifica el rol admin.
+- El panel (`/admin`) se protege en dos capas: `src/proxy.ts` (el middleware de Next 16) redirige al login sin sesión y responde 403 sin rol admin; además, el layout del panel y **toda** Server Action del panel llaman primero a `requireAdmin()` (`@/server/auth`). Los registros públicos de Supabase Auth están cerrados; las cuentas del panel se crean a mano.
+- Las políticas de RLS viven en migraciones y se prueban en `supabase/tests/rls_test.sql` como anónimo, usuario sin rol y admin. Toda tabla nueva agrega su política de lectura pública (si aplica), la de admin (`public.is_admin()`) y sus pruebas.
+- `anon` no tiene permisos de escritura en ninguna tabla. Los leads se insertan desde el servidor con la clave secreta, después de validar Turnstile y el consentimiento; nunca con una política de inserción anónima.
+- El rol admin se asigna solo por SQL; no existe política de escritura sobre `profile`.
 
 **Diseño**
 - Mobile-first. Contraste WCAG 2.1 AA: los naranjas y amarillos de marca nunca van como texto sobre fondo blanco.
-- El motivo del logo (7 = `111`, tres barras; 8 = `1000`, un módulo sólido y tres huecos) se reproduce con la geometría de `docs/DESIGN.md`, nunca deformado.
+- El motivo del logo (7 = `111`, tres barras; 8 = `1000`, un módulo sólido y tres huecos) se reproduce con la geometría de `docs/DESIGN.md`, nunca deformado. Sus coordenadas salen de `docs/brand/logo.ai` y viven solo en `src/components/sitio/motif/motif-geometry.ts`; se usan `HeroMotif`, `CategoryDivider` y `ReadingProgress`, nunca un SVG dibujado a mano.
 - Sin etiquetas en mayúsculas sobre títulos, sin separadores con punto medio, sin fuente monoespaciada en la interfaz pública.
 - Una sola animación automática: el hero de la portada.
+- Los tokens viven en `src/app/globals.css`, único archivo de `src/` con colores literales. Los componentes usan los colores semánticos (`bg`, `surface`, `fg`, `fg-muted`, `accent`, `action`, `action-hover`, `on-action`, `border`, `focus`), que ya cambian con el modo oscuro: no se usa `dark:` salvo excepción. La paleta de Tailwind está desactivada. El texto secundario (`fg-muted`) no va sobre `surface` (no pasa AA); ahí se usa `fg`. `src/app/design-tokens.test.ts` verifica contraste, colores literales y esa regla.
+- Tipografía: `text-display`, `text-h2`, `text-h3`, `text-h4`, `text-body` y `text-small`, fluidas entre 360 y 1440 px. `h1`–`h4` ya traen ancho, peso y tamaño por defecto.
+- Componentes base en `src/components/sitio/`: `Button` (principal o secundario, como botón o enlace), `TextLink`, `PlanTable`, `Tabs`, `Faq` y `FormField`. No se escriben estilos de botón, tabla de planes ni campo a mano. Muestra en `/dev/ui` (con `pnpm dev` y en los previews; 404 en producción).
+- Los precios se muestran solo con `formatPriceWithVat` de `@/lib/price` (o `PlanTable`, que la usa).
+- Los enlaces de WhatsApp se arman solo con `@/lib/whatsapp` (`whatsappUrl` y los mensajes de COPY §2); nunca se escribe un `wa.me` a mano.
+- Las páginas públicas viven en el grupo `src/app/(sitio)/`, cuyo layout pone encabezado, pie y botón flotante, y ya envuelve el contenido en `<main id="contenido">`: las páginas no renderizan su propio `<main>`. El menú Servicios se lee de la base (`getServiceMenu`), así que la visibilidad y el orden se controlan desde el panel.
+- Cada sección de página es un `Floor` (piso `paper`/`mist` con el espaciado de DESIGN §5). Una sección sin contenido (sin proyectos, sin artículos) no se renderiza, y los pisos se alternan sobre las que quedan. Las tarjetas de portafolio usan `ProjectCard` y las etiquetas de estado de `@/lib/project-status`.
+- `pnpm build` borra `.next/cache/fetch-cache` antes de compilar: Next reutiliza ahí las respuestas de Supabase entre builds (y Netlify conserva `.next/cache`), lo que dejaría precios o menús viejos. No se usa `cache: "no-store"` en el cliente público porque vuelve dinámicas las páginas.
+- Una sección sobre fondo `ink` usa la clase `.on-ink`, que ajusta los tokens semánticos para mantener el contraste.
+- El logo es el componente `Logo` (de `docs/brand/logo_horizontal.svg`); no se usa como imagen.
 
 **SEO**
 - Las páginas públicas se generan estáticamente o en servidor; el HTML trae el contenido completo.
@@ -111,8 +134,8 @@ Se validan con Zod al arrancar: `next.config.ts` importa `src/env/schema.ts`, as
 | Variable | Tipo | Se agrega en |
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | pública | E0-03 (exigida) |
-| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | pública | E1-01 |
-| `SUPABASE_SERVICE_ROLE_KEY` | secreta | E1-01 |
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | pública | E1-06 |
+| `SUPABASE_SECRET_KEY` | secreta | E1-06 |
 | `RESEND_API_KEY`, `ADMIN_NOTIFICATION_EMAIL`, `TURNSTILE_SECRET_KEY` | secreta | E3-08 |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | pública | E3-08 |
 | `REVALIDATE_SECRET` | secreta | primera ruta de revalidación bajo demanda |
@@ -120,6 +143,18 @@ Se validan con Zod al arrancar: `next.config.ts` importa `src/env/schema.ts`, as
 | `SENTRY_AUTH_TOKEN` | secreta (solo build, source maps) | E7-06 |
 
 La variable de analítica se agrega cuando se decida la herramienta (SRS: Plausible o GA4). `ANTHROPIC_API_KEY` (secreta) se agrega recién en la fase 1.1 (asistente).
+
+## Base de datos
+
+- `.env.local` apunta al proyecto **remoto** de Supabase. La base local (Docker) solo se usa para probar migraciones con `pnpm db:reset`.
+- Cada tabla nueva activa Row Level Security en la misma migración que la crea, aunque sus políticas lleguen después.
+- Las restricciones de datos (precios, slugs, estados) van también en la base con `check`, y se prueban con pgTAP en `supabase/tests/`.
+- Todo cambio de esquema es una migración nueva en `supabase/migrations` creada con `pnpm db:migration`. Nunca se edita una migración ya fusionada ni se cambia el esquema desde el panel de Supabase.
+- Después de cada migración, `pnpm db:reset` y `pnpm db:types`, y se sube `src/lib/database.types.ts` con la migración. CI falla si los tipos no coinciden con el esquema.
+- Clientes de Supabase en `src/server/supabase/`: `createPublicClient()` (clave publishable, sin sesión, sujeto a RLS) para lecturas públicas, `createSessionClient()` (cookies del usuario conectado, sujeto a RLS) para el panel, `createProxyClient()` solo para `src/proxy.ts`, y `createAdminClient()` (clave secreta, salta RLS) solo después de validar con Zod y verificar permisos. Ningún componente cliente importa `@/server/*` ni `@supabase/*`; lo verifica `src/server/client-boundary.test.ts`.
+- Imágenes en el bucket público `images` de Storage, solo en `posts/` y `projects/`: JPEG, PNG, WebP o AVIF (sin SVG), hasta 2 MB. Se leen por URL pública; solo admin escribe. Sus políticas se prueban en `supabase/tests/storage_test.sql`.
+- `pnpm db:reset` solo actúa sobre la base local. Nunca uses `supabase db reset --linked` ni `supabase db push` contra el remoto sin que el usuario lo pida: borran o cambian datos reales.
+- La versión de Postgres local (`major_version` en `supabase/config.toml`) debe coincidir con la del proyecto remoto.
 
 ## Estructura de carpetas
 
@@ -130,7 +165,7 @@ src/
   lib/           Utilidades puras sin acceso a datos: precios con IVA, formatos, slugs.
   server/        Código solo de servidor: acceso a datos, Server Actions, integraciones. Cada archivo importa "server-only".
   env/           Variables de entorno validadas.
-supabase/        Migraciones y semilla (Supabase CLI).
+supabase/        config.toml, migrations/ y seed.sql (Supabase CLI).
 docs/            Documentación del proyecto.
 ```
 

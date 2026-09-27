@@ -18,8 +18,12 @@ jobs:
     name: CI
     runs-on: ubuntu-latest
     env:
-      # Not a secret: required by the env validation in next.config.ts.
+      # Not secrets: placeholders for the env validation in next.config.ts.
+      # No job step talks to Supabase.
       NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_ci
+      SUPABASE_SECRET_KEY: sb_secret_ci
     steps:
       - uses: actions/checkout@v4
 
@@ -43,3 +47,35 @@ jobs:
 
       - name: Format
         run: pnpm format:check
+
+  database:
+    name: Database
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Applies every migration and the seed. Auth and Storage stay on because
+      # migrations and RLS policies reference their schemas.
+      - name: Start Supabase
+        run: pnpm exec supabase start -x realtime,imgproxy,kong,mailpit,postgrest,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
+
+      - name: Lint database
+        run: pnpm exec supabase db lint --level error --fail-on error
+
+      - name: Test database
+        run: pnpm db:test
+
+      # Fails when a migration changed the schema without `pnpm db:types`.
+      - name: Check generated types
+        run: |
+          pnpm db:types
+          git diff --exit-code -- src/lib/database.types.ts

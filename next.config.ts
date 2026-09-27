@@ -14,10 +14,24 @@ const siteUrl =
 
 // Fail `next dev`, `next build` and `next start` when a variable is missing.
 parseEnv(serverSchema, process.env);
-parseEnv(clientSchema, { ...process.env, NEXT_PUBLIC_SITE_URL: siteUrl });
+const clientEnv = parseEnv(clientSchema, {
+  ...process.env,
+  NEXT_PUBLIC_SITE_URL: siteUrl,
+});
 
 const nextConfig: NextConfig = {
   env: siteUrl ? { NEXT_PUBLIC_SITE_URL: siteUrl } : {},
+  images: {
+    // AVIF first, WebP as fallback (RNF-07).
+    formats: ["image/avif", "image/webp"],
+    // Only public files of this project's Storage (E1-08 bucket).
+    remotePatterns: [
+      new URL(
+        "/storage/v1/object/public/images/**",
+        clientEnv.NEXT_PUBLIC_SUPABASE_URL,
+      ),
+    ],
+  },
 };
 
 export default nextConfig;

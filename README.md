@@ -8,6 +8,7 @@ Stack: Next.js 16 (App Router), TypeScript, Tailwind CSS, Supabase y Netlify. La
 
 - Node 22 (`.nvmrc`)
 - pnpm 10 (`corepack enable`)
+- Docker Desktop, para la base local de Supabase
 
 ## Comandos
 
@@ -20,4 +21,6 @@ pnpm typecheck     # tipos
 pnpm lint          # ESLint
 pnpm test          # Vitest
 pnpm format        # Prettier
+pnpm db:start      # Supabase local (Docker)
+pnpm db:reset      # recrea la base local desde las migraciones
 ```
