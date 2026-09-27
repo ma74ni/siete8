@@ -102,3 +102,50 @@ insert into public.site_settings (key, value, is_public) values
   ('whatsapp', '{"number": "0961128233", "wa_me": "593961128233", "hours": {"from": "07:00", "to": "20:00"}}', true),
   ('social', '{"facebook": "https://www.facebook.com/siete8.ec", "instagram": "https://www.instagram.com/siete8.ec", "linkedin": "https://www.linkedin.com/company/siete8.ec"}', true),
   ('assistant_enabled', 'false', true);
+
+-- Signature texts (docs/COPY.md §4) ------------------------------------------
+-- Same statements as the service_content migration, which covers databases
+-- seeded before it. Each block only runs if there is no content yet.
+
+update public.service
+set
+  summary = 'Tu firma para facturar en el SRI, firmar contratos y hacer trámites en línea, con la misma validez legal que tu firma a mano.',
+  requirements_intro = 'Tenlo listo antes de escribirnos y tu firma sale en minutos. Las fotos deben ser nítidas, sin gafas, gorra ni mascarilla.',
+  closing_title = '¿Listo para sacar tu firma?',
+  seo_title = 'Firma electrónica en Ecuador desde $8,04 | Siete8',
+  seo_description = 'Firma electrónica para persona natural o representante legal. Entrega en minutos por WhatsApp. Precios con IVA desde $8,04. Sirve para facturar en el SRI.'
+where slug = 'firma-electronica' and summary is null;
+
+update public.service s
+set
+  related_service_id = f.id,
+  cross_sell_text = 'Emite tus facturas desde el celular o la computadora con tu nueva firma, sin instalar programas.',
+  cross_sell_cta = 'Conocer el facturador'
+from public.service f
+where s.slug = 'firma-electronica'
+  and f.slug = 'facturacion-electronica'
+  and s.related_service_id is null;
+
+insert into public.service_step (service_id, body, sort_order)
+select s.id, v.body, v.sort_order
+from public.service s
+cross join (values
+  ('Elige tu plan: persona natural o representante legal, y cuántos años de vigencia.', 1),
+  ('Envíanos tus requisitos por WhatsApp. No hace falta ir a ninguna oficina.', 2),
+  ('Recibe tu firma entre 5 y 10 minutos después de validar tus datos, de 07:00 a 20:00.', 3)
+) as v (body, sort_order)
+where s.slug = 'firma-electronica'
+  and not exists (select 1 from public.service_step st where st.service_id = s.id);
+
+insert into public.service_faq (service_id, question, answer, sort_order)
+select s.id, v.question, v.answer, v.sort_order
+from public.service s
+cross join (values
+  ('¿Para qué me sirve la firma electrónica?', 'Para emitir facturas electrónicas en el SRI, firmar contratos y documentos digitales, y hacer trámites en línea con entidades públicas y privadas. Tiene la misma validez legal que tu firma manuscrita.', 1),
+  ('¿En qué formato la recibo?', 'Como archivo .p12, listo para instalar en tu computadora o cargar en tu sistema de facturación.', 2),
+  ('¿En qué horario atienden?', 'De 07:00 a 20:00. Si escribes fuera de ese horario, atendemos tu solicitud desde las 07:00 del día siguiente.', 3),
+  ('¿Qué plan me conviene?', 'Si la usas para facturar todo el año, el de 1 año o más. Los de 7 y 30 días sirven para un trámite puntual.', 4),
+  ('¿Me ayudan a instalarla?', 'Sí, si lo necesitas. Te ayudamos a instalarla en el sistema donde facturas o firmas.', 5)
+) as v (question, answer, sort_order)
+where s.slug = 'firma-electronica'
+  and not exists (select 1 from public.service_faq q where q.service_id = s.id);

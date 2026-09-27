@@ -1,21 +1,5 @@
 import Link from "next/link";
 
-import { Button } from "@/components/sitio/button";
-import { generalMessage, whatsappUrl } from "@/lib/whatsapp";
-
-type FooterProps = {
-  /** Closing call to action; the signature page uses its own (COPY §2). */
-  closing?: { title: string; cta: { label: string; href: string } };
-};
-
-const defaultClosing = {
-  title: "¿Qué necesitas resolver?",
-  cta: {
-    label: "Escríbenos por WhatsApp",
-    href: whatsappUrl(generalMessage()),
-  },
-};
-
 const links = [
   { label: "Servicios", href: "/servicios" },
   { label: "Proyectos", href: "/proyectos" },
@@ -33,18 +17,14 @@ const social = [
 const item = "flex min-h-11 items-center";
 
 /**
- * Site footer on the `ink` floor (DESIGN §5.1): closing call to action,
- * contact details, links and social networks (COPY §2, §8). The bottom
- * padding leaves room for the floating WhatsApp button.
+ * Site footer on the `ink` floor (DESIGN §5.1): contact details, links and
+ * social networks (COPY §2, §8). It follows each page's `Closing`, on the
+ * same floor. The bottom padding leaves room for the floating WhatsApp button.
  */
-export function Footer({ closing = defaultClosing }: FooterProps) {
+export function Footer() {
   return (
     <footer className="on-ink">
-      <div className="mx-auto flex max-w-[1200px] flex-col gap-12 px-5 pt-16 pb-28 lg:px-12 lg:pt-[120px]">
-        <div className="flex flex-col items-start gap-6">
-          <h2>{closing.title}</h2>
-          <Button href={closing.cta.href}>{closing.cta.label}</Button>
-        </div>
+      <div className="mx-auto max-w-[1200px] px-5 pt-4 pb-28 lg:px-12">
         <div className="grid gap-8 md:grid-cols-3">
           <address className="flex flex-col not-italic">
             <a href="tel:+593961128233" className={item}>
