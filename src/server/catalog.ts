@@ -1,36 +1,28 @@
 import "server-only";
 
 import type { Database } from "@/lib/database.types";
-import type { MenuCategory } from "@/lib/menu";
+import { visibleCatalog, type MenuCategory } from "@/lib/menu";
 import type { PlanSummary } from "@/lib/plans";
 import { createPublicClient } from "@/server/supabase/public";
 
 /**
- * Categories and services for the Servicios menu, in the order set in the
- * panel. RLS already limits the anonymous client to visible rows; the filters
- * here keep the menu right even if a policy changes. Empty categories are
- * left out.
+ * The service catalog: visible categories and services in the order set in
+ * the panel, for the Servicios menu and the /servicios page. RLS already
+ * limits the anonymous client to visible rows; `visibleCatalog` filters again
+ * so the catalog stays right even if a policy changes.
  */
 export async function getServiceMenu(): Promise<MenuCategory[]> {
   const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("category")
-    .select("name, slug, description, service(name, slug, sort_order, visible)")
-    .eq("visible", true)
-    .order("sort_order")
-    .order("sort_order", { referencedTable: "service" });
+    .select(
+      "name, slug, description, visible, sort_order, service(name, slug, summary, visible, sort_order)",
+    );
 
   if (error)
     throw new Error(`Could not load the services menu: ${error.message}`);
 
-  return data
-    .map(({ service, ...category }) => ({
-      ...category,
-      services: service
-        .filter((s) => s.visible)
-        .map(({ name, slug }) => ({ name, slug })),
-    }))
-    .filter((category) => category.services.length > 0);
+  return visibleCatalog(data);
 }
 
 type HolderType = Database["public"]["Enums"]["holder_type"];
