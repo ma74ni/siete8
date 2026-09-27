@@ -21,6 +21,16 @@ const clientEnv = parseEnv(clientSchema, {
 
 const nextConfig: NextConfig = {
   env: siteUrl ? { NEXT_PUBLIC_SITE_URL: siteUrl } : {},
+  // `next dev` blocks its dev-only assets for hosts other than localhost, so
+  // the page renders but never hydrates. Allow 127.0.0.1 and, per machine,
+  // the network addresses in DEV_ALLOWED_ORIGINS (comma separated, hostnames
+  // only, e.g. "192.168.1.20,mi-pc.local"). Only affects development.
+  allowedDevOrigins: [
+    "127.0.0.1",
+    ...(process.env.DEV_ALLOWED_ORIGINS?.split(",")
+      .map((origin) => origin.trim())
+      .filter(Boolean) ?? []),
+  ],
   images: {
     // AVIF first, WebP as fallback (RNF-07).
     formats: ["image/avif", "image/webp"],
