@@ -165,3 +165,15 @@ La política de privacidad y los términos se redactan con estos datos en la tar
 | Facebook | https://www.facebook.com/siete8.ec |
 | LinkedIn | https://www.linkedin.com/company/siete8.ec |
 | Instagram | https://www.instagram.com/siete8.ec |
+
+## 9. Catálogo de servicios
+
+Página `/servicios`. Las categorías, sus descripciones y los servicios salen del catálogo (sección 2 y panel).
+
+| Elemento | Texto |
+| --- | --- |
+| Título (h1) | Servicios |
+| Introducción | Todo lo que tu negocio necesita para estar en internet, cumplir con el SRI y ordenar sus procesos. Elige un servicio para ver planes, precios y requisitos. |
+| Enlace de cada servicio | Ver planes y requisitos |
+
+SEO: título "Servicios: sitios web, hosting, firma electrónica y más | Siete8"; descripción "Sitios web, hosting, correo corporativo, dominios, firma electrónica, desarrollo a medida y soporte técnico en Quito. Precios con IVA y atención por WhatsApp."
