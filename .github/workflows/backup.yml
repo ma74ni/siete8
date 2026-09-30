@@ -1,0 +1,77 @@
+# Daily backup of the database (E7-05, RNF-30).
+#
+# pg_dump of the `public` schema (catalog, content, leads, settings), encrypted
+# with BACKUP_PASSPHRASE because this repository is public and its artifacts
+# can be downloaded by others. Kept for 30 days as a workflow artifact.
+#
+# Secrets (Settings > Secrets and variables > Actions):
+# - SUPABASE_DB_URL: Supabase > Connect > Session pooler connection string,
+#   with the database password. The direct host is IPv6 only and GitHub
+#   runners are IPv4, so it has to be the pooler.
+# - BACKUP_PASSPHRASE: a long random passphrase. Without it the backups
+#   cannot be decrypted: keep a copy outside GitHub.
+#
+# Not included: auth users (recreate the admin by hand) and the image files
+# in Storage (only their database rows are here).
+#
+# Restore into the local database (see CLAUDE.md, "Respaldos"):
+#   gpg --decrypt siete8-AAAA-MM-DD.dump.gpg > siete8.dump
+#   pg_restore --clean --if-exists --no-owner --schema=public \
+#     -d postgresql://postgres:postgres@127.0.0.1:54322/postgres siete8.dump
+
+name: Backup
+
+on:
+  schedule:
+    # 08:00 UTC = 03:00 in Quito.
+    - cron: "0 8 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Install pg_dump 17
+        # Must match the remote Postgres major version (supabase/config.toml).
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-common
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get install -y -qq postgresql-client-17
+
+      - name: Dump and encrypt
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          if [ -z "$SUPABASE_DB_URL" ] || [ -z "$BACKUP_PASSPHRASE" ]; then
+            echo "::error::Set the SUPABASE_DB_URL and BACKUP_PASSPHRASE secrets."
+            exit 1
+          fi
+          file="siete8-$(date -u +%Y-%m-%d).dump"
+          /usr/lib/postgresql/17/bin/pg_dump "$SUPABASE_DB_URL" \
+            --format=custom --schema=public --no-owner --no-privileges \
+            --file="$file"
+          gpg --batch --yes --pinentry-mode loopback \
+            --passphrase-fd 3 --symmetric --cipher-algo AES256 \
+            --output "$file.gpg" "$file" 3<<<"$BACKUP_PASSPHRASE"
+          rm "$file"
+          echo "BACKUP_FILE=$file.gpg" >> "$GITHUB_ENV"
+          ls -l "$file.gpg"
+
+      - name: Keep for 30 days
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.BACKUP_FILE }}
+          path: ${{ env.BACKUP_FILE }}
+          retention-days: 30
+          if-no-files-found: error
