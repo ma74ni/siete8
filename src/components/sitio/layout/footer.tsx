@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { CookieSettingsButton } from "@/components/sitio/analytics";
+import { clientEnv } from "@/env/client";
 import { SOCIAL_LINKS } from "@/lib/social";
 
 // COPY §2. Proyectos and Blog join once their pages exist.
@@ -43,6 +45,13 @@ export function Footer() {
                 </Link>
               </li>
             ))}
+            {clientEnv.NEXT_PUBLIC_GA_ID && (
+              <li>
+                <CookieSettingsButton
+                  className={`${item} cursor-pointer text-left text-accent underline decoration-1 underline-offset-[3px]`}
+                />
+              </li>
+            )}
           </ul>
           <ul className="flex flex-col">
             {SOCIAL_LINKS.map((link) => (

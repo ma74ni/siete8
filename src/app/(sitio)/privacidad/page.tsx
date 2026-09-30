@@ -38,7 +38,7 @@ const sections = [
   },
   {
     heading: "Con quién los compartimos",
-    body: "Solo con los proveedores que necesitamos para operar: el alojamiento del sitio y de la base de datos, el correo y WhatsApp. Algunos de ellos guardan la información en servidores fuera del Ecuador. Para una firma electrónica, compartimos tus requisitos con la entidad que la emite.",
+    body: "Solo con los proveedores que necesitamos para operar: el alojamiento del sitio y de la base de datos, el correo, WhatsApp y Google Analytics. Algunos de ellos guardan la información en servidores fuera del Ecuador. Para una firma electrónica, compartimos tus requisitos con la entidad que la emite.",
   },
   {
     heading: "Cuánto tiempo los guardamos",
@@ -50,7 +50,7 @@ const sections = [
   },
   {
     heading: "Cookies",
-    body: "El sitio solo usa las cookies necesarias para funcionar. Si más adelante sumamos herramientas de medición, te pediremos permiso antes de activarlas.",
+    body: "Usamos Google Analytics para saber cómo llegas al sitio, qué páginas visitas y cuándo tocas un botón de WhatsApp. Solo se activa si lo aceptas en el aviso de cookies, y Google guarda esa información en servidores fuera del Ecuador. Puedes cambiar tu decisión cuando quieras desde «Preferencias de cookies», al pie de cada página.",
   },
   {
     heading: "Cambios a esta política",
