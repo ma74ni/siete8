@@ -46,9 +46,8 @@ export function visibleCatalog(rows: CatalogRow[]): MenuCategory[] {
 }
 
 /** Main navigation (COPY §2), after Servicios. */
+// Proyectos and Blog join once their pages exist (COPY §2).
 export const NAV_LINKS = [
-  { label: "Proyectos", href: "/proyectos" },
-  { label: "Blog", href: "/blog" },
   { label: "Nosotros", href: "/nosotros" },
   { label: "Contacto", href: "/contacto" },
 ] as const;
