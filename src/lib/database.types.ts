@@ -580,6 +580,41 @@ export type Database = {
           },
         ]
       }
+      service_holder_note: {
+        Row: {
+          body: string
+          created_at: string
+          holder_type: Database["public"]["Enums"]["holder_type"]
+          id: string
+          service_id: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          holder_type: Database["public"]["Enums"]["holder_type"]
+          id?: string
+          service_id: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          holder_type?: Database["public"]["Enums"]["holder_type"]
+          id?: string
+          service_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_holder_note_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       service_step: {
         Row: {
           body: string

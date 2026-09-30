@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { Button } from "@/components/sitio/button";
 import { Faq } from "@/components/sitio/faq";
 import { FormField } from "@/components/sitio/form-field";
+import { PlanGrid } from "@/components/sitio/plan-grid";
 import { PlanTable, type PlanRow } from "@/components/sitio/plan-table";
 import { CategoryDivider } from "@/components/sitio/motif/category-divider";
 import { HeroMotif } from "@/components/sitio/motif/hero-motif";
@@ -158,7 +159,7 @@ export default function DevUiPage() {
         </p>
       </Section>
 
-      <Section title="Pestañas y tabla de planes" surface>
+      <Section title="Pestañas, tabla y grilla de planes" surface>
         <div className="flex flex-col gap-1">
           <h3>Planes</h3>
           <p>Todos los precios incluyen IVA.</p>
@@ -194,6 +195,13 @@ export default function DevUiPage() {
               ),
             },
           ]}
+        />
+        <h3>Grilla de planes</h3>
+        <PlanGrid
+          label="Persona natural"
+          plans={natural}
+          recommendedLabel="recomendado para facturar"
+          vatNote="incluye IVA"
         />
       </Section>
 

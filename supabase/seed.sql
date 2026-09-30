@@ -149,3 +149,9 @@ cross join (values
 ) as v (question, answer, sort_order)
 where s.slug = 'firma-electronica'
   and not exists (select 1 from public.service_faq q where q.service_id = s.id);
+
+insert into public.service_holder_note (service_id, holder_type, body)
+select s.id, 'legal_entity', 'Los planes de 7 y 30 días no están disponibles.'
+from public.service s
+where s.slug = 'firma-electronica'
+on conflict (service_id, holder_type) do nothing;
