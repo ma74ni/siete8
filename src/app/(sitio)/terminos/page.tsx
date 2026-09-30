@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { LegalPage } from "@/components/sitio/legal-page";
+import { pageMetadata } from "@/lib/metadata";
 
 // Texts from docs/COPY.md §7.2 (draft pending approval, COPY §5).
 
@@ -8,12 +9,11 @@ const title = "Términos de uso | Siete8";
 const description =
   "Condiciones de uso del sitio y de los servicios de Siete8: precios, firma electrónica y proyectos a medida.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title,
   description,
-  alternates: { canonical: "/terminos" },
-  openGraph: { title, description, url: "/terminos" },
-};
+  path: "/terminos",
+});
 
 const sections = [
   {

@@ -6,6 +6,7 @@ import { Floor } from "@/components/sitio/floor";
 import { TextLink } from "@/components/sitio/text-link";
 import { SOCIAL_LINKS } from "@/lib/social";
 import { generalMessage, whatsappUrl } from "@/lib/whatsapp";
+import { pageMetadata } from "@/lib/metadata";
 
 // Texts from docs/COPY.md §10 and §8. The form arrives in E3-08.
 
@@ -13,12 +14,11 @@ const title = "Contacto | Siete8";
 const description =
   "Escríbenos por WhatsApp al 0961128233, todos los días de 07:00 a 20:00. También por teléfono o a hola@siete8.com.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title,
   description,
-  alternates: { canonical: "/contacto" },
-  openGraph: { title, description, url: "/contacto" },
-};
+  path: "/contacto",
+});
 
 const whatsapp = whatsappUrl(generalMessage());
 
