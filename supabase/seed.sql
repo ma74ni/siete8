@@ -177,3 +177,11 @@ from (values
 join public.project p on p.slug = link.project_slug
 join public.service s on s.slug = link.service_slug
 on conflict do nothing;
+
+-- First article's service (E6-04): the migration runs before the seed.
+insert into public.post_service (post_id, service_id)
+select p.id, s.id
+from public.post p
+join public.service s on s.slug = 'firma-electronica'
+where p.slug = 'firma-electronica-en-ecuador'
+on conflict do nothing;

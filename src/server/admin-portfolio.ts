@@ -33,7 +33,7 @@ export async function getProjectForAdmin(id: string) {
         .select(
           `id, title, slug, status, client_name, show_client_name, sector, year,
            summary, challenge_md, solution_md, results_md, tech_stack, cover_url,
-           live_url, featured, published, sort_order,
+           live_url, featured, published, sort_order, updated_at,
            project_image(id, url, alt, device, sort_order),
            project_service(service_id)`,
         )

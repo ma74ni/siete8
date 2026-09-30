@@ -69,7 +69,7 @@ export default async function ProjectPage({
     <>
       <Floor>
         <div className="flex flex-col gap-10">
-          <div className="flex max-w-[68ch] flex-col gap-6">
+          <div className="flex flex-col gap-6">
             <Link href="/proyectos" className="text-small">
               Volver a proyectos
             </Link>

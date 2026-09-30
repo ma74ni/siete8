@@ -14,3 +14,8 @@
 # the Next.js adapter. Declare it explicitly (version pinned in package.json).
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# Netlify Image CDN may fetch the Storage images: the blog feed offers each
+# cover as a JPEG for Instagram through /.netlify/images (Make).
+[images]
+  remote_images = ['https://thbqjhnfvxummwnniicg\.supabase\.co/storage/v1/object/public/images/.*']

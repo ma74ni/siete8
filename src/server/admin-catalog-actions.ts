@@ -51,6 +51,19 @@ export async function savePlan(
   const { id, ...fields } = parsed.data;
 
   const supabase = await createSessionClient();
+  // Only one recommended plan per holder type (database index): marking this
+  // one unmarks the previous one.
+  if (fields.recommended) {
+    let others = supabase
+      .from("plan")
+      .update({ recommended: false })
+      .eq("service_id", fields.service_id)
+      .eq("holder_type", fields.holder_type)
+      .eq("recommended", true);
+    if (id) others = others.neq("id", id);
+    const { error: unmarkError } = await others;
+    if (unmarkError) return failed("guardar el plan");
+  }
   const { error } = id
     ? await supabase.from("plan").update(fields).eq("id", id)
     : await supabase.from("plan").insert(fields);

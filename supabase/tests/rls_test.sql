@@ -133,7 +133,7 @@ select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000
 select is((select public.is_admin()), true, 'admin: is admin');
 select is((select count(*) from public.category)::int, 6, 'admin: reads hidden categories');
 select is((select count(*) from public.service)::int, 16, 'admin: reads hidden services');
-select is((select count(*) from public.post)::int, 3, 'admin: reads drafts and scheduled posts');
+select is((select count(*) from public.post where slug like 'test-%')::int, 3, 'admin: reads drafts and scheduled posts');
 select is((select count(*) from public.project where slug like 'test-project-%')::int, 2, 'admin: reads unpublished projects');
 select is((select count(*) from public.lead)::int, 1, 'admin: reads leads');
 select is((select count(*) from public.site_settings)::int, 4, 'admin: reads private settings');

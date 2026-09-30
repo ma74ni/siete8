@@ -27,7 +27,7 @@ export default async function ServicesPage() {
   return (
     <>
       <Floor>
-        <div className="flex max-w-[68ch] flex-col gap-6">
+        <div className="flex flex-col gap-6">
           <h1>Servicios</h1>
           <p>
             Todo lo que tu negocio necesita para estar en internet, cumplir con
@@ -44,7 +44,7 @@ export default async function ServicesPage() {
           aria-labelledby={`categoria-${category.slug}`}
         >
           <div className="flex flex-col gap-10">
-            <div className="flex max-w-[68ch] flex-col gap-4">
+            <div className="flex flex-col gap-4">
               <div className="flex items-center gap-3">
                 <CategoryDivider />
                 <h2 id={`categoria-${category.slug}`}>{category.name}</h2>

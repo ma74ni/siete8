@@ -106,7 +106,7 @@ function Hero({ service, request }: { service: ServicePage; request: string }) {
   const hasPlans = service.plans.length > 0;
 
   return (
-    <div className="flex max-w-[68ch] flex-col items-start gap-6">
+    <div className="flex flex-col items-start gap-6">
       <nav aria-label="Ruta" className="text-small">
         <ol className="flex flex-wrap items-center gap-x-2">
           <li>
@@ -185,7 +185,7 @@ function Plans({ service }: { service: ServicePage }) {
     return (
       <div className="flex flex-col gap-4">
         {/* Above the cards: on phones it would sit after every plan. */}
-        {note && <p className="max-w-[68ch]">{note}</p>}
+        {note && <p>{note}</p>}
         <PlanGrid
           label={HOLDER_LABELS[holder]}
           plans={rows(holder)}
@@ -225,7 +225,7 @@ function Requirements({ service }: { service: ServicePage }) {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex max-w-[68ch] flex-col gap-4">
+      <div className="flex flex-col gap-4">
         <h2>Qué necesitas</h2>
         {service.requirementsIntro && <p>{service.requirementsIntro}</p>}
       </div>
@@ -260,7 +260,7 @@ function CrossSell({
   crossSell: NonNullable<ServicePage["crossSell"]>;
 }) {
   return (
-    <div className="flex max-w-[68ch] flex-col items-start gap-4">
+    <div className="flex flex-col items-start gap-4">
       <p className="font-medium">También te puede servir.</p>
       <h2>{crossSell.name}</h2>
       <p>{crossSell.text}</p>

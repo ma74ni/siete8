@@ -108,6 +108,8 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 - Las páginas públicas viven en el grupo `src/app/(sitio)/`, cuyo layout pone encabezado, pie y botón flotante, y ya envuelve el contenido en `<main id="contenido">`: las páginas no renderizan su propio `<main>`. El menú Servicios se lee de la base (`getServiceMenu`), así que la visibilidad y el orden se controlan desde el panel.
 - Texto en Markdown escrito en el panel (proyectos, artículos): siempre con `Markdown` (`@/components/sitio/markdown`, react-markdown sin HTML crudo), nunca con `dangerouslySetInnerHTML`.
 - Proyectos y Blog aparecen en el menú y el pie solo si hay algo publicado (`getPublishedSections` y `navLinks`).
+- Redes sociales: `netlify/functions/announce-posts.mts` corre cada 15 minutos (solo en producción) y envía al webhook de Make (`MAKE_WEBHOOK_URL`) cada artículo publicado, con fecha pasada y `post.social_sent_at` nulo; después lo marca. La lógica está en `@/lib/announce` (con pruebas) y usa la clave secreta por REST, como tarea del sistema. La portada va como JPEG por `/.netlify/images` (Instagram no acepta WebP), por eso `netlify.toml` permite las imágenes de Storage. Los pasos de Make están en `docs/MAKE.md`. `/blog/rss.xml` (`@/lib/rss`) queda para lectores de RSS.
+- Blog: fechas en hora de Quito con `@/lib/blog` (`formatPostDate`, `toQuitoInput`, `fromQuitoInput`); el autor visible es `post.author_name` (o "Siete8"), porque `profile` es privado. El layout de `(sitio)` tiene `revalidate = 3600`: un artículo programado aparece en su fecha con un margen de una hora como máximo, sin que nadie guarde en el panel.
 - Imágenes del panel: `uploadImage`/`removeImage` de `src/server/admin-action-helpers.ts`, validadas con `imageFile`. En el navegador, `ImageField` (`@/components/admin/image-field`) decodifica el archivo y, si pesa más de 2 MB o no es de un tipo aceptado, lo reduce a WebP (lado mayor 2400 px) antes de enviarlo: así nunca se pasa del límite de 3 MB de las Server Actions. Las de galería exigen texto alternativo; las portadas son decorativas (el título va al lado). `images.dangerouslyAllowLocalIP` solo se activa cuando Supabase corre en local.
 - Cada sección de página es un `Floor` (piso `paper`/`mist` con el espaciado de DESIGN §5). Una sección sin contenido (sin proyectos, sin artículos) no se renderiza, y los pisos se alternan sobre las que quedan. Las tarjetas de portafolio usan `ProjectCard` y las etiquetas de estado de `@/lib/project-status`.
 - Cada página pública termina con `<Closing />` (cierre sobre `ink`, justo antes del pie); el pie del layout solo tiene contacto, enlaces y redes. La página de un servicio usa su propio cierre (`service.closing_title`).
@@ -149,6 +151,7 @@ Se validan con Zod al arrancar: `next.config.ts` importa `src/env/schema.ts`, as
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | pública | E3-08 |
 | `REVALIDATE_SECRET` | secreta | primera ruta de revalidación bajo demanda |
 | `NEXT_PUBLIC_GA_ID` | pública, opcional | E5-04 (solo producción, en `netlify.toml`) |
+| `MAKE_WEBHOOK_URL` | secreta, solo en Netlify (producción) | redes sociales (`docs/MAKE.md`) |
 | `NEXT_PUBLIC_SENTRY_DSN` | pública | E7-06 |
 | `SENTRY_AUTH_TOKEN` | secreta (solo build, source maps) | E7-06 |
 

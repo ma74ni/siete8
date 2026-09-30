@@ -149,7 +149,7 @@ export function Analytics({
       className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-bg pb-[env(safe-area-inset-bottom)]"
     >
       <div className="mx-auto flex max-w-[1200px] flex-col gap-4 px-5 py-4 md:flex-row md:items-center md:justify-between lg:px-12">
-        <p className="max-w-[68ch]">
+        <p>
           Usamos Google Analytics para saber cómo llegas al sitio y qué te
           sirve. Solo lo activamos si aceptas.{" "}
           <Link href="/privacidad">Política de privacidad</Link>

@@ -27,6 +27,8 @@ export function failed(what: string): FormState {
  */
 export function refreshSite() {
   revalidatePath("/", "layout");
+  // Route handlers are outside the layout tree.
+  revalidatePath("/blog/rss.xml");
 }
 
 export function parse<T extends z.ZodType>(schema: T, formData: FormData) {
