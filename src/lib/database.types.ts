@@ -164,6 +164,7 @@ export type Database = {
       post: {
         Row: {
           author_id: string | null
+          author_name: string | null
           body_md: string | null
           cover_url: string | null
           created_at: string
@@ -179,6 +180,7 @@ export type Database = {
         }
         Insert: {
           author_id?: string | null
+          author_name?: string | null
           body_md?: string | null
           cover_url?: string | null
           created_at?: string
@@ -194,6 +196,7 @@ export type Database = {
         }
         Update: {
           author_id?: string | null
+          author_name?: string | null
           body_md?: string | null
           cover_url?: string | null
           created_at?: string

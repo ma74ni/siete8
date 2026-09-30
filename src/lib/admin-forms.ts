@@ -220,6 +220,43 @@ export const projectServicesForm = z.object({
   service_ids: z.array(z.uuid()).max(20),
 });
 
+// Blog (E4-05) ------------------------------------------------------------------
+
+export const postForm = z
+  .object({
+    id: z.uuid().optional(),
+    title: requiredText(160),
+    slug,
+    excerpt: optionalText(300),
+    body_md: optionalText(40_000),
+    author_name: optionalText(80),
+    status: z.enum(["draft", "published"]),
+    /** `datetime-local` value in Quito time; empty means "now" when publishing. */
+    published_at: z
+      .string()
+      .optional()
+      .transform((value) => value?.trim() || null)
+      .pipe(
+        z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/)
+          .nullable(),
+      ),
+    seo_title: optionalText(70),
+    seo_description: optionalText(160),
+    service_id: z
+      .string()
+      .optional()
+      .transform((value) => value || null)
+      .pipe(z.uuid().nullable()),
+  })
+  // Same rule as the database: a published article needs its body.
+  .refine((post) => post.status === "draft" || post.body_md !== null, {
+    path: ["body_md"],
+  });
+
+export const postCoverForm = z.object({ post_id: z.uuid() });
+
 /** Result of a panel Server Action, shown next to its form. */
 export type FormState =
   | { status: "idle" }

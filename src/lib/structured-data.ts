@@ -80,3 +80,34 @@ export function serviceGraph(siteUrl: string, service: ServiceInput) {
   }
   return { "@context": "https://schema.org", "@graph": graph };
 }
+
+/** An article (RNF-05): headline, dates, author and the publisher. */
+export function articleData(
+  siteUrl: string,
+  post: {
+    slug: string;
+    title: string;
+    excerpt: string | null;
+    author: string;
+    publishedAt: string;
+    updatedAt: string;
+    coverUrl: string | null;
+  },
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    ...(post.excerpt && { description: post.excerpt }),
+    url: new URL(`/blog/${post.slug}`, siteUrl).toString(),
+    datePublished: post.publishedAt,
+    dateModified: post.updatedAt,
+    image: post.coverUrl ?? new URL("/og.png", siteUrl).toString(),
+    author: {
+      "@type": post.author === "Siete8" ? "Organization" : "Person",
+      name: post.author,
+    },
+    publisher: { "@id": new URL(ORG_ID, siteUrl).toString() },
+    inLanguage: "es-EC",
+  };
+}

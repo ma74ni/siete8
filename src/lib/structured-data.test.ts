@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { localBusiness, serviceGraph } from "@/lib/structured-data";
+import {
+  articleData,
+  localBusiness,
+  serviceGraph,
+} from "@/lib/structured-data";
 
 const site = "https://siete8.com";
 
@@ -56,5 +60,36 @@ describe("serviceGraph", () => {
     const bare = serviceGraph(site, { ...service, plans: [], faqs: [] });
     expect(bare["@graph"]).toHaveLength(1);
     expect(bare["@graph"][0]).not.toHaveProperty("offers");
+  });
+});
+
+describe("articleData", () => {
+  const post = {
+    slug: "firma-electronica-en-ecuador",
+    title: "Firma electrónica en Ecuador",
+    excerpt: null,
+    author: "Siete8",
+    publishedAt: "2026-10-01T13:00:00.000Z",
+    updatedAt: "2026-10-02T13:00:00.000Z",
+    coverUrl: null,
+  };
+
+  it("uses the default image and the business as author without a name", () => {
+    expect(articleData(site, post)).toMatchObject({
+      "@type": "BlogPosting",
+      url: "https://siete8.com/blog/firma-electronica-en-ecuador",
+      image: "https://siete8.com/og.png",
+      author: { "@type": "Organization", name: "Siete8" },
+    });
+    expect(articleData(site, post)).not.toHaveProperty("description");
+  });
+
+  it("names a person as author", () => {
+    expect(
+      articleData(site, { ...post, author: "Diego Paredes" }).author,
+    ).toEqual({
+      "@type": "Person",
+      name: "Diego Paredes",
+    });
   });
 });
