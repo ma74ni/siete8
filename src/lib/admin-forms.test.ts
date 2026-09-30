@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { money, planForm, serviceForm } from "@/lib/admin-forms";
+import {
+  faqForm,
+  holderNoteForm,
+  money,
+  planForm,
+  requirementsForm,
+  serviceForm,
+} from "@/lib/admin-forms";
 
 const serviceId = "3f2b8a4e-9c1d-4e5f-8a7b-6c5d4e3f2a1b";
 
@@ -76,5 +83,53 @@ describe("serviceForm", () => {
       serviceForm.safeParse({ id: serviceId, seo_title: "x".repeat(71) })
         .success,
     ).toBe(false);
+  });
+});
+
+describe("requirementsForm", () => {
+  it("keeps one trimmed requirement per line and drops blank lines", () => {
+    expect(
+      requirementsForm.parse({
+        service_id: serviceId,
+        holder_type: "legal_entity",
+        items: " Cédula vigente. \r\n\n  RUC activo.\n",
+      }).items,
+    ).toEqual(["Cédula vigente.", "RUC activo."]);
+  });
+
+  it("allows at most 20 requirements", () => {
+    const items = Array.from({ length: 21 }, (_, i) => `Requisito ${i}`).join(
+      "\n",
+    );
+    expect(
+      requirementsForm.safeParse({
+        service_id: serviceId,
+        holder_type: "natural",
+        items,
+      }).success,
+    ).toBe(false);
+  });
+});
+
+describe("faqForm and holderNoteForm", () => {
+  it("requires a question and an answer", () => {
+    expect(
+      faqForm.safeParse({
+        service_id: serviceId,
+        question: "¿Qué?",
+        answer: " ",
+        sort_order: "1",
+      }).success,
+    ).toBe(false);
+  });
+
+  it("treats an empty note as removing it", () => {
+    expect(
+      holderNoteForm.parse({
+        service_id: serviceId,
+        holder_type: "natural",
+        body: "  ",
+      }).body,
+    ).toBeNull();
   });
 });
