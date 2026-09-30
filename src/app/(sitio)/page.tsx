@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { Button } from "@/components/sitio/button";
+import { Closing } from "@/components/sitio/closing";
 import { Floor } from "@/components/sitio/floor";
 import { CategoryDivider } from "@/components/sitio/motif/category-divider";
 import { HeroMotif } from "@/components/sitio/motif/hero-motif";
@@ -69,12 +70,17 @@ export default async function Home() {
     post && <LatestPost key="post" post={post} />,
   ].filter(Boolean);
 
-  return sections.map((section, index) => (
-    // On desktop the whole hero fits in the first screen.
-    <Floor key={index} alt={index % 2 === 1} fitScreen={index === 0}>
-      {section}
-    </Floor>
-  ));
+  return (
+    <>
+      {sections.map((section, index) => (
+        // On desktop the whole hero fits in the first screen.
+        <Floor key={index} alt={index % 2 === 1} fitScreen={index === 0}>
+          {section}
+        </Floor>
+      ))}
+      <Closing />
+    </>
+  );
 }
 
 function Hero() {
