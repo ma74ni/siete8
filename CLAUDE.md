@@ -115,6 +115,8 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 **SEO**
 - Las páginas públicas se generan estáticamente o en servidor; el HTML trae el contenido completo.
 - Cada página pública define title, description, canonical y Open Graph.
+- El metadata de cada página se arma con `pageMetadata` de `@/lib/metadata`, que repite el `openGraph` completo con la imagen `public/og.png`: Next combina los segmentos de forma superficial, así que un `openGraph` suelto borra la imagen de la raíz.
+- Los datos estructurados salen de `@/lib/structured-data` y se insertan con `JsonLd`. `sitemap.ts` lista las páginas estáticas y los servicios visibles; al crear una página pública, se agrega ahí.
 
 ## Datos del negocio
 

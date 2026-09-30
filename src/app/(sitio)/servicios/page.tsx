@@ -5,6 +5,7 @@ import { Closing } from "@/components/sitio/closing";
 import { Floor } from "@/components/sitio/floor";
 import { CategoryDivider } from "@/components/sitio/motif/category-divider";
 import { getServiceMenu } from "@/server/catalog";
+import { pageMetadata } from "@/lib/metadata";
 
 // Texts from docs/COPY.md §9; categories and services from the catalog.
 
@@ -13,12 +14,11 @@ const title =
 const description =
   "Sitios web, hosting, correo corporativo, dominios, firma electrónica, desarrollo a medida y soporte técnico en Quito. Precios con IVA y atención por WhatsApp.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title,
   description,
-  alternates: { canonical: "/servicios" },
-  openGraph: { title, description, url: "/servicios" },
-};
+  path: "/servicios",
+});
 
 /** Service catalog grouped by category, in panel order (RF-PUB-02). */
 export default async function ServicesPage() {

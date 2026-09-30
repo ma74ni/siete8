@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { LegalPage } from "@/components/sitio/legal-page";
+import { pageMetadata } from "@/lib/metadata";
 
 // Texts from docs/COPY.md §7.1 (draft pending approval, COPY §5).
 
@@ -8,12 +9,11 @@ const title = "Política de privacidad | Siete8";
 const description =
   "Cómo Siete8 recoge, usa y protege tus datos personales, y cómo ejercer tus derechos.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title,
   description,
-  alternates: { canonical: "/privacidad" },
-  openGraph: { title, description, url: "/privacidad" },
-};
+  path: "/privacidad",
+});
 
 const sections = [
   {

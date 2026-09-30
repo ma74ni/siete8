@@ -6,9 +6,12 @@ import { Button } from "@/components/sitio/button";
 import { Closing } from "@/components/sitio/closing";
 import { Faq } from "@/components/sitio/faq";
 import { Floor } from "@/components/sitio/floor";
+import { JsonLd } from "@/components/sitio/json-ld";
 import { PlanGrid } from "@/components/sitio/plan-grid";
 import type { PlanRow } from "@/components/sitio/plan-table";
 import { Tabs } from "@/components/sitio/tabs";
+import { clientEnv } from "@/env/client";
+import { pageMetadata } from "@/lib/metadata";
 import { lowestPriceCents } from "@/lib/plans";
 import { formatCents } from "@/lib/price";
 import {
@@ -16,6 +19,7 @@ import {
   holderTypes,
   requirementsByHolder,
 } from "@/lib/service-page";
+import { serviceGraph } from "@/lib/structured-data";
 import {
   serviceMessage,
   signaturePlanMessage,
@@ -44,12 +48,7 @@ export async function generateMetadata({
   const title = service.seoTitle ?? `${service.name} | Siete8`;
   const description = service.seoDescription ?? service.summary ?? undefined;
   const url = `/servicios/${service.slug}`;
-  return {
-    title,
-    description,
-    alternates: { canonical: url },
-    openGraph: { title, description, url },
-  };
+  return pageMetadata({ title, description, path: url });
 }
 
 /** Page of a service (RF-PUB-03..05). Hidden or unknown services: 404. */
@@ -76,6 +75,12 @@ export default async function ServicePageRoute({
 
   return (
     <>
+      <JsonLd
+        data={serviceGraph(clientEnv.NEXT_PUBLIC_SITE_URL, {
+          ...service,
+          description: service.seoDescription ?? service.summary,
+        })}
+      />
       <Floor fitScreen>
         <Hero service={service} request={request} />
       </Floor>

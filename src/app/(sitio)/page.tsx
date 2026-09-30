@@ -5,12 +5,15 @@ import type { ReactNode } from "react";
 import { Button } from "@/components/sitio/button";
 import { Closing } from "@/components/sitio/closing";
 import { Floor } from "@/components/sitio/floor";
+import { JsonLd } from "@/components/sitio/json-ld";
 import { CategoryDivider } from "@/components/sitio/motif/category-divider";
 import { HeroMotif } from "@/components/sitio/motif/hero-motif";
 import { PlanTable } from "@/components/sitio/plan-table";
 import { ProjectCard } from "@/components/sitio/project-card";
+import { clientEnv } from "@/env/client";
 import { featuredPlans, lowestPriceCents } from "@/lib/plans";
 import { formatCents } from "@/lib/price";
+import { localBusiness } from "@/lib/structured-data";
 import {
   generalMessage,
   signaturePlanMessage,
@@ -19,6 +22,7 @@ import {
 import { getLatestPost } from "@/server/blog";
 import { getServiceMenu, getServicePlans } from "@/server/catalog";
 import { getFeaturedProjects } from "@/server/portfolio";
+import { pageMetadata } from "@/lib/metadata";
 
 // Texts from docs/COPY.md §3.
 
@@ -27,12 +31,11 @@ const title =
 const description =
   "Estudio tecnológico en Quito. Sitios web, hosting, correo corporativo, firma electrónica y facturación electrónica para personas y pymes. Escríbenos por WhatsApp.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title,
   description,
-  alternates: { canonical: "/" },
-  openGraph: { title, description, url: "/" },
-};
+  path: "/",
+});
 
 const steps = [
   {
@@ -72,6 +75,7 @@ export default async function Home() {
 
   return (
     <>
+      <JsonLd data={localBusiness(clientEnv.NEXT_PUBLIC_SITE_URL)} />
       {sections.map((section, index) => (
         // On desktop the whole hero fits in the first screen.
         <Floor key={index} alt={index % 2 === 1} fitScreen={index === 0}>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { Closing } from "@/components/sitio/closing";
 import { Floor } from "@/components/sitio/floor";
+import { pageMetadata } from "@/lib/metadata";
 
 // Texts from docs/COPY.md §6 and §7 (SEO). Portraits join once they exist.
 
@@ -9,12 +10,11 @@ const title = "Nosotros | Siete8";
 const description =
   "Siete8 es un estudio tecnológico de Quito fundado en 2020 por Diego Paredes y Oswaldo Sotomayor. Tecnología para negocios pequeños y emprendedores.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title,
   description,
-  alternates: { canonical: "/nosotros" },
-  openGraph: { title, description, url: "/nosotros" },
-};
+  path: "/nosotros",
+});
 
 const founders = [
   {
