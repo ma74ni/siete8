@@ -5,6 +5,8 @@ import { cx } from "@/lib/cx";
 type BaseProps = {
   label: string;
   name: string;
+  /** Defaults to `field-<name>`; set it when a page repeats the same form. */
+  id?: string;
   hint?: string;
   error?: string;
 };
@@ -20,11 +22,11 @@ const control =
 /**
  * Labeled input or textarea (DESIGN §7): 48 px tall, `field-border` outline
  * (3:1 against the page) and the base focus ring. Hint and error are linked
- * with aria-describedby. Ids derive from `name`, unique per form.
+ * with aria-describedby. Ids derive from `name` unless `id` is given.
  */
 export function FormField(props: InputFieldProps | TextareaFieldProps) {
   const { label, name, hint, error, className, multiline, ...rest } = props;
-  const id = `field-${name}`;
+  const id = props.id ?? `field-${name}`;
   const describedBy =
     [hint && `${id}-hint`, error && `${id}-error`].filter(Boolean).join(" ") ||
     undefined;
