@@ -163,6 +163,11 @@ La analítica es GA4: `NEXT_PUBLIC_GA_ID` (pública, opcional) solo se define pa
 - `pnpm db:reset` solo actúa sobre la base local. Nunca uses `supabase db reset --linked` ni `supabase db push` contra el remoto sin que el usuario lo pida: borran o cambian datos reales.
 - La versión de Postgres local (`major_version` en `supabase/config.toml`) debe coincidir con la del proyecto remoto.
 
+## Respaldos
+
+- `.github/workflows/backup.yml` hace cada día a las 03:00 (Quito) un `pg_dump` del esquema `public`, lo cifra con `BACKUP_PASSPHRASE` (el repo es público y sus artefactos se pueden descargar) y lo guarda 30 días como artefacto del workflow. Secretos: `SUPABASE_DB_URL` (cadena del *Session pooler*, porque el host directo es solo IPv6) y `BACKUP_PASSPHRASE`. No incluye los usuarios de Auth ni los archivos de Storage.
+- Restaurar en la base local: descargar el artefacto, `gpg --decrypt siete8-AAAA-MM-DD.dump.gpg > siete8.dump` y `pg_restore --clean --if-exists --no-owner --schema=public -d postgresql://postgres:postgres@127.0.0.1:54322/postgres siete8.dump`. En el remoto solo se restaura si el usuario lo pide.
+
 ## Estructura de carpetas
 
 ```
