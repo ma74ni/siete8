@@ -129,7 +129,8 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 
 Se validan con Zod al arrancar: `next.config.ts` importa `src/env/schema.ts`, así que `pnpm dev`, `pnpm build` y `pnpm start` fallan si falta una variable exigida. Para desarrollo local, copia `.env.example` a `.env.local`.
 
-- En el código se usan solo `serverEnv` (`@/env/server`) y `clientEnv` (`@/env/client`). Nunca se lee `process.env` fuera de `src/env/` y `next.config.ts`.
+- En el código se usan solo `serverEnv` (`@/env/server`) y `clientEnv` (`@/env/client`). Nunca se lee `process.env` fuera de `src/env/`, `next.config.ts` y `netlify/functions/` (corren fuera de Next; validan con los esquemas de `src/env/schema.ts`).
+- `netlify/functions/keep-alive.mts` hace una lectura pública diaria para que Supabase no pause el proyecto gratuito (E7-04). Su registro está en Netlify, en Logs > Functions.
 - `@/env/server` importa `server-only`: si un componente cliente lo importa, el build falla. Los secretos van solo ahí.
 - `@/env/client` solo tiene variables `NEXT_PUBLIC_*`, leídas por su nombre completo para que Next las incruste en el build.
 - Cada tarea que integra un servicio agrega sus variables al esquema y a `.env.example`. No se declaran antes de usarse.
