@@ -1,5 +1,10 @@
-import { signIn } from "@/server/auth-actions";
+import { Button } from "@/components/sitio/button";
+import { FormField } from "@/components/sitio/form-field";
+import { Logo } from "@/components/sitio/logo";
 import { safeAdminPath } from "@/lib/admin-access";
+import { signIn } from "@/server/auth-actions";
+
+// Texts from docs/COPY.md §13.
 
 export default async function LoginPage({
   searchParams,
@@ -9,46 +14,42 @@ export default async function LoginPage({
   const failed = error === "credenciales";
 
   return (
-    <main>
-      <h1>[COPY PENDIENTE: título del inicio de sesión del panel]</h1>
+    <main className="panel flex min-h-dvh items-center justify-center bg-surface px-5 py-12">
+      <div className="flex w-full max-w-[26rem] flex-col gap-6 rounded-control border border-border bg-bg p-8">
+        <Logo className="h-10 w-auto self-start" />
+        <h1 className="text-h3">Ingresar al panel</h1>
 
-      {expired && !failed && (
-        <p role="status">[COPY PENDIENTE: aviso de sesión caducada]</p>
-      )}
-      {failed && (
-        <p role="alert" id="login-error">
-          [COPY PENDIENTE: error de correo o contraseña incorrectos]
-        </p>
-      )}
+        {expired && !failed && (
+          <p role="status">Tu sesión caducó. Ingresa de nuevo para seguir.</p>
+        )}
+        {failed && (
+          <p role="alert" className="font-medium text-accent">
+            El correo o la contraseña no coinciden. Revísalos e inténtalo de
+            nuevo.
+          </p>
+        )}
 
-      <form action={signIn}>
-        <input type="hidden" name="next" value={safeAdminPath(next)} />
-        <p>
-          <label htmlFor="email">[COPY PENDIENTE: etiqueta de correo]</label>
-          <input
-            id="email"
+        <form action={signIn} className="flex flex-col gap-4">
+          <input type="hidden" name="next" value={safeAdminPath(next)} />
+          <FormField
+            label="Correo"
             name="email"
             type="email"
             autoComplete="email"
             required
-            aria-describedby={failed ? "login-error" : undefined}
+            aria-invalid={failed || undefined}
           />
-        </p>
-        <p>
-          <label htmlFor="password">
-            [COPY PENDIENTE: etiqueta de contraseña]
-          </label>
-          <input
-            id="password"
+          <FormField
+            label="Contraseña"
             name="password"
             type="password"
             autoComplete="current-password"
             required
-            aria-describedby={failed ? "login-error" : undefined}
+            aria-invalid={failed || undefined}
           />
-        </p>
-        <button type="submit">[COPY PENDIENTE: botón para ingresar]</button>
-      </form>
+          <Button type="submit">Ingresar</Button>
+        </form>
+      </div>
     </main>
   );
 }

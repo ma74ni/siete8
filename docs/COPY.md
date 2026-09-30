@@ -253,3 +253,26 @@ Barra fija al pie de la pantalla, solo en producción, hasta que el visitante el
 | Enlace | Política de privacidad |
 | Botones | Aceptar (principal). Rechazar (secundario). |
 | Pie de página | Preferencias de cookies (vuelve a mostrar el aviso) |
+
+## 13. Panel de administración
+
+Textos internos del panel (`/admin`). El panel usa la misma voz que el sitio: tuteo y frases cortas.
+
+| Pantalla | Elemento | Texto |
+| --- | --- | --- |
+| Todas | Título de la pestaña | Panel \| Siete8 |
+| Ingreso | Título | Ingresar al panel |
+| Ingreso | Campos y botón | Correo. Contraseña. Botón: Ingresar. |
+| Ingreso | Sesión caducada | Tu sesión caducó. Ingresa de nuevo para seguir. |
+| Ingreso | Error | El correo o la contraseña no coinciden. Revísalos e inténtalo de nuevo. |
+| Acceso denegado | Título y texto | No tienes acceso al panel. Tu cuenta no tiene permiso de administrador. Cierra sesión e ingresa con otra cuenta. Botón: Cerrar sesión. |
+| Barra lateral | Enlaces | Servicios. Ver el sitio. Cerrar sesión. |
+| Servicios | Título e introducción | Servicios. Elige un servicio para cambiar sus planes, precios y textos. Lo que guardes se ve en el sitio en menos de un minuto. |
+| Servicios | Estado | Visible / Oculto; "1 plan" / "{n} planes"; "(categoría oculta)". |
+| Servicio | Encabezado | Volver a servicios. Ver en el sitio. Si está oculto: Oculto: no aparece en el sitio. |
+| Servicio | Planes y precios | Escribe el precio sin IVA: el sitio muestra el total con IVA, redondeado a dos decimales. Campos: Nombre (Por ejemplo: 1 año), Tipo de titular (No aplica, Persona natural, Representante legal), Orden (Menor número, primero), Precio sin IVA, IVA %, En el sitio, Visible en el sitio, Recomendado. Botones: Guardar plan, Agregar plan, Borrar plan. |
+| Servicio | Borrar | ¿Borrar el plan {nombre}? También se borran sus requisitos y no se puede deshacer. Botones: Sí, borrar. Cancelar. |
+| Servicio | Datos y textos | Visible en el sitio (si lo ocultas, su página responde 404). Resumen (Párrafo del hero y texto del catálogo.). Introducción de requisitos. Título del cierre (Vacío: ¿Qué necesitas resolver?). Venta cruzada: Servicio sugerido (Ninguno), Texto (Solo se muestra si el servicio sugerido está visible.), Texto del botón. SEO: Título (Hasta 70 caracteres. Vacío: el nombre del servicio.), Descripción (Hasta 160 caracteres. Vacío: el resumen.). Botón: Guardar servicio. |
+| Mensajes | Éxito | Servicio guardado. Plan guardado. Plan agregado. Plan borrado. |
+| Mensajes | Error | Revisa los campos marcados: hay datos que no son válidos. / No se pudo {acción}. Inténtalo de nuevo; si sigue fallando, avísanos. |
+| Botones | Mientras guarda | Guardando… |

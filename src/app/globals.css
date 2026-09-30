@@ -199,6 +199,11 @@
     line-height: var(--text-h4--line-height);
   }
 
+  /* Panel (DESIGN §12): Archivo at wdth 100 everywhere, titles included. */
+  .panel :is(h1, h2, h3, h4) {
+    font-stretch: 100%;
+  }
+
   a {
     color: var(--accent);
     text-decoration-line: underline;
