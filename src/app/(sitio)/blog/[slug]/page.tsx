@@ -63,7 +63,7 @@ export default async function PostPage({ params }: PageProps<"/blog/[slug]">) {
       />
       <Floor>
         <article className="flex flex-col gap-10">
-          <header className="flex max-w-[68ch] flex-col gap-6">
+          <header className="flex flex-col gap-6">
             <Link href="/blog" className="text-small">
               Volver al blog
             </Link>
@@ -80,7 +80,7 @@ export default async function PostPage({ params }: PageProps<"/blog/[slug]">) {
             </p>
           </header>
           {post.cover_url && (
-            <div className="relative aspect-[1200/630] w-full max-w-[68rem] bg-mist">
+            <div className="relative aspect-[1200/630] w-full bg-mist">
               <Image
                 src={post.cover_url}
                 alt=""
@@ -96,7 +96,7 @@ export default async function PostPage({ params }: PageProps<"/blog/[slug]">) {
       </Floor>
       {post.service && (
         <Floor alt>
-          <section className="flex max-w-[68ch] flex-col items-start gap-4">
+          <section className="flex flex-col items-start gap-4">
             <h2 className="text-h3">{post.service.name}</h2>
             <Button href={`/servicios/${post.service.slug}`}>
               Ver planes y requisitos

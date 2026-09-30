@@ -20,7 +20,7 @@ export function Faq({ items }: { items: FaqItem[] }) {
               className="size-5 shrink-0 transition-transform duration-200 ease-out group-open:rotate-180"
             />
           </summary>
-          <div className="max-w-[68ch] pb-4">{item.answer}</div>
+          <div className="pb-4">{item.answer}</div>
         </details>
       ))}
     </div>

@@ -31,7 +31,7 @@ export default function AboutPage() {
   return (
     <>
       <Floor>
-        <div className="flex max-w-[68ch] flex-col gap-6">
+        <div className="flex flex-col gap-6">
           <h1>Tecnología para los negocios que nadie atiende</h1>
           <p>
             Diego Paredes y Oswaldo Sotomayor llevan años trabajando juntos. Han
@@ -47,7 +47,7 @@ export default function AboutPage() {
       </Floor>
       <Floor alt>
         <div className="flex flex-col gap-10">
-          <div className="flex max-w-[68ch] flex-col gap-4">
+          <div className="flex flex-col gap-4">
             <h2>El 7 y el 8</h2>
             <p>
               Diego es el 7: creativo, arriesgado, el que propone lo nuevo.
@@ -62,14 +62,14 @@ export default function AboutPage() {
             {founders.map((founder) => (
               <li key={founder.name} className="flex flex-col gap-2">
                 <h3>{founder.name}</h3>
-                <p className="max-w-[68ch]">{founder.text}</p>
+                <p>{founder.text}</p>
               </li>
             ))}
           </ul>
         </div>
       </Floor>
       <Floor>
-        <p className="max-w-[68ch] text-h4">
+        <p className="text-h4">
           Creemos que a un negocio pequeño también le puede ir muy bien con la
           tecnología correcta.
         </p>

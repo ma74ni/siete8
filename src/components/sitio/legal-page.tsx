@@ -13,7 +13,7 @@ export function LegalPage({ title, updated, sections }: LegalPageProps) {
   return (
     <>
       <Floor>
-        <article className="flex max-w-[68ch] flex-col gap-10">
+        <article className="flex flex-col gap-10">
           <div className="flex flex-col gap-4">
             <h1>{title}</h1>
             <p className="text-small">{updated}</p>

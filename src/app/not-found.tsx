@@ -15,7 +15,7 @@ export default function NotFound() {
   return (
     <SiteShell>
       <Floor>
-        <div className="flex max-w-[68ch] flex-col items-start gap-6">
+        <div className="flex flex-col items-start gap-6">
           <h1>No encontramos esta página</h1>
           <p>
             Puede que el enlace esté mal escrito o que la página ya no exista.

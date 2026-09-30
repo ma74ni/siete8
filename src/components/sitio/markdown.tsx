@@ -42,7 +42,7 @@ export function Markdown({
   className?: string;
 }) {
   return (
-    <div className={cx("flex max-w-[68ch] flex-col gap-4", className)}>
+    <div className={cx("flex flex-col gap-4", className)}>
       <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
         {children}
       </ReactMarkdown>

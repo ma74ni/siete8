@@ -27,7 +27,7 @@ export default async function ProjectsPage() {
       {/* One paper floor: the cards' mist frames need the contrast. */}
       <Floor>
         <div className="flex flex-col gap-12">
-          <div className="flex max-w-[68ch] flex-col gap-6">
+          <div className="flex flex-col gap-6">
             <h1>Proyectos</h1>
             <p>
               Sitios web, sistemas y proyectos de inteligencia de negocio que

@@ -27,7 +27,7 @@ export default async function BlogPage() {
     <>
       <Floor>
         <div className="flex flex-col gap-12">
-          <div className="flex max-w-[68ch] flex-col gap-6">
+          <div className="flex flex-col gap-6">
             <h1>Blog</h1>
             <p>
               Guías cortas sobre firma electrónica, facturación, sitios web y
