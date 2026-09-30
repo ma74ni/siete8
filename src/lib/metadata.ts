@@ -17,11 +17,17 @@ export function pageMetadata({
   title,
   description,
   path,
+  image,
+  type = "website",
 }: {
   title: string;
   description?: string;
   path: string;
+  /** Own preview image (a project or article cover); default: og.png. */
+  image?: { url: string; alt: string } | null;
+  type?: "website" | "article";
 }): Metadata {
+  const images = image ? [image] : [OG_IMAGE];
   return {
     title,
     description,
@@ -32,9 +38,9 @@ export function pageMetadata({
       url: path,
       siteName: "Siete8",
       locale: "es_EC",
-      type: "website",
-      images: [OG_IMAGE],
+      type,
+      images,
     },
-    twitter: { card: "summary_large_image", images: [OG_IMAGE] },
+    twitter: { card: "summary_large_image", images },
   };
 }

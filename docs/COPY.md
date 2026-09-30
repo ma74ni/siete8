@@ -280,3 +280,23 @@ Textos internos del panel (`/admin`). El panel usa la misma voz que el sitio: tu
 | Mensajes | Requisitos sin planes | Agrega primero un plan de este tipo de titular. |
 | Mensajes | Error | Revisa los campos marcados: hay datos que no son válidos. / No se pudo {acción}. Inténtalo de nuevo; si sigue fallando, avísanos. |
 | Botones | Mientras guarda | Guardando… |
+| Proyectos | Listado | Proyectos. Solo los publicados aparecen en el sitio. Botón: Nuevo proyecto. Estado: Publicado / Sin publicar, destacado, {etiqueta del estado}, sin portada. Vacío: Todavía no hay proyectos. |
+| Proyectos | Nuevo | Nuevo proyecto. Después de crearlo podrás subir la portada y la galería. Botón: Crear proyecto. |
+| Proyectos | Datos | Título. Dirección (Parte final del enlace: /proyectos/banco-de-motos. Vacía: se arma con el título.). Estado, con su significado (SRS 3.7). Cliente. Sector (Se muestra si no muestras el nombre del cliente. Ej: Seguros). Año. Mostrar el nombre del cliente (solo si lo autorizó). Resumen (Una o dos frases para la tarjeta.). Reto, Solución, Resultado (Markdown: **negrita**, listas con guion. Vacío: no se muestra.). Tecnologías (Separadas por comas: Laravel, MySQL). Enlace al sitio (Con https://. Solo se muestra si el estado es En línea.). Publicado en el sitio. Destacado en la portada. Botón: Guardar proyecto. |
+| Proyectos | Imágenes | Portada (Se ve en las tarjetas y arriba de la página del proyecto, en proporción 16:10.). Botones: Subir portada, Cambiar portada. Galería; Agregar una captura; Imagen (JPEG, PNG, WebP o AVIF, hasta 2 MB. Súbela ya recortada.); Texto alternativo (Describe lo que se ve, para quien no puede ver la imagen.); Dispositivo: Escritorio, Celular. Botones: Agregar imagen, Borrar imagen. Mientras sube: Subiendo… |
+| Proyectos | Servicios y borrar | Servicios relacionados (Sirven para filtrar el portafolio y para enlazar al servicio desde la página del proyecto.). Botón: Guardar servicios. Borrar el proyecto: ¿Borrar {título}? Se borran también sus imágenes y no se puede deshacer. |
+| Mensajes | Proyectos | Proyecto guardado. Portada guardada. Imagen agregada. Imagen borrada. Servicios guardados. Ya hay un proyecto con esa dirección. Elige una imagen JPEG, PNG, WebP o AVIF de hasta 2 MB. |
+
+## 14. Portafolio
+
+Página `/proyectos` y una página por proyecto. Los textos de cada proyecto se editan en el panel; los importados vienen del portafolio anterior (anexo F).
+
+| Elemento | Texto |
+| --- | --- |
+| Título (h1) | Proyectos |
+| Introducción | Sitios web, sistemas y proyectos de inteligencia de negocio que hicimos para empresas del Ecuador. |
+| Filtro | Filtrar por servicio: Todos, {servicios con proyectos} |
+| Sin proyectos | Pronto publicaremos nuestros proyectos. |
+| Proyecto | Volver a proyectos. Cliente o Sector. Año. Estado (etiqueta pública, SRS 3.7). Botón, solo si está En línea: Ver el sitio. Secciones: Reto, Solución, Resultado, Tecnologías, Galería, Servicio relacionado (botón: Ver planes y requisitos). |
+
+SEO: título "Proyectos \| Siete8"; descripción "Sitios web, sistemas y proyectos de inteligencia de negocio que Siete8 hizo para empresas del Ecuador." Por proyecto: "{título} \| Proyectos de Siete8" y su resumen; la imagen al compartir es su portada.

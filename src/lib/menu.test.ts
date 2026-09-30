@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { visibleCatalog, type CatalogRow } from "./menu";
+import { navLinks, visibleCatalog, type CatalogRow } from "./menu";
 
 const service = (
   slug: string,
@@ -73,5 +73,16 @@ describe("visibleCatalog (RF-PUB-02)", () => {
       slug: "firma",
       summary: "Texto",
     });
+  });
+});
+
+describe("navLinks", () => {
+  it("hides Proyectos and Blog until something is published", () => {
+    expect(
+      navLinks({ projects: false, posts: false }).map((l) => l.label),
+    ).toEqual(["Nosotros", "Contacto"]);
+    expect(
+      navLinks({ projects: true, posts: true }).map((l) => l.label),
+    ).toEqual(["Proyectos", "Blog", "Nosotros", "Contacto"]);
   });
 });
