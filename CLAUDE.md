@@ -129,7 +129,8 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 
 Se validan con Zod al arrancar: `next.config.ts` importa `src/env/schema.ts`, así que `pnpm dev`, `pnpm build` y `pnpm start` fallan si falta una variable exigida. Para desarrollo local, copia `.env.example` a `.env.local`.
 
-- En el código se usan solo `serverEnv` (`@/env/server`) y `clientEnv` (`@/env/client`). Nunca se lee `process.env` fuera de `src/env/` y `next.config.ts`.
+- En el código se usan solo `serverEnv` (`@/env/server`) y `clientEnv` (`@/env/client`). Nunca se lee `process.env` fuera de `src/env/`, `next.config.ts` y `netlify/functions/` (corren fuera de Next; validan con los esquemas de `src/env/schema.ts`).
+- `netlify/functions/keep-alive.mts` hace una lectura pública diaria para que Supabase no pause el proyecto gratuito (E7-04). Su registro está en Netlify, en Logs > Functions.
 - `@/env/server` importa `server-only`: si un componente cliente lo importa, el build falla. Los secretos van solo ahí.
 - `@/env/client` solo tiene variables `NEXT_PUBLIC_*`, leídas por su nombre completo para que Next las incruste en el build.
 - Cada tarea que integra un servicio agrega sus variables al esquema y a `.env.example`. No se declaran antes de usarse.
@@ -143,10 +144,11 @@ Se validan con Zod al arrancar: `next.config.ts` importa `src/env/schema.ts`, as
 | `RESEND_API_KEY`, `ADMIN_NOTIFICATION_EMAIL`, `TURNSTILE_SECRET_KEY` | secreta | E3-08 |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | pública | E3-08 |
 | `REVALIDATE_SECRET` | secreta | primera ruta de revalidación bajo demanda |
+| `NEXT_PUBLIC_GA_ID` | pública, opcional | E5-04 (solo producción, en `netlify.toml`) |
 | `NEXT_PUBLIC_SENTRY_DSN` | pública | E7-06 |
 | `SENTRY_AUTH_TOKEN` | secreta (solo build, source maps) | E7-06 |
 
-La variable de analítica se agrega cuando se decida la herramienta (SRS: Plausible o GA4). `ANTHROPIC_API_KEY` (secreta) se agrega recién en la fase 1.1 (asistente).
+La analítica es GA4: `NEXT_PUBLIC_GA_ID` (pública, opcional) solo se define para producción en `netlify.toml`, así que los previews y el entorno local no envían nada. GA4 solo se carga en el dominio del sitio (`NEXT_PUBLIC_SITE_URL`, con `isSiteOrigin`) y después de que el visitante acepta el aviso de cookies (`@/components/sitio/analytics`); los clics a WhatsApp se registran como `whatsapp_click`. `ANTHROPIC_API_KEY` (secreta) se agrega recién en la fase 1.1 (asistente).
 
 ## Base de datos
 

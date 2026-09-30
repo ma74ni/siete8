@@ -19,7 +19,53 @@ const clientEnv = parseEnv(clientSchema, {
   NEXT_PUBLIC_SITE_URL: siteUrl,
 });
 
+// Security headers (E7-03, RNF-17). Pages are prerendered, so scripts cannot
+// carry a per-request nonce: Next's inline bootstrap and the JSON-LD need
+// 'unsafe-inline'. Google Analytics (E5-04) loads only after consent, from
+// the hosts Google documents for GA4. `next dev` also needs 'unsafe-eval'.
+const google = "https://*.googletagmanager.com";
+// With Google signals, GA4 also reports to google.com, the local Google
+// domain (google.com.ec) and doubleclick.
+const analytics = [
+  "https://*.google-analytics.com",
+  "https://*.analytics.google.com",
+  "https://*.g.doubleclick.net",
+  "https://*.google.com",
+  "https://*.google.com.ec",
+].join(" ");
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""} ${google}`,
+  "style-src 'self' 'unsafe-inline'",
+  `img-src 'self' data: blob: ${google} ${analytics}`,
+  "font-src 'self'",
+  `connect-src 'self' ${google} ${analytics}`,
+  "frame-src 'none'",
+  "frame-ancestors 'none'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "upgrade-insecure-requests",
+].join("; ");
+
+const securityHeaders = [
+  { key: "Content-Security-Policy", value: contentSecurityPolicy },
+  // Without includeSubDomains: other siete8.com hosts (mail) are not ours to force.
+  { key: "Strict-Transport-Security", value: "max-age=31536000" },
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=(), browsing-topics=()",
+  },
+];
+
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
+  async headers() {
+    return [{ source: "/:path*", headers: securityHeaders }];
+  },
   env: siteUrl ? { NEXT_PUBLIC_SITE_URL: siteUrl } : {},
   // `next dev` blocks its dev-only assets for hosts other than localhost, so
   // the page renders but never hydrates. Allow 127.0.0.1 and, per machine,

@@ -5,6 +5,11 @@
 [build.environment]
   NODE_VERSION = "22"
 
+# Google Analytics 4 (E5-04): production only, so previews send nothing. The
+# measurement ID is public; it ends up in every page anyway.
+[context.production.environment]
+  NEXT_PUBLIC_GA_ID = "G-BSPLL130VD"
+
 # The site was created for the previous Vue app, so Netlify never auto-installed
 # the Next.js adapter. Declare it explicitly (version pinned in package.json).
 [[plugins]]

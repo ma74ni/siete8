@@ -1,8 +1,10 @@
 import type { ReactNode } from "react";
 
+import { Analytics } from "@/components/sitio/analytics";
 import { Footer } from "@/components/sitio/layout/footer";
 import { Header } from "@/components/sitio/layout/header";
 import { WhatsAppButton } from "@/components/sitio/layout/whatsapp-button";
+import { clientEnv } from "@/env/client";
 import { getServiceMenu } from "@/server/catalog";
 
 /**
@@ -27,6 +29,12 @@ export async function SiteShell({ children }: { children: ReactNode }) {
       </main>
       <Footer />
       <WhatsAppButton />
+      {clientEnv.NEXT_PUBLIC_GA_ID && (
+        <Analytics
+          gaId={clientEnv.NEXT_PUBLIC_GA_ID}
+          siteUrl={clientEnv.NEXT_PUBLIC_SITE_URL}
+        />
+      )}
     </>
   );
 }

@@ -56,7 +56,7 @@ Número de WhatsApp: 0961128233 (en enlaces wa.me: 593961128233). Horario de ate
 
 - Cierre: **¿Qué necesitas resolver?** (en la página de firma: **¿Listo para sacar tu firma?**)
 - Contacto: 0961128233, 0999843108, hola@siete8.com, Quito, Ecuador.
-- Enlaces: Servicios, Proyectos, Blog, Nosotros, Contacto, Privacidad, Términos.
+- Enlaces: Servicios, Proyectos, Blog, Nosotros, Contacto, Privacidad, Términos, Preferencias de cookies (este último abre el aviso de cookies).
 
 ## 3. Portada
 
@@ -175,10 +175,10 @@ Página `/privacidad`. Título (h1): **Política de privacidad**. Nota bajo el t
 | Documentos de identidad | El sitio no pide ni guarda documentos de identidad. Para tramitar una firma electrónica, nos envías tus requisitos por WhatsApp, y los usamos solo para tramitar esa firma con la entidad que la emite. |
 | Para qué los usamos | Para responder tus solicitudes, preparar y enviarte propuestas comerciales, y prestarte el servicio que contrates. No vendemos tus datos. |
 | Por qué podemos usarlos | Usamos tus datos porque nos das tu consentimiento al escribirnos o al enviar un formulario, y porque los necesitamos para preparar o cumplir el servicio que nos pides. |
-| Con quién los compartimos | Solo con los proveedores que necesitamos para operar: el alojamiento del sitio y de la base de datos, el correo y WhatsApp. Algunos de ellos guardan la información en servidores fuera del Ecuador. Para una firma electrónica, compartimos tus requisitos con la entidad que la emite. |
+| Con quién los compartimos | Solo con los proveedores que necesitamos para operar: el alojamiento del sitio y de la base de datos, el correo, WhatsApp y Google Analytics. Algunos de ellos guardan la información en servidores fuera del Ecuador. Para una firma electrónica, compartimos tus requisitos con la entidad que la emite. |
 | Cuánto tiempo los guardamos | Mientras sean necesarios para atender tu solicitud o prestarte el servicio, y después el tiempo que exijan las obligaciones legales y tributarias. |
 | Tus derechos | Puedes pedirnos acceder a tus datos, corregirlos o actualizarlos, eliminarlos, oponerte a su uso, suspender su tratamiento o recibirlos en un formato que puedas llevar a otro proveedor. Escríbenos a hola@siete8.com. Si no te respondemos o no estás de acuerdo con la respuesta, puedes presentar un reclamo ante la Superintendencia de Protección de Datos Personales. |
-| Cookies | El sitio solo usa las cookies necesarias para funcionar. Si más adelante sumamos herramientas de medición, te pediremos permiso antes de activarlas. |
+| Cookies | Usamos Google Analytics para saber cómo llegas al sitio, qué páginas visitas y cuándo tocas un botón de WhatsApp. Solo se activa si lo aceptas en el aviso de cookies, y Google guarda esa información en servidores fuera del Ecuador. Puedes cambiar tu decisión cuando quieras desde «Preferencias de cookies», al pie de cada página. |
 | Cambios a esta política | Si cambiamos esta política, publicamos la versión nueva en esta página con su fecha. |
 
 SEO: título "Política de privacidad | Siete8"; descripción "Cómo Siete8 recoge, usa y protege tus datos personales, y cómo ejercer tus derechos."
@@ -242,3 +242,14 @@ SEO: título "Contacto | Siete8"; descripción "Escríbenos por WhatsApp al 0961
 | Botones | Ir al inicio (principal). Ver servicios (secundario). |
 
 SEO: título "Página no encontrada | Siete8".
+
+## 12. Aviso de cookies
+
+Barra fija al pie de la pantalla, solo en producción, hasta que el visitante elija. Google Analytics no se carga sin "Aceptar".
+
+| Elemento | Texto |
+| --- | --- |
+| Texto | Usamos Google Analytics para saber cómo llegas al sitio y qué te sirve. Solo lo activamos si aceptas. |
+| Enlace | Política de privacidad |
+| Botones | Aceptar (principal). Rechazar (secundario). |
+| Pie de página | Preferencias de cookies (vuelve a mostrar el aviso) |
