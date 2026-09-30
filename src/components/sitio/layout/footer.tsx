@@ -1,17 +1,14 @@
 import Link from "next/link";
 
+import { SOCIAL_LINKS } from "@/lib/social";
+
+// COPY §2. Proyectos and Blog join once their pages exist.
 const links = [
   { label: "Servicios", href: "/servicios" },
-  { label: "Proyectos", href: "/proyectos" },
-  { label: "Blog", href: "/blog" },
+  { label: "Nosotros", href: "/nosotros" },
+  { label: "Contacto", href: "/contacto" },
   { label: "Privacidad", href: "/privacidad" },
-];
-
-// COPY §8.
-const social = [
-  { label: "Facebook", href: "https://www.facebook.com/siete8.ec" },
-  { label: "Instagram", href: "https://www.instagram.com/siete8.ec" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/company/siete8.ec" },
+  { label: "Términos", href: "/terminos" },
 ];
 
 const item = "flex min-h-11 items-center";
@@ -48,7 +45,7 @@ export function Footer() {
             ))}
           </ul>
           <ul className="flex flex-col">
-            {social.map((link) => (
+            {SOCIAL_LINKS.map((link) => (
               <li key={link.href}>
                 <a href={link.href} className={item}>
                   {link.label}
