@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { campaignFromSearch, whatsappClickParams } from "@/lib/analytics";
+import {
+  campaignFromSearch,
+  isSiteOrigin,
+  whatsappClickParams,
+} from "@/lib/analytics";
 import { signaturePlanMessage, whatsappUrl } from "@/lib/whatsapp";
 
 describe("campaignFromSearch", () => {
@@ -19,6 +23,25 @@ describe("campaignFromSearch", () => {
   it("returns null without UTM parameters or with empty ones", () => {
     expect(campaignFromSearch("")).toBeNull();
     expect(campaignFromSearch("?utm_source=%20&q=firma")).toBeNull();
+  });
+});
+
+describe("isSiteOrigin", () => {
+  it("only accepts the site's own origin", () => {
+    expect(isSiteOrigin("https://siete8.com", "https://siete8.com")).toBe(true);
+    expect(isSiteOrigin("http://localhost:3000", "https://siete8.com")).toBe(
+      false,
+    );
+    expect(isSiteOrigin("http://127.0.0.1:3217", "https://siete8.com")).toBe(
+      false,
+    );
+    expect(
+      isSiteOrigin(
+        "https://deploy-preview-1--siete8.netlify.app",
+        "https://siete8.com",
+      ),
+    ).toBe(false);
+    expect(isSiteOrigin("https://siete8.com", "no es una url")).toBe(false);
   });
 });
 

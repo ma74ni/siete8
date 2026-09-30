@@ -30,7 +30,10 @@ export async function SiteShell({ children }: { children: ReactNode }) {
       <Footer />
       <WhatsAppButton />
       {clientEnv.NEXT_PUBLIC_GA_ID && (
-        <Analytics gaId={clientEnv.NEXT_PUBLIC_GA_ID} />
+        <Analytics
+          gaId={clientEnv.NEXT_PUBLIC_GA_ID}
+          siteUrl={clientEnv.NEXT_PUBLIC_SITE_URL}
+        />
       )}
     </>
   );
