@@ -7,14 +7,25 @@ import { CheckboxField } from "@/components/admin/checkbox-field";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { PriceField } from "@/components/admin/price-field";
 import { FormField } from "@/components/sitio/form-field";
-import { HOLDER_LABELS, type HolderType } from "@/lib/service-page";
+import {
+  HOLDER_LABELS,
+  holderTypes,
+  type HolderType,
+  requirementsByHolder,
+} from "@/lib/service-page";
 import {
   getServiceForAdmin,
   type ServiceForAdmin,
 } from "@/server/admin-catalog";
 import {
+  deleteFaq,
   deletePlan,
+  deleteStep,
+  saveFaq,
+  saveHolderNote,
   savePlan,
+  saveRequirements,
+  saveStep,
   updateService,
 } from "@/server/admin-catalog-actions";
 
@@ -103,6 +114,24 @@ export default async function EditServicePage({
           <PlanEditor key={plan.id} serviceId={service.id} plan={plan} />
         ))}
         <PlanEditor serviceId={service.id} />
+      </Section>
+
+      <Section title="Requisitos y avisos">
+        <HolderContent service={service} />
+      </Section>
+
+      <Section title="Pasos: así lo obtienes">
+        {service.service_step.map((step) => (
+          <StepEditor key={step.id} serviceId={service.id} step={step} />
+        ))}
+        <StepEditor serviceId={service.id} />
+      </Section>
+
+      <Section title="Preguntas frecuentes">
+        {service.service_faq.map((faq) => (
+          <FaqEditor key={faq.id} serviceId={service.id} faq={faq} />
+        ))}
+        <FaqEditor serviceId={service.id} />
       </Section>
 
       <Section title="Datos y textos de la página">
@@ -282,5 +311,174 @@ function ServiceEditor({ service }: { service: ServiceForAdmin }) {
         />
       </fieldset>
     </ActionForm>
+  );
+}
+
+function HolderContent({ service }: { service: ServiceForAdmin }) {
+  const plans = service.plan.map((plan) => ({
+    holderType: plan.holder_type,
+    sortOrder: plan.sort_order,
+    requirements: plan.requirement.map((item) => ({
+      text: item.text,
+      required: item.required,
+      sortOrder: item.sort_order,
+    })),
+  }));
+  const holders = holderTypes(plans);
+  if (holders.length === 0) {
+    return <p>Agrega un plan para poder cargar sus requisitos.</p>;
+  }
+  const groups = requirementsByHolder(plans);
+
+  return holders.map((holder) => {
+    const items =
+      groups.find((group) => group.holderType === holder)?.items ?? [];
+    const note = service.service_holder_note.find(
+      (item) => item.holder_type === holder,
+    );
+    const label =
+      holder === "not_applicable" ? "Todos los planes" : HOLDER_LABELS[holder];
+    return (
+      <div
+        key={holder}
+        className="flex flex-col gap-6 rounded-control border border-border p-5"
+      >
+        <h3 className="text-h4">{label}</h3>
+        <ActionForm action={saveRequirements} submitLabel="Guardar requisitos">
+          <input type="hidden" name="service_id" value={service.id} />
+          <input type="hidden" name="holder_type" value={holder} />
+          <FormField
+            label="Requisitos"
+            name="items"
+            id={`requirements-${holder}`}
+            multiline
+            rows={Math.max(4, items.length + 1)}
+            defaultValue={items.map((item) => item.text).join("\n")}
+            hint="Uno por línea, en el orden en que se muestran. Se aplican a todos los planes de este tipo."
+          />
+        </ActionForm>
+        <ActionForm action={saveHolderNote} submitLabel="Guardar aviso">
+          <input type="hidden" name="service_id" value={service.id} />
+          <input type="hidden" name="holder_type" value={holder} />
+          <FormField
+            label="Aviso bajo los planes"
+            name="body"
+            id={`note-${holder}`}
+            maxLength={300}
+            defaultValue={note?.body ?? ""}
+            hint="Por ejemplo: Los planes de 7 y 30 días no están disponibles. Vacío: sin aviso."
+          />
+        </ActionForm>
+      </div>
+    );
+  });
+}
+
+function StepEditor({
+  serviceId,
+  step,
+}: {
+  serviceId: string;
+  step?: ServiceForAdmin["service_step"][number];
+}) {
+  const key = step?.id ?? "nuevo";
+  return (
+    <div className="flex flex-col gap-4 rounded-control border border-border p-5">
+      {!step && <h3 className="text-h4">Agregar un paso</h3>}
+      <ActionForm
+        action={saveStep}
+        submitLabel={step ? "Guardar paso" : "Agregar paso"}
+        variant={step ? "primary" : "secondary"}
+      >
+        {step && <input type="hidden" name="id" value={step.id} />}
+        <input type="hidden" name="service_id" value={serviceId} />
+        <div className="grid gap-4 md:grid-cols-[1fr_8rem]">
+          <FormField
+            label="Paso"
+            name="body"
+            id={`step-${key}`}
+            multiline
+            rows={2}
+            required
+            maxLength={300}
+            defaultValue={step?.body}
+          />
+          <FormField
+            label="Orden"
+            name="sort_order"
+            id={`step-order-${key}`}
+            type="number"
+            min={0}
+            defaultValue={step?.sort_order ?? 0}
+          />
+        </div>
+      </ActionForm>
+      {step && (
+        <DeleteButton
+          action={deleteStep}
+          id={step.id}
+          label="Borrar paso"
+          question="¿Borrar este paso? No se puede deshacer."
+        />
+      )}
+    </div>
+  );
+}
+
+function FaqEditor({
+  serviceId,
+  faq,
+}: {
+  serviceId: string;
+  faq?: ServiceForAdmin["service_faq"][number];
+}) {
+  const key = faq?.id ?? "nueva";
+  return (
+    <div className="flex flex-col gap-4 rounded-control border border-border p-5">
+      {!faq && <h3 className="text-h4">Agregar una pregunta</h3>}
+      <ActionForm
+        action={saveFaq}
+        submitLabel={faq ? "Guardar pregunta" : "Agregar pregunta"}
+        variant={faq ? "primary" : "secondary"}
+      >
+        {faq && <input type="hidden" name="id" value={faq.id} />}
+        <input type="hidden" name="service_id" value={serviceId} />
+        <div className="grid gap-4 md:grid-cols-[1fr_8rem]">
+          <FormField
+            label="Pregunta"
+            name="question"
+            id={`question-${key}`}
+            required
+            maxLength={200}
+            defaultValue={faq?.question}
+          />
+          <FormField
+            label="Orden"
+            name="sort_order"
+            id={`faq-order-${key}`}
+            type="number"
+            min={0}
+            defaultValue={faq?.sort_order ?? 0}
+          />
+        </div>
+        <FormField
+          label="Respuesta"
+          name="answer"
+          id={`answer-${key}`}
+          multiline
+          required
+          maxLength={1000}
+          defaultValue={faq?.answer}
+        />
+      </ActionForm>
+      {faq && (
+        <DeleteButton
+          action={deleteFaq}
+          id={faq.id}
+          label="Borrar pregunta"
+          question={`¿Borrar la pregunta "${faq.question}"? No se puede deshacer.`}
+        />
+      )}
+    </div>
   );
 }

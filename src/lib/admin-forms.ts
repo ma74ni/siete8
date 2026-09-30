@@ -76,6 +76,45 @@ export const planForm = z.object({
 
 export const idForm = z.object({ id: z.uuid() });
 
+/** One requirement per line; blank lines are dropped. */
+export const requirementLines = z
+  .string()
+  .transform((value) =>
+    value
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean),
+  )
+  .pipe(z.array(z.string().max(300)).max(20));
+
+export const requirementsForm = z.object({
+  service_id: z.uuid(),
+  holder_type: holderType,
+  items: requirementLines,
+});
+
+export const stepForm = z.object({
+  id: z.uuid().optional(),
+  service_id: z.uuid(),
+  body: requiredText(300),
+  sort_order: order,
+});
+
+export const faqForm = z.object({
+  id: z.uuid().optional(),
+  service_id: z.uuid(),
+  question: requiredText(200),
+  answer: requiredText(1000),
+  sort_order: order,
+});
+
+/** An empty note removes it. */
+export const holderNoteForm = z.object({
+  service_id: z.uuid(),
+  holder_type: holderType,
+  body: optionalText(300),
+});
+
 /** Result of a panel Server Action, shown next to its form. */
 export type FormState =
   | { status: "idle" }
