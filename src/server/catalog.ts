@@ -83,6 +83,8 @@ export type ServicePage = {
     requirements: { text: string; required: boolean; sortOrder: number }[];
   })[];
   steps: string[];
+  /** Note under the plans of a holder type, e.g. legal representative. */
+  holderNotes: Partial<Record<HolderType, string>>;
   faqs: { question: string; answer: string }[];
   /** Null when there is none or the target service is hidden. */
   crossSell: { name: string; slug: string; text: string; cta: string } | null;
@@ -107,7 +109,8 @@ export async function getServicePage(
        plan(id, name, holder_type, price_without_vat, vat_rate, recommended, sort_order, visible,
             requirement(text, required, sort_order)),
        service_step(body, sort_order),
-       service_faq(question, answer, sort_order)`,
+       service_faq(question, answer, sort_order),
+       service_holder_note(holder_type, body)`,
     )
     .eq("slug", slug)
     .eq("visible", true)
@@ -150,6 +153,9 @@ export async function getServicePage(
         })),
       })),
     steps: [...data.service_step].sort(byOrder).map((step) => step.body),
+    holderNotes: Object.fromEntries(
+      data.service_holder_note.map((note) => [note.holder_type, note.body]),
+    ),
     faqs: [...data.service_faq]
       .sort(byOrder)
       .map(({ question, answer }) => ({ question, answer })),

@@ -175,14 +175,21 @@ function Plans({ service }: { service: ServicePage }) {
         },
       }));
 
-  const table = (holder: ServicePage["plans"][number]["holderType"]) => (
-    <PlanGrid
-      label={HOLDER_LABELS[holder]}
-      plans={rows(holder)}
-      recommendedLabel="recomendado para facturar"
-      vatNote="incluye IVA"
-    />
-  );
+  const table = (holder: ServicePage["plans"][number]["holderType"]) => {
+    const note = service.holderNotes[holder];
+    return (
+      <div className="flex flex-col gap-4">
+        {/* Above the cards: on phones it would sit after every plan. */}
+        {note && <p className="max-w-[68ch]">{note}</p>}
+        <PlanGrid
+          label={HOLDER_LABELS[holder]}
+          plans={rows(holder)}
+          recommendedLabel="recomendado para facturar"
+          vatNote="incluye IVA"
+        />
+      </div>
+    );
+  };
 
   const holders = holderTypes(service.plans);
 
