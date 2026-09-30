@@ -8,6 +8,7 @@ import { Section } from "@/components/admin/fields";
 import { ImageField } from "@/components/admin/image-field";
 import { PostFields } from "@/components/admin/post-fields";
 import { isUuid } from "@/lib/admin-forms";
+import { formatPostDate } from "@/lib/blog";
 import { getPostForAdmin } from "@/server/admin-blog";
 import {
   deletePost,
@@ -45,6 +46,11 @@ export default async function EditPostPage({
           ) : (
             "No aparece en el sitio: es un borrador o está programado."
           )}
+        </p>
+        <p className="text-small">
+          {post.social_sent_at
+            ? `Anunciado en redes el ${formatPostDate(post.social_sent_at)}.`
+            : "Se anunciará en redes hasta 15 minutos después de salir publicado."}
         </p>
       </div>
 

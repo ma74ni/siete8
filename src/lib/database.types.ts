@@ -174,6 +174,7 @@ export type Database = {
           seo_description: string | null
           seo_title: string | null
           slug: string
+          social_sent_at: string | null
           status: Database["public"]["Enums"]["post_status"]
           title: string
           updated_at: string
@@ -190,6 +191,7 @@ export type Database = {
           seo_description?: string | null
           seo_title?: string | null
           slug: string
+          social_sent_at?: string | null
           status?: Database["public"]["Enums"]["post_status"]
           title: string
           updated_at?: string
@@ -206,6 +208,7 @@ export type Database = {
           seo_description?: string | null
           seo_title?: string | null
           slug?: string
+          social_sent_at?: string | null
           status?: Database["public"]["Enums"]["post_status"]
           title?: string
           updated_at?: string

@@ -290,6 +290,7 @@ Textos internos del panel (`/admin`). El panel usa la misma voz que el sitio: tu
 | Blog | Nuevo | Nuevo artículo. Después de crearlo podrás subir la portada. Botón: Crear artículo. |
 | Blog | Campos | Título. Dirección (Parte final del enlace: /blog/firma-electronica-en-ecuador. Vacía: se arma con el título.). Autor (Vacío: Siete8). Extracto (Una o dos frases para el listado y la vista previa en redes.). Artículo, con pestañas Escribir y Vista previa (Markdown: ## Subtítulo, **negrita**, listas con guion, [texto](/servicios/firma-electronica) para enlazar.; sin texto: Sin texto todavía.). Estado: Borrador, Publicado. Fecha de publicación (Hora de Quito. Vacía: al publicar. Si es futura, aparece ese día.). Servicio relacionado (Ninguno). SEO: Título SEO (Hasta 70 caracteres. Vacío: el título.), Descripción SEO (Hasta 160 caracteres. Vacío: el extracto.). Botón: Guardar artículo. |
 | Blog | Editar | Volver al blog. Ver en el sitio / No aparece en el sitio: es un borrador o está programado. Portada (Se ve arriba del artículo y al compartirlo en redes y WhatsApp. Usa una imagen horizontal, idealmente de 1200 × 630.). Borrar el artículo: ¿Borrar "{título}"? No se puede deshacer. Botón: Borrar artículo. |
+| Blog | Redes | Anunciado en redes el {fecha}. / Se anunciará en redes hasta 15 minutos después de salir publicado. |
 | Mensajes | Blog | Artículo guardado. Portada guardada. Ya hay un artículo con esa dirección. |
 
 ## 14. Portafolio
@@ -316,6 +317,7 @@ Página `/blog` (9 artículos por página; las siguientes en `/blog/pagina/{n}`)
 | Introducción | Guías cortas sobre firma electrónica, facturación, sitios web y tecnología para negocios en Ecuador. |
 | Sin artículos | Pronto publicaremos el primer artículo. |
 | Paginación | Artículos más recientes. Artículos anteriores. |
+| RSS | Canal `/blog/rss.xml`: título "Blog de Siete8" y la introducción del blog como descripción. |
 | Artículo | Volver al blog. Por {autor, o Siete8}. {fecha}. {n} minutos de lectura (1 minuto). Al final, el servicio relacionado con el botón Ver planes y requisitos. |
 
 SEO: título "Blog \| Siete8"; descripción "Guías cortas sobre firma electrónica, facturación, sitios web y tecnología para negocios en Ecuador." Por artículo: su título SEO (o "{título} \| Siete8") y su descripción SEO (o el extracto); la imagen al compartir es su portada.

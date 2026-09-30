@@ -29,7 +29,8 @@ export async function getPostForAdmin(id: string) {
         .from("post")
         .select(
           `id, title, slug, excerpt, body_md, author_name, status, published_at,
-           cover_url, seo_title, seo_description, updated_at, post_service(service_id)`,
+           cover_url, seo_title, seo_description, updated_at, social_sent_at,
+           post_service(service_id)`,
         )
         .eq("id", id)
         .maybeSingle(),

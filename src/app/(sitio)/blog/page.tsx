@@ -13,11 +13,16 @@ const title = "Blog | Siete8";
 const description =
   "Guías cortas sobre firma electrónica, facturación, sitios web y tecnología para negocios en Ecuador.";
 
-export const metadata: Metadata = pageMetadata({
-  title,
-  description,
-  path: "/blog",
-});
+const base = pageMetadata({ title, description, path: "/blog" });
+
+export const metadata: Metadata = {
+  ...base,
+  // Lets feed readers and Make find the RSS from the blog's address.
+  alternates: {
+    ...base.alternates,
+    types: { "application/rss+xml": "/blog/rss.xml" },
+  },
+};
 
 /** First page of the blog (RF-BLG-01). */
 export default async function BlogPage() {
