@@ -20,6 +20,8 @@ Textos finales de la portada y la página de firma electrónica, alineados con l
 
 Servicios · Proyectos · Blog · Nosotros · Contacto. Botón del encabezado: **Escríbenos por WhatsApp**.
 
+Proyectos y Blog no aparecen en el menú ni en el pie hasta que existan sus páginas.
+
 Menú Servicios, por categoría:
 
 | Categoría | Descripción corta | Servicios |
@@ -48,13 +50,13 @@ Menú Servicios, por categoría:
 | Fila de un plan de firma | Hola, vengo del sitio de Siete8. Quiero una firma electrónica de {persona natural / representante legal} con vigencia de {vigencia} ({precio} con IVA). |
 | Cotizador (fase 1.1) | Hola, vengo del cotizador de Siete8. Me interesa: {resumen}. Rango estimado: {rango}. |
 
-Número de WhatsApp: 0961128233 (en enlaces wa.me: 593961128233). Horario de atención: 07:00 a 20:00.
+Número de WhatsApp: 0961128233 (en enlaces wa.me: 593961128233). Horario de atención: todos los días, incluidos feriados, de 07:00 a 20:00.
 
 ### Pie de página
 
 - Cierre: **¿Qué necesitas resolver?** (en la página de firma: **¿Listo para sacar tu firma?**)
 - Contacto: 0961128233, 0999843108, hola@siete8.com, Quito, Ecuador.
-- Enlaces: Servicios, Proyectos, Blog, Privacidad.
+- Enlaces: Servicios, Proyectos, Blog, Nosotros, Contacto, Privacidad, Términos.
 
 ## 3. Portada
 
@@ -101,7 +103,7 @@ SEO de la portada: título "Siete8 | Sitios web, hosting, firma electrónica y f
 | Qué necesitas | Representante legal | Fotos de tu cédula vigente, por ambos lados. Una foto de medio cuerpo sosteniendo tu cédula a la altura del mentón. RUC activo de la empresa, en PDF o copia de las dos hojas. Nombramiento vigente, con carta de aceptación y razón de inscripción en el Registro Mercantil. Constitución notariada con razón de inscripción, o estatutos si la empresa no está bajo la Superintendencia de Compañías. Un correo y un celular activos. |
 | Preguntas | ¿Para qué me sirve la firma electrónica? | Para emitir facturas electrónicas en el SRI, firmar contratos y documentos digitales, y hacer trámites en línea con entidades públicas y privadas. Tiene la misma validez legal que tu firma manuscrita. |
 | Preguntas | ¿En qué formato la recibo? | Como archivo .p12, listo para instalar en tu computadora o cargar en tu sistema de facturación. |
-| Preguntas | ¿En qué horario atienden? | De 07:00 a 20:00. Si escribes fuera de ese horario, atendemos tu solicitud desde las 07:00 del día siguiente. |
+| Preguntas | ¿En qué horario atienden? | Todos los días, incluidos feriados, de 07:00 a 20:00. Si escribes fuera de ese horario, atendemos tu solicitud desde las 07:00 del día siguiente. |
 | Preguntas | ¿Qué plan me conviene? | Si la usas para facturar todo el año, el de 1 año o más. Los de 7 y 30 días sirven para un trámite puntual. |
 | Preguntas | ¿Me ayudan a instalarla? | Sí, si lo necesitas. Te ayudamos a instalarla en el sistema donde facturas o firmas. |
 | Venta cruzada | Bloque | También te puede servir. Facturación electrónica. Emite tus facturas desde el celular o la computadora con tu nueva firma, sin instalar programas. Botón: Conocer el facturador. |
@@ -120,13 +122,15 @@ El texto "el más elegido" en el plan de 1 año debe reflejar las ventas reales;
 | La firma electrónica tiene la misma validez legal que la firma manuscrita | Ley de Comercio Electrónico, Firmas Electrónicas y Mensajes de Datos, según el portal oficial [firmadigital.gob.ec](https://www.firmadigital.gob.ec/preguntas-frecuentes/) |
 | Sirve para facturación electrónica en el SRI | Uso listado en la guía oficial de trámites, [gob.ec](https://www.gob.ec/tramites/buscar?search_api_fulltext=Entidad+de+Certificaci%C3%B3n) |
 | Precios, vigencias y requisitos | Definidos por Siete8 (SRS, anexos A y B) |
+| Derechos del titular de datos y la Superintendencia de Protección de Datos Personales | Ley Orgánica de Protección de Datos Personales (LOPDP), Registro Oficial Suplemento 459, 26 de mayo de 2021 |
 
 ### Pendientes antes de publicar
 
-- [ ] Días de atención: ¿el horario de 07:00 a 20:00 aplica también sábados, domingos y feriados?
+- [x] Días de atención: todos los días, incluidos feriados, de 07:00 a 20:00.
 - [ ] Plan "más elegido" según ventas reales.
 - [ ] Fotos de Diego Paredes y Oswaldo Sotomayor para Nosotros.
-- [ ] Aprobar el texto de Nosotros (sección 6).
+- [ ] Aprobar el texto de Nosotros (sección 6). Se publica sin fotos mientras tanto.
+- [ ] Aprobar la política de privacidad y los términos (secciones 7.1 y 7.2), redactados como borrador. No son asesoría legal.
 
 ### No usar
 
@@ -158,6 +162,43 @@ Fotos: retratos reales de ambos, mismo fondo y encuadre.
 
 La política de privacidad y los términos se redactan con estos datos en la tarea E3-07.
 
+SEO de Nosotros: título "Nosotros | Siete8"; descripción "Siete8 es un estudio tecnológico de Quito fundado en 2020 por Diego Paredes y Oswaldo Sotomayor. Tecnología para negocios pequeños y emprendedores."
+
+### 7.1 Política de privacidad (borrador)
+
+Página `/privacidad`. Título (h1): **Política de privacidad**. Nota bajo el título: Última actualización: 29 de septiembre de 2026.
+
+| Sección (h2) | Texto |
+| --- | --- |
+| Quién trata tus datos | El responsable del tratamiento es Diego Paredes, RUC 1715758502001, con domicilio en Quito, Ecuador, que opera con el nombre comercial Siete8. Para cualquier tema sobre tus datos, escríbenos a hola@siete8.com. |
+| Qué datos recogemos | Cuando nos escribes por WhatsApp, correo o teléfono, o llenas un formulario del sitio, recogemos tu nombre, teléfono, correo, el servicio que te interesa y el origen de tu visita (por ejemplo, desde qué anuncio o red social llegaste). |
+| Documentos de identidad | El sitio no pide ni guarda documentos de identidad. Para tramitar una firma electrónica, nos envías tus requisitos por WhatsApp, y los usamos solo para tramitar esa firma con la entidad que la emite. |
+| Para qué los usamos | Para responder tus solicitudes, preparar y enviarte propuestas comerciales, y prestarte el servicio que contrates. No vendemos tus datos. |
+| Por qué podemos usarlos | Usamos tus datos porque nos das tu consentimiento al escribirnos o al enviar un formulario, y porque los necesitamos para preparar o cumplir el servicio que nos pides. |
+| Con quién los compartimos | Solo con los proveedores que necesitamos para operar: el alojamiento del sitio y de la base de datos, el correo y WhatsApp. Algunos de ellos guardan la información en servidores fuera del Ecuador. Para una firma electrónica, compartimos tus requisitos con la entidad que la emite. |
+| Cuánto tiempo los guardamos | Mientras sean necesarios para atender tu solicitud o prestarte el servicio, y después el tiempo que exijan las obligaciones legales y tributarias. |
+| Tus derechos | Puedes pedirnos acceder a tus datos, corregirlos o actualizarlos, eliminarlos, oponerte a su uso, suspender su tratamiento o recibirlos en un formato que puedas llevar a otro proveedor. Escríbenos a hola@siete8.com. Si no te respondemos o no estás de acuerdo con la respuesta, puedes presentar un reclamo ante la Superintendencia de Protección de Datos Personales. |
+| Cookies | El sitio solo usa las cookies necesarias para funcionar. Si más adelante sumamos herramientas de medición, te pediremos permiso antes de activarlas. |
+| Cambios a esta política | Si cambiamos esta política, publicamos la versión nueva en esta página con su fecha. |
+
+SEO: título "Política de privacidad | Siete8"; descripción "Cómo Siete8 recoge, usa y protege tus datos personales, y cómo ejercer tus derechos."
+
+### 7.2 Términos de uso (borrador)
+
+Página `/terminos`. Título (h1): **Términos de uso**. Nota bajo el título: Última actualización: 29 de septiembre de 2026.
+
+| Sección (h2) | Texto |
+| --- | --- |
+| Quiénes somos | Siete8 es el nombre comercial de Diego Paredes, RUC 1715758502001, con domicilio en Quito, Ecuador. Al usar este sitio aceptas estos términos. |
+| Precios | Los precios están en dólares de los Estados Unidos e incluyen IVA. Pueden cambiar sin aviso previo; se respeta el precio publicado al momento de tu solicitud. |
+| Firma electrónica | La emisión depende de que tus requisitos estén completos y sean válidos. La entregamos entre 5 y 10 minutos después de validar tus datos, de 07:00 a 20:00. Eres responsable de que tus datos sean verdaderos y de guardar tu archivo .p12 y su clave: no los compartas con nadie. |
+| Proyectos a medida | El alcance, el precio y el plazo de cada sitio, sistema o servicio a medida se fijan en su propuesta, que aceptas antes de empezar. |
+| Uso del sitio | El contenido, el logo y el diseño de este sitio son de Siete8. No los copies ni los uses sin permiso. |
+| Ley aplicable | Estos términos se rigen por las leyes del Ecuador. Cualquier controversia se resuelve ante los jueces de Quito. |
+| Contacto | Escríbenos a hola@siete8.com o por WhatsApp al 0961128233. |
+
+SEO: título "Términos de uso | Siete8"; descripción "Condiciones de uso del sitio y de los servicios de Siete8: precios, firma electrónica y proyectos a medida."
+
 ## 8. Redes sociales
 
 | Red | Enlace |
@@ -177,3 +218,27 @@ Página `/servicios`. Las categorías, sus descripciones y los servicios salen d
 | Enlace de cada servicio | Ver planes y requisitos |
 
 SEO: título "Servicios: sitios web, hosting, firma electrónica y más | Siete8"; descripción "Sitios web, hosting, correo corporativo, dominios, firma electrónica, desarrollo a medida y soporte técnico en Quito. Precios con IVA y atención por WhatsApp."
+
+## 10. Contacto
+
+Página `/contacto`. Sin formulario hasta la tarea E3-08.
+
+| Elemento | Texto |
+| --- | --- |
+| Título (h1) | Contacto |
+| Introducción | Escríbenos por WhatsApp y te respondemos todos los días, de 07:00 a 20:00. |
+| Botón | Escríbenos por WhatsApp |
+| Datos | WhatsApp: 0961128233. Teléfono: 0999843108. Correo: hola@siete8.com. Quito, Ecuador. |
+| Redes (h2) | Síguenos: Facebook, Instagram, LinkedIn (enlaces de la sección 8). |
+
+SEO: título "Contacto | Siete8"; descripción "Escríbenos por WhatsApp al 0961128233, todos los días de 07:00 a 20:00. También por teléfono o a hola@siete8.com."
+
+## 11. Página no encontrada (404)
+
+| Elemento | Texto |
+| --- | --- |
+| Título (h1) | No encontramos esta página |
+| Texto | Puede que el enlace esté mal escrito o que la página ya no exista. |
+| Botones | Ir al inicio (principal). Ver servicios (secundario). |
+
+SEO: título "Página no encontrada | Siete8".
