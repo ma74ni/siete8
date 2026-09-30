@@ -33,6 +33,19 @@ describe("parseEnv", () => {
   });
 });
 
+describe("Google Analytics", () => {
+  it("is optional and must look like a measurement ID", () => {
+    expect(parseEnv(clientSchema, client).NEXT_PUBLIC_GA_ID).toBeUndefined();
+    expect(
+      parseEnv(clientSchema, { ...client, NEXT_PUBLIC_GA_ID: "G-BSPLL130VD" })
+        .NEXT_PUBLIC_GA_ID,
+    ).toBe("G-BSPLL130VD");
+    expect(() =>
+      parseEnv(clientSchema, { ...client, NEXT_PUBLIC_GA_ID: "UA-123" }),
+    ).toThrow(/NEXT_PUBLIC_GA_ID/);
+  });
+});
+
 describe("Supabase keys", () => {
   it("rejects a secret key in the public variable", () => {
     expect(() =>

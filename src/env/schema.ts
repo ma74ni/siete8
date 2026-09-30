@@ -23,6 +23,12 @@ export const clientSchema = z.object({
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z
     .string()
     .startsWith("sb_publishable_"),
+  // Google Analytics 4 (E5-04). Only set in production (netlify.toml), so
+  // previews and local runs send nothing.
+  NEXT_PUBLIC_GA_ID: z
+    .string()
+    .regex(/^G-[A-Z0-9]+$/)
+    .optional(),
 });
 
 export type ServerEnv = z.infer<typeof serverSchema>;

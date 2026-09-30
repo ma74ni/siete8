@@ -144,10 +144,11 @@ Se validan con Zod al arrancar: `next.config.ts` importa `src/env/schema.ts`, as
 | `RESEND_API_KEY`, `ADMIN_NOTIFICATION_EMAIL`, `TURNSTILE_SECRET_KEY` | secreta | E3-08 |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | pública | E3-08 |
 | `REVALIDATE_SECRET` | secreta | primera ruta de revalidación bajo demanda |
+| `NEXT_PUBLIC_GA_ID` | pública, opcional | E5-04 (solo producción, en `netlify.toml`) |
 | `NEXT_PUBLIC_SENTRY_DSN` | pública | E7-06 |
 | `SENTRY_AUTH_TOKEN` | secreta (solo build, source maps) | E7-06 |
 
-La variable de analítica se agrega cuando se decida la herramienta (SRS: Plausible o GA4). `ANTHROPIC_API_KEY` (secreta) se agrega recién en la fase 1.1 (asistente).
+La analítica es GA4: `NEXT_PUBLIC_GA_ID` (pública, opcional) solo se define para producción en `netlify.toml`, así que los previews y el entorno local no envían nada. GA4 solo se carga después de que el visitante acepta el aviso de cookies (`@/components/sitio/analytics`); los clics a WhatsApp se registran como `whatsapp_click`. `ANTHROPIC_API_KEY` (secreta) se agrega recién en la fase 1.1 (asistente).
 
 ## Base de datos
 
