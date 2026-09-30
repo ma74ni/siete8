@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 
 import { ActionForm } from "@/components/admin/action-form";
 import { DeleteButton } from "@/components/admin/delete-button";
-import { ImageField, Section } from "@/components/admin/fields";
+import { Section } from "@/components/admin/fields";
+import { ImageField } from "@/components/admin/image-field";
 import { PostFields } from "@/components/admin/post-fields";
 import { getPostForAdmin } from "@/server/admin-blog";
 import {
