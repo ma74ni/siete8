@@ -9,6 +9,7 @@ import {
   campaignFromSearch,
   CONSENT_KEY,
   type Consent,
+  isSiteOrigin,
   whatsappClickParams,
 } from "@/lib/analytics";
 
@@ -83,11 +84,20 @@ function stopGa(gaId: string) {
  * the visitor accepts. Records WhatsApp clicks and keeps the landing page's
  * UTM parameters so the visit is credited to its campaign.
  */
-export function Analytics({ gaId }: { gaId: string }) {
+export function Analytics({
+  gaId,
+  siteUrl,
+}: {
+  gaId: string;
+  siteUrl: string;
+}) {
   // null until mounted, so the server and first client render match.
   const [consent, setConsent] = useState<Consent | "unset" | null>(null);
 
   useEffect(() => {
+    // Local runs and previews stay silent even if built with the ID.
+    if (!isSiteOrigin(location.origin, siteUrl)) return;
+
     const campaign = campaignFromSearch(location.search);
     if (campaign)
       write("sessionStorage", CAMPAIGN_KEY, JSON.stringify(campaign));
@@ -100,7 +110,7 @@ export function Analytics({ gaId }: { gaId: string }) {
     const reopen = () => setConsent("unset");
     window.addEventListener(OPEN_EVENT, reopen);
     return () => window.removeEventListener(OPEN_EVENT, reopen);
-  }, []);
+  }, [siteUrl]);
 
   useEffect(() => {
     if (consent !== "granted") return;

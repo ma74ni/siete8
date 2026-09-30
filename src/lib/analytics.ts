@@ -37,6 +37,18 @@ export function campaignFromSearch(search: string): Campaign | null {
   return Object.keys(campaign).length > 0 ? campaign : null;
 }
 
+/**
+ * GA only runs on the site's own origin (https://siete8.com), so a local run
+ * or a preview built with the ID never sends data.
+ */
+export function isSiteOrigin(currentOrigin: string, siteUrl: string): boolean {
+  try {
+    return new URL(siteUrl).origin === currentOrigin;
+  } catch {
+    return false;
+  }
+}
+
 /** GA limits event parameter values to 100 characters. */
 const MAX_PARAM = 100;
 
