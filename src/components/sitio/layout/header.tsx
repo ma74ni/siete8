@@ -4,7 +4,7 @@ import { Button } from "@/components/sitio/button";
 import { MobileMenu } from "@/components/sitio/layout/mobile-menu";
 import { ServicesMenu } from "@/components/sitio/layout/services-menu";
 import { Logo } from "@/components/sitio/logo";
-import { NAV_LINKS, type MenuCategory } from "@/lib/menu";
+import { type MenuCategory, type NavLink } from "@/lib/menu";
 import { generalMessage, whatsappUrl } from "@/lib/whatsapp";
 
 const cta = {
@@ -13,7 +13,13 @@ const cta = {
 };
 
 /** Site header (COPY §2): logo, Servicios menu, main links and WhatsApp. */
-export function Header({ categories }: { categories: MenuCategory[] }) {
+export function Header({
+  categories,
+  links,
+}: {
+  categories: MenuCategory[];
+  links: NavLink[];
+}) {
   return (
     <header className="relative border-b border-border bg-bg">
       <div className="mx-auto flex h-[4.5rem] max-w-[1200px] items-center justify-between gap-4 px-5 lg:px-12">
@@ -22,7 +28,7 @@ export function Header({ categories }: { categories: MenuCategory[] }) {
         </Link>
         <nav className="hidden items-center lg:flex">
           <ServicesMenu categories={categories} />
-          {NAV_LINKS.map((link) => (
+          {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -36,7 +42,7 @@ export function Header({ categories }: { categories: MenuCategory[] }) {
           <Button href={cta.href}>{cta.label}</Button>
         </div>
         <div className="lg:hidden">
-          <MobileMenu categories={categories} cta={cta} />
+          <MobileMenu categories={categories} links={links} cta={cta} />
         </div>
       </div>
     </header>

@@ -5,7 +5,9 @@ import { Footer } from "@/components/sitio/layout/footer";
 import { Header } from "@/components/sitio/layout/header";
 import { WhatsAppButton } from "@/components/sitio/layout/whatsapp-button";
 import { clientEnv } from "@/env/client";
+import { navLinks } from "@/lib/menu";
 import { getServiceMenu } from "@/server/catalog";
+import { getPublishedSections } from "@/server/published";
 
 /**
  * Public site frame: header, content, footer and the floating WhatsApp
@@ -13,7 +15,10 @@ import { getServiceMenu } from "@/server/catalog";
  * outside that group.
  */
 export async function SiteShell({ children }: { children: ReactNode }) {
-  const categories = await getServiceMenu();
+  const [categories, published] = await Promise.all([
+    getServiceMenu(),
+    getPublishedSections(),
+  ]);
 
   return (
     <>
@@ -23,11 +28,11 @@ export async function SiteShell({ children }: { children: ReactNode }) {
       >
         Saltar al contenido
       </a>
-      <Header categories={categories} />
+      <Header categories={categories} links={navLinks(published)} />
       <main id="contenido" tabIndex={-1} className="outline-none">
         {children}
       </main>
-      <Footer />
+      <Footer published={published} />
       <WhatsAppButton />
       {clientEnv.NEXT_PUBLIC_GA_ID && (
         <Analytics

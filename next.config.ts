@@ -63,6 +63,10 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  experimental: {
+    // Panel image uploads (E4-04): 2 MB files plus the multipart overhead.
+    serverActions: { bodySizeLimit: "3mb" },
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
@@ -80,6 +84,11 @@ const nextConfig: NextConfig = {
   images: {
     // AVIF first, WebP as fallback (RNF-07).
     formats: ["image/avif", "image/webp"],
+    // Next refuses images from private IPs (SSRF guard). Only lifted when
+    // Supabase runs on this machine, for tests against the local database.
+    dangerouslyAllowLocalIP: ["127.0.0.1", "localhost"].includes(
+      new URL(clientEnv.NEXT_PUBLIC_SUPABASE_URL).hostname,
+    ),
     // Only public files of this project's Storage (E1-08 bucket).
     remotePatterns: [
       new URL(
