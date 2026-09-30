@@ -9,6 +9,7 @@ import { Section, SelectField } from "@/components/admin/fields";
 import { ImageField } from "@/components/admin/image-field";
 import { ProjectFields } from "@/components/admin/project-fields";
 import { FormField } from "@/components/sitio/form-field";
+import { isUuid } from "@/lib/admin-forms";
 import { getProjectForAdmin } from "@/server/admin-portfolio";
 import {
   addProjectImage,
@@ -26,8 +27,9 @@ export default async function EditProjectPage({
   params,
 }: PageProps<"/admin/proyectos/[id]">) {
   const { id } = await params;
-  // A malformed id is just a missing project.
-  const project = await getProjectForAdmin(id).catch(() => null);
+  // A malformed id is just a missing project; any other error is shown as such.
+  if (!isUuid(id)) notFound();
+  const project = await getProjectForAdmin(id);
   if (!project) notFound();
 
   return (
@@ -47,7 +49,11 @@ export default async function EditProjectPage({
       </div>
 
       <Section title="Datos del proyecto">
-        <ActionForm action={saveProject} submitLabel="Guardar proyecto">
+        <ActionForm
+          resetKey={project.updated_at}
+          action={saveProject}
+          submitLabel="Guardar proyecto"
+        >
           <ProjectFields project={project} />
         </ActionForm>
       </Section>
@@ -150,6 +156,7 @@ export default async function EditProjectPage({
           página del proyecto.
         </p>
         <ActionForm
+          resetKey={project.serviceIds.join()}
           action={saveProjectServices}
           submitLabel="Guardar servicios"
         >

@@ -7,6 +7,7 @@ import { DeleteButton } from "@/components/admin/delete-button";
 import { Section } from "@/components/admin/fields";
 import { ImageField } from "@/components/admin/image-field";
 import { PostFields } from "@/components/admin/post-fields";
+import { isUuid } from "@/lib/admin-forms";
 import { getPostForAdmin } from "@/server/admin-blog";
 import {
   deletePost,
@@ -21,8 +22,9 @@ export default async function EditPostPage({
   params,
 }: PageProps<"/admin/blog/[id]">) {
   const { id } = await params;
-  // A malformed id is just a missing article.
-  const post = await getPostForAdmin(id).catch(() => null);
+  // A malformed id is just a missing post; any other error is shown as such.
+  if (!isUuid(id)) notFound();
+  const post = await getPostForAdmin(id);
   if (!post) notFound();
 
   const live =
@@ -47,7 +49,11 @@ export default async function EditPostPage({
       </div>
 
       <Section title="Artículo">
-        <ActionForm action={savePost} submitLabel="Guardar artículo">
+        <ActionForm
+          resetKey={`${post.updated_at}-${post.serviceId}`}
+          action={savePost}
+          submitLabel="Guardar artículo"
+        >
           <PostFields post={post} services={post.allServices} />
         </ActionForm>
       </Section>

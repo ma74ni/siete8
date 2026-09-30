@@ -76,6 +76,11 @@ export const planForm = z.object({
 
 export const idForm = z.object({ id: z.uuid() });
 
+/** Whether a route parameter is a valid id, before querying with it. */
+export function isUuid(value: string): boolean {
+  return z.uuid().safeParse(value).success;
+}
+
 /** One requirement per line; blank lines are dropped. */
 export const requirementLines = z
   .string()
