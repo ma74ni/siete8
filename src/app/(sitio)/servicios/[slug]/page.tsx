@@ -6,7 +6,8 @@ import { Button } from "@/components/sitio/button";
 import { Closing } from "@/components/sitio/closing";
 import { Faq } from "@/components/sitio/faq";
 import { Floor } from "@/components/sitio/floor";
-import { PlanTable, type PlanRow } from "@/components/sitio/plan-table";
+import { PlanGrid } from "@/components/sitio/plan-grid";
+import type { PlanRow } from "@/components/sitio/plan-table";
 import { Tabs } from "@/components/sitio/tabs";
 import { lowestPriceCents } from "@/lib/plans";
 import { formatCents } from "@/lib/price";
@@ -175,7 +176,7 @@ function Plans({ service }: { service: ServicePage }) {
       }));
 
   const table = (holder: ServicePage["plans"][number]["holderType"]) => (
-    <PlanTable
+    <PlanGrid
       label={HOLDER_LABELS[holder]}
       plans={rows(holder)}
       recommendedLabel="recomendado para facturar"

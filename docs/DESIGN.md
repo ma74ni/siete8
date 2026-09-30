@@ -180,6 +180,7 @@ Una sola familia en dos anchos, en eco del logotipo ancho de SIETE8: **Archivo**
 | Enlace | `carmin`, subrayado de 1 px con 3 px de separación |
 | Botón flotante de WhatsApp | Círculo de 56 px, fondo `ink` (no el verde de WhatsApp), ícono blanco; esquina inferior derecha, respeta el área segura |
 | Tabla de planes | Filas con divisor `line`, precio alineado a la derecha en cifras tabulares, fila recomendada con borde izquierdo de 3 px `carmin` |
+| Grilla de planes | En la página de cada servicio. Tarjetas con borde `line` y radio 4 px: nombre, precio en cifras tabulares con "incluye IVA" debajo, y botón "Solicitar". Una columna en pantallas angostas y tantas columnas de 12 rem como quepan en las anchas. La tarjeta recomendada lleva borde izquierdo de 3 px `carmin` |
 | Tarjeta de proyecto | Captura en proporción 16:10 sin sombra, título, tipo de proyecto y estado. La etiqueta de estado va en texto, no en píldora de color |
 | Formularios | Campo alto 48 px, borde `line`, foco con anillo de 2 px `carmin` y separación de 2 px |
 | Radios | 4 px en controles, 0 en imágenes y pisos. Sin radios grandes |
@@ -203,7 +204,7 @@ Una sola familia en dos anchos, en eco del logotipo ancho de SIETE8: **Archivo**
 
 - Frases cortas, voz activa, tuteo.
 - Nombrar las cosas como las nombra el cliente: "firma electrónica", no "certificado digital de firma".
-- Precios siempre con IVA incluido y el texto "incluye IVA" junto al primero de la tabla.
+- Precios siempre con IVA incluido y el texto "incluye IVA" junto al primero de la tabla. En la grilla de planes va bajo cada precio, porque cada tarjeta se lee por separado.
 - Los botones dicen qué pasa al tocarlos. Si el botón dice "Enviar solicitud", la confirmación dice "Solicitud enviada".
 - Errores: qué pasó y cómo arreglarlo, sin disculpas genéricas. Ejemplo: "Falta tu número de celular. Lo necesitamos para enviarte el código de activación."
 
