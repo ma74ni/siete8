@@ -459,13 +459,18 @@ export type Database = {
         Row: {
           body_md: string | null
           category_id: string
+          closing_title: string | null
           created_at: string
+          cross_sell_cta: string | null
+          cross_sell_text: string | null
           external_app_url: string | null
           featured: boolean
           icon: string | null
           id: string
           kind: Database["public"]["Enums"]["service_kind"]
           name: string
+          related_service_id: string | null
+          requirements_intro: string | null
           seo_description: string | null
           seo_title: string | null
           slug: string
@@ -477,13 +482,18 @@ export type Database = {
         Insert: {
           body_md?: string | null
           category_id: string
+          closing_title?: string | null
           created_at?: string
+          cross_sell_cta?: string | null
+          cross_sell_text?: string | null
           external_app_url?: string | null
           featured?: boolean
           icon?: string | null
           id?: string
           kind?: Database["public"]["Enums"]["service_kind"]
           name: string
+          related_service_id?: string | null
+          requirements_intro?: string | null
           seo_description?: string | null
           seo_title?: string | null
           slug: string
@@ -495,13 +505,18 @@ export type Database = {
         Update: {
           body_md?: string | null
           category_id?: string
+          closing_title?: string | null
           created_at?: string
+          cross_sell_cta?: string | null
+          cross_sell_text?: string | null
           external_app_url?: string | null
           featured?: boolean
           icon?: string | null
           id?: string
           kind?: Database["public"]["Enums"]["service_kind"]
           name?: string
+          related_service_id?: string | null
+          requirements_intro?: string | null
           seo_description?: string | null
           seo_title?: string | null
           slug?: string
@@ -516,6 +531,86 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "category"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_related_service_id_fkey"
+            columns: ["related_service_id"]
+            isOneToOne: false
+            referencedRelation: "service"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_faq: {
+        Row: {
+          answer: string
+          created_at: string
+          id: string
+          question: string
+          service_id: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          answer: string
+          created_at?: string
+          id?: string
+          question: string
+          service_id: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          answer?: string
+          created_at?: string
+          id?: string
+          question?: string
+          service_id?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_faq_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_step: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          service_id: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          service_id: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          service_id?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_step_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service"
             referencedColumns: ["id"]
           },
         ]

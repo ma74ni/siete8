@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { Closing } from "@/components/sitio/closing";
 import { Floor } from "@/components/sitio/floor";
 import { CategoryDivider } from "@/components/sitio/motif/category-divider";
 import { getServiceMenu } from "@/server/catalog";
@@ -72,6 +73,7 @@ export default async function ServicesPage() {
           </div>
         </Floor>
       ))}
+      <Closing />
     </>
   );
 }
