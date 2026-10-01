@@ -14,6 +14,11 @@ export const serverSchema = z.object({
   SUPABASE_SECRET_KEY: z.string().startsWith("sb_secret_"),
   // Set by Netlify: production, deploy-preview, branch-deploy or dev.
   CONTEXT: z.string().optional(),
+  // Contact form (E3-08). Optional: without Turnstile the form is not shown,
+  // without Resend the lead is saved but no email is sent.
+  TURNSTILE_SECRET_KEY: z.string().min(1).optional(),
+  RESEND_API_KEY: z.string().startsWith("re_").optional(),
+  ADMIN_NOTIFICATION_EMAIL: z.email().optional(),
 });
 
 export const clientSchema = z.object({
@@ -25,6 +30,8 @@ export const clientSchema = z.object({
     .startsWith("sb_publishable_"),
   // Google Analytics 4 (E5-04). Only set in production (netlify.toml), so
   // previews and local runs send nothing.
+  // Cloudflare Turnstile site key of the contact form (E3-08), optional.
+  NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string().min(1).optional(),
   NEXT_PUBLIC_GA_ID: z
     .string()
     .regex(/^G-[A-Z0-9]+$/)

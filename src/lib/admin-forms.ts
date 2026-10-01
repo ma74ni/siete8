@@ -262,6 +262,24 @@ export const postForm = z
 
 export const postCoverForm = z.object({ post_id: z.uuid() });
 
+// Leads (E4-07) -----------------------------------------------------------------
+
+export const leadStatus = z.enum(["new", "contacted", "closed", "lost"]);
+export const leadSource = z.enum(["form", "whatsapp", "assistant"]);
+
+export const leadAdminForm = z.object({
+  id: z.uuid(),
+  status: leadStatus,
+  notes: optionalText(4000),
+});
+
+/** Filters of the leads list, from the address; unknown values are dropped. */
+export const leadFilters = z.object({
+  estado: leadStatus.optional().catch(undefined),
+  origen: leadSource.optional().catch(undefined),
+  servicio: z.uuid().optional().catch(undefined),
+});
+
 /** Result of a panel Server Action, shown next to its form. */
 export type FormState =
   | { status: "idle" }

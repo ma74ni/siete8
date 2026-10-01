@@ -221,7 +221,7 @@ SEO: título "Servicios: sitios web, hosting, firma electrónica y más | Siete8
 
 ## 10. Contacto
 
-Página `/contacto`. Sin formulario hasta la tarea E3-08.
+Página `/contacto`. El formulario (E3-08) se muestra cuando Turnstile está configurado; si no, la página queda solo con WhatsApp.
 
 | Elemento | Texto |
 | --- | --- |
@@ -230,6 +230,13 @@ Página `/contacto`. Sin formulario hasta la tarea E3-08.
 | Botón | Escríbenos por WhatsApp |
 | Datos | WhatsApp: 0961128233. Teléfono: 0999843108. Correo: hola@siete8.com. Quito, Ecuador. |
 | Redes (h2) | Síguenos: Facebook, Instagram, LinkedIn (enlaces de la sección 8). |
+| Formulario (h2) | ¿Prefieres que te escribamos? Déjanos tus datos y te respondemos en el horario de atención. |
+| Campos | Nombre. Celular (Te respondemos por WhatsApp.). Correo (opcional). Servicio (opcional): Todavía no sé, {servicios visibles}. ¿En qué te ayudamos? (opcional). |
+| Consentimiento | Acepto que Siete8 use mis datos para responder mi solicitud, según la política de privacidad. |
+| Botón | Enviar mensaje. Mientras envía: Enviando… |
+| Enviado | Recibimos tu mensaje. Te escribimos por WhatsApp o al correo, todos los días de 07:00 a 20:00. |
+| Errores | Revisa los campos marcados. (cada campo: Revisa este campo.) / No pudimos comprobar que no eres un robot. Espera a que aparezca la marca de verificación y envía de nuevo. / Ya recibimos tus mensajes. Te escribimos pronto; si es urgente, escríbenos por WhatsApp al 0961128233. / No pudimos enviar tu mensaje. Inténtalo de nuevo o escríbenos por WhatsApp al 0961128233. |
+| Correo de aviso (al admin) | Asunto: Nuevo contacto desde el sitio: {nombre} ({servicio}). Cuerpo: Nombre, Celular, Correo, Servicio, Origen, el mensaje (o "(Sin mensaje)") y Ver en el panel: {enlace}. Remitente: Siete8 <avisos@siete8.com>. |
 
 SEO: título "Contacto | Siete8"; descripción "Escríbenos por WhatsApp al 0961128233, todos los días de 07:00 a 20:00. También por teléfono o a hola@siete8.com."
 
@@ -291,6 +298,8 @@ Textos internos del panel (`/admin`). El panel usa la misma voz que el sitio: tu
 | Blog | Campos | Título. Dirección (Parte final del enlace: /blog/firma-electronica-en-ecuador. Vacía: se arma con el título.). Autor (Vacío: Siete8). Extracto (Una o dos frases para el listado y la vista previa en redes.). Artículo, con pestañas Escribir y Vista previa (Markdown: ## Subtítulo, **negrita**, listas con guion, [texto](/servicios/firma-electronica) para enlazar.; sin texto: Sin texto todavía.). Estado: Borrador, Publicado. Fecha de publicación (Hora de Quito. Vacía: al publicar. Si es futura, aparece ese día.). Servicio relacionado (Ninguno). SEO: Título SEO (Hasta 70 caracteres. Vacío: el título.), Descripción SEO (Hasta 160 caracteres. Vacío: el extracto.). Botón: Guardar artículo. |
 | Blog | Editar | Volver al blog. Ver en el sitio / No aparece en el sitio: es un borrador o está programado. Portada (Se ve arriba del artículo y al compartirlo en redes y WhatsApp. Usa una imagen horizontal, idealmente de 1200 × 630.). Borrar el artículo: ¿Borrar "{título}"? No se puede deshacer. Botón: Borrar artículo. |
 | Blog | Redes | Anunciado en redes el {fecha}. / Se anunciará en redes hasta 15 minutos después de salir publicado. |
+| Leads | Listado | Leads. Las personas que te dejaron sus datos, de la más reciente a la más antigua. Filtros: Estado, Origen, Servicio (Todos). Botón: Filtrar. Vacío: No hay leads con estos filtros. Estados: Nuevo, Contactado, Cerrado, Perdido. Origen: Formulario, WhatsApp, Asistente. |
+| Leads | Detalle | Volver a leads. Celular (abre WhatsApp), Correo, Servicio, Plan, Origen, Campaña, Recibido, Consentimiento. Mensaje (Sin mensaje.). Seguimiento: Estado, Notas (Solo las ves tú, en el panel.). Botón: Guardar lead. Historial de estados: {estado}: {fecha, hora}. Mensaje: Lead guardado. |
 | Mensajes | Blog | Artículo guardado. Portada guardada. Ya hay un artículo con esa dirección. |
 
 ## 14. Portafolio

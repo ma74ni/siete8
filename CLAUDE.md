@@ -84,6 +84,7 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 - Los precios se guardan sin IVA (`price_without_vat`) junto con `vat_rate`. El sitio siempre muestra el total con IVA: `round(price * (1 + vat_rate), 2)`, con coma decimal (`$20,69`). El cálculo se hace en una sola función compartida, en centavos enteros, para evitar errores de coma flotante; ningún componente calcula el IVA por su cuenta.
 - El sitio y cualquier formulario nunca piden ni guardan documentos de identidad. Esos se envían por WhatsApp.
 - Un lead no se guarda sin consentimiento (`consent_at`).
+- Formulario de contacto (E3-08): `submitLead` en `src/server/leads.ts` valida en este orden: honeypot (`website`), Turnstile, esquema `leadForm` de `@/lib/contact-form` (consentimiento incluido) y un límite de 3 envíos por celular o correo cada 10 minutos; solo entonces inserta con `createAdminClient()`, y avisa por Resend a `ADMIN_NOTIFICATION_EMAIL`. El celular se guarda normalizado (sin espacios ni guiones). Tras un error devuelve lo escrito, porque React vacía el formulario. El historial de estados del lead lo escribe el trigger `record_lead_status` en `lead_status_event`. `CampaignCapture` guarda los UTM de la página de llegada para GA y para el lead.
 
 **Seguridad**
 - Row Level Security en todas las tablas. Lectura anónima solo de lo publicado y visible.
@@ -128,7 +129,7 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 
 - WhatsApp comercial: 0961128233 (en `wa.me`: 593961128233). Atención de 07:00 a 20:00.
 - Teléfono: 0999843108.
-- Correo: hola@siete8.com. Dominio: siete8.com (DNS en Namecheap; el correo vive en DreamHost y sus registros MX, SPF, DKIM y DMARC no se tocan).
+- Correo: hola@siete8.com. Dominio: siete8.com, registrado en Namecheap, con el DNS en **Netlify DNS** (NS1): los registros se agregan en Netlify > Domains, no en Namecheap. El correo vive en DreamHost y sus registros de la raíz (MX, SPF, DKIM y DMARC) no se tocan. Resend usa solo `resend._domainkey` (TXT), `send` y `rsend` (CNAME).
 - Redes: facebook.com/siete8.ec, instagram.com/siete8.ec, linkedin.com/company/siete8.ec.
 
 ## Variables de entorno
@@ -147,7 +148,7 @@ Se validan con Zod al arrancar: `next.config.ts` importa `src/env/schema.ts`, as
 | `NEXT_PUBLIC_SITE_URL` | pública | E0-03 (exigida) |
 | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | pública | E1-06 |
 | `SUPABASE_SECRET_KEY` | secreta | E1-06 |
-| `RESEND_API_KEY`, `ADMIN_NOTIFICATION_EMAIL`, `TURNSTILE_SECRET_KEY` | secreta | E3-08 |
+| `RESEND_API_KEY`, `ADMIN_NOTIFICATION_EMAIL`, `TURNSTILE_SECRET_KEY` | secreta, opcional | E3-08 (sin Turnstile no se muestra el formulario; sin Resend se guarda el lead pero no llega el correo) |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | pública | E3-08 |
 | `REVALIDATE_SECRET` | secreta | primera ruta de revalidación bajo demanda |
 | `NEXT_PUBLIC_GA_ID` | pública, opcional | E5-04 (solo producción, en `netlify.toml`) |

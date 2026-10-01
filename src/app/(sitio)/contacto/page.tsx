@@ -2,13 +2,17 @@ import type { Metadata } from "next";
 
 import { Button } from "@/components/sitio/button";
 import { Closing } from "@/components/sitio/closing";
+import { ContactForm } from "@/components/sitio/contact-form";
 import { Floor } from "@/components/sitio/floor";
 import { TextLink } from "@/components/sitio/text-link";
+import { clientEnv } from "@/env/client";
 import { SOCIAL_LINKS } from "@/lib/social";
 import { generalMessage, whatsappUrl } from "@/lib/whatsapp";
 import { pageMetadata } from "@/lib/metadata";
+import { getServiceMenu } from "@/server/catalog";
+import { submitLead } from "@/server/leads";
 
-// Texts from docs/COPY.md §10 and §8. The form arrives in E3-08.
+// Texts from docs/COPY.md §10 and §8.
 
 const title = "Contacto | Siete8";
 const description =
@@ -28,7 +32,14 @@ const details = [
   { label: "Correo", value: "hola@siete8.com", href: "mailto:hola@siete8.com" },
 ];
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const siteKey = clientEnv.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  const services = siteKey
+    ? (await getServiceMenu()).flatMap((category) =>
+        category.services.map(({ slug, name }) => ({ slug, name })),
+      )
+    : [];
+
   return (
     <>
       <Floor>
@@ -41,7 +52,25 @@ export default function ContactPage() {
           <Button href={whatsapp}>Escríbenos por WhatsApp</Button>
         </div>
       </Floor>
-      <Floor alt>
+      {/* Without Turnstile keys the form is not shown: WhatsApp still works. */}
+      {siteKey && (
+        <Floor alt>
+          <section aria-labelledby="formulario" className="flex flex-col gap-8">
+            <div className="flex flex-col gap-3">
+              <h2 id="formulario">¿Prefieres que te escribamos?</h2>
+              <p>
+                Déjanos tus datos y te respondemos en el horario de atención.
+              </p>
+            </div>
+            <ContactForm
+              action={submitLead}
+              siteKey={siteKey}
+              services={services}
+            />
+          </section>
+        </Floor>
+      )}
+      <Floor alt={!siteKey}>
         <div className="grid gap-10 md:grid-cols-2">
           <dl className="flex flex-col gap-4">
             {details.map((detail) => (

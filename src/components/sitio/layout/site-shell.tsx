@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { Analytics } from "@/components/sitio/analytics";
+import { CampaignCapture } from "@/components/sitio/campaign-capture";
 import { Footer } from "@/components/sitio/layout/footer";
 import { Header } from "@/components/sitio/layout/header";
 import { WhatsAppButton } from "@/components/sitio/layout/whatsapp-button";
@@ -34,6 +35,7 @@ export async function SiteShell({ children }: { children: ReactNode }) {
       </main>
       <Footer published={published} />
       <WhatsAppButton />
+      <CampaignCapture />
       {clientEnv.NEXT_PUBLIC_GA_ID && (
         <Analytics
           gaId={clientEnv.NEXT_PUBLIC_GA_ID}

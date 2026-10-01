@@ -48,6 +48,7 @@ export type Database = {
           created_at: string
           email: string | null
           id: string
+          message: string | null
           name: string | null
           notes: string | null
           phone: string | null
@@ -63,6 +64,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          message?: string | null
           name?: string | null
           notes?: string | null
           phone?: string | null
@@ -78,6 +80,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          message?: string | null
           name?: string | null
           notes?: string | null
           phone?: string | null
@@ -101,6 +104,45 @@ export type Database = {
             columns: ["service_id"]
             isOneToOne: false
             referencedRelation: "service"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_status_event: {
+        Row: {
+          changed_by: string | null
+          created_at: string
+          id: string
+          lead_id: string
+          status: Database["public"]["Enums"]["lead_status"]
+        }
+        Insert: {
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          lead_id: string
+          status: Database["public"]["Enums"]["lead_status"]
+        }
+        Update: {
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          lead_id?: string
+          status?: Database["public"]["Enums"]["lead_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_status_event_changed_by_fkey"
+            columns: ["changed_by"]
+            isOneToOne: false
+            referencedRelation: "profile"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_status_event_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "lead"
             referencedColumns: ["id"]
           },
         ]
