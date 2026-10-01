@@ -117,6 +117,7 @@ describe("planForm", () => {
     expect(planForm.parse({ ...plan, recommended: "on" })).toEqual({
       service_id: serviceId,
       name: "1 año",
+      detail: null,
       holder_type: "natural",
       price_without_vat: 17.99,
       vat_rate: 0.15,

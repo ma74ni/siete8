@@ -89,3 +89,36 @@ export async function getPublishedProjectSlugs(): Promise<string[]> {
   if (error) throw new Error(`Could not list projects: ${error.message}`);
   return data.map((project) => project.slug);
 }
+
+/**
+ * Published projects linked to a service, for its page (E6-02). The inner
+ * join keeps only projects that have the service.
+ */
+export async function getProjectsForService(
+  serviceSlug: string,
+  limit = 3,
+): Promise<ProjectCardData[]> {
+  const supabase = createPublicClient();
+  const { data, error } = await supabase
+    .from("project")
+    .select(
+      "slug, title, summary, status, cover_url, project_service!inner(service!inner(slug))",
+    )
+    .eq("published", true)
+    .eq("project_service.service.slug", serviceSlug)
+    .order("sort_order")
+    .limit(limit);
+
+  if (error) {
+    throw new Error(
+      `Could not load projects of ${serviceSlug}: ${error.message}`,
+    );
+  }
+  return data.map(({ slug, title, summary, status, cover_url }) => ({
+    slug,
+    title,
+    summary,
+    status,
+    coverUrl: cover_url,
+  }));
+}

@@ -7,7 +7,10 @@ import { Closing } from "@/components/sitio/closing";
 import { Faq } from "@/components/sitio/faq";
 import { Floor } from "@/components/sitio/floor";
 import { JsonLd } from "@/components/sitio/json-ld";
+import { Markdown } from "@/components/sitio/markdown";
+import { HeroMotif } from "@/components/sitio/motif/hero-motif";
 import { PlanGrid } from "@/components/sitio/plan-grid";
+import { ProjectCard } from "@/components/sitio/project-card";
 import type { PlanRow } from "@/components/sitio/plan-table";
 import { Tabs } from "@/components/sitio/tabs";
 import { clientEnv } from "@/env/client";
@@ -30,6 +33,7 @@ import {
   getVisibleServiceSlugs,
   type ServicePage,
 } from "@/server/catalog";
+import { getProjectsForService } from "@/server/portfolio";
 
 // Fixed texts from docs/COPY.md §2 and §4; everything else comes from the
 // service in the database, so the panel can edit it.
@@ -58,14 +62,35 @@ export default async function ServicePageRoute({
   const { slug } = await params;
   const service = await getServicePage(slug);
   if (!service) notFound();
+  const projects = await getProjectsForService(service.slug);
 
   const sections = [
-    service.steps.length > 0 && <Steps key="steps" steps={service.steps} />,
+    service.body && (
+      // Who it is for, what it includes and the timeline (E6-02).
+      <Markdown key="body" variant="checklist">
+        {service.body}
+      </Markdown>
+    ),
+    service.steps.length > 0 && (
+      <Steps
+        key="steps"
+        // COPY §4 for the signature ("la" firma); §16 for the rest.
+        title={
+          service.slug === "firma-electronica"
+            ? "Así la obtienes"
+            : "Cómo funciona"
+        }
+        steps={service.steps}
+      />
+    ),
     service.plans.length > 0 && <Plans key="plans" service={service} />,
     requirementsByHolder(service.plans).length > 0 && (
       <Requirements key="requirements" service={service} />
     ),
     service.faqs.length > 0 && <Questions key="faq" faqs={service.faqs} />,
+    projects.length > 0 && (
+      <RelatedProjects key="projects" projects={projects} />
+    ),
     service.crossSell && (
       <CrossSell key="cross-sell" crossSell={service.crossSell} />
     ),
@@ -101,48 +126,94 @@ export default async function ServicePageRoute({
   );
 }
 
+// The three categories of the home motif (COPY §3), in the same order.
+const MOTIF_CATEGORIES = [
+  { slug: "presencia-digital", name: "Presencia digital" },
+  { slug: "tramites-y-cumplimiento", name: "Trámites y cumplimiento" },
+  { slug: "desarrollo-y-datos", name: "Desarrollo y datos" },
+] as const;
+
 function Hero({ service, request }: { service: ServicePage; request: string }) {
   const from = lowestPriceCents(service.plans);
   const hasPlans = service.plans.length > 0;
+  const active = MOTIF_CATEGORIES.findIndex(
+    (category) => category.slug === service.category.slug,
+  );
+  // Key facts (E6-02): the timeline, how the price works and the hours.
+  const facts = [
+    service.timeline && { label: "Plazo aproximado", value: service.timeline },
+    from !== null
+      ? { label: "Precio", value: `Desde ${formatCents(from)}, incluye IVA` }
+      : service.priceNote && { label: "Precio", value: service.priceNote },
+    { label: "Atención", value: "Todos los días, de 07:00 a 20:00" },
+  ].filter((fact): fact is { label: string; value: string } => Boolean(fact));
 
   return (
-    <div className="flex flex-col items-start gap-6">
-      <nav aria-label="Ruta" className="text-small">
-        <ol className="flex flex-wrap items-center gap-x-2">
-          <li>
-            <Link href="/">Inicio</Link>
-          </li>
-          <li aria-hidden>/</li>
-          <li>
-            <Link href={`/servicios#${service.category.slug}`}>
-              {service.category.name}
-            </Link>
-          </li>
-          <li aria-hidden>/</li>
-          <li aria-current="page">{service.name}</li>
-        </ol>
-      </nav>
-      <h1>{service.name}</h1>
-      {service.summary && <p>{service.summary}</p>}
-      <div className="flex flex-wrap items-center gap-4">
-        <Button href={request}>
-          {hasPlans ? "Solicitar por WhatsApp" : "Escríbenos por WhatsApp"}
-        </Button>
-        {hasPlans && (
-          <Button href="#planes" variant="secondary">
-            Ver planes
+    <div className="grid w-full items-center gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-12">
+      <HeroMotif
+        categories={[
+          MOTIF_CATEGORIES[0].name,
+          MOTIF_CATEGORIES[1].name,
+          MOTIF_CATEGORIES[2].name,
+        ]}
+        active={active === -1 ? undefined : active}
+        // Only the home hero animates (DESIGN §8). Desktop only, sized by
+        // the screen height like the home hero, never distorted.
+        still
+        className="hidden lg:order-2 lg:block lg:w-[min(100%,calc((100svh-12rem)*0.7961))] lg:justify-self-end"
+      />
+      <div className="flex flex-col items-start gap-6">
+        <nav aria-label="Ruta" className="text-small">
+          <ol className="flex flex-wrap items-center gap-x-2">
+            <li>
+              <Link href="/">Inicio</Link>
+            </li>
+            <li aria-hidden>/</li>
+            <li>
+              <Link href={`/servicios#${service.category.slug}`}>
+                {service.category.name}
+              </Link>
+            </li>
+            <li aria-hidden>/</li>
+            <li aria-current="page">{service.name}</li>
+          </ol>
+        </nav>
+        <h1>{service.name}</h1>
+        {service.summary && <p>{service.summary}</p>}
+        <div className="flex flex-wrap items-center gap-4">
+          <Button href={request}>
+            {hasPlans ? "Solicitar por WhatsApp" : "Escríbenos por WhatsApp"}
           </Button>
-        )}
+          {hasPlans ? (
+            <Button href="#planes" variant="secondary">
+              Ver planes
+            </Button>
+          ) : (
+            <Button
+              href={`/contacto?servicio=${service.slug}#formulario`}
+              variant="secondary"
+            >
+              Cuéntanos tu proyecto
+            </Button>
+          )}
+        </div>
+        <dl className="grid w-full gap-4 border-t border-border pt-6 sm:grid-cols-3">
+          {facts.map((fact) => (
+            <div key={fact.label} className="flex flex-col gap-1">
+              <dt className="text-small">{fact.label}</dt>
+              <dd className="font-medium">{fact.value}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
-      {from !== null && <p>Desde {formatCents(from)}, incluye IVA.</p>}
     </div>
   );
 }
 
-function Steps({ steps }: { steps: string[] }) {
+function Steps({ title, steps }: { title: string; steps: string[] }) {
   return (
     <div className="flex flex-col gap-10">
-      <h2>Así la obtienes</h2>
+      <h2>{title}</h2>
       <ol className="grid gap-10 lg:grid-cols-3">
         {steps.map((step, index) => (
           <li key={step} className="flex flex-col gap-3">
@@ -165,6 +236,7 @@ function Plans({ service }: { service: ServicePage }) {
       .filter((plan) => plan.holderType === holder)
       .map((plan): PlanRow => ({
         ...plan,
+        detail: plan.detail ?? undefined,
         action: {
           label: "Solicitar",
           href: whatsappUrl(
@@ -268,5 +340,28 @@ function CrossSell({
         {crossSell.cta}
       </Button>
     </div>
+  );
+}
+
+/** Published projects of this service (E6-02), only when there are some. */
+function RelatedProjects({
+  projects,
+}: {
+  projects: Awaited<ReturnType<typeof getProjectsForService>>;
+}) {
+  return (
+    <section className="flex flex-col gap-10">
+      <h2>Proyectos relacionados</h2>
+      <ul className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
+        {projects.map((project) => (
+          <li key={project.slug}>
+            <ProjectCard project={project} />
+          </li>
+        ))}
+      </ul>
+      <Button href="/proyectos" variant="secondary" className="self-start">
+        Ver todos los proyectos
+      </Button>
+    </section>
   );
 }

@@ -150,6 +150,7 @@ export type Database = {
       plan: {
         Row: {
           created_at: string
+          detail: string | null
           duration_unit: Database["public"]["Enums"]["duration_unit"] | null
           duration_value: number | null
           holder_type: Database["public"]["Enums"]["holder_type"]
@@ -165,6 +166,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          detail?: string | null
           duration_unit?: Database["public"]["Enums"]["duration_unit"] | null
           duration_value?: number | null
           holder_type?: Database["public"]["Enums"]["holder_type"]
@@ -180,6 +182,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          detail?: string | null
           duration_unit?: Database["public"]["Enums"]["duration_unit"] | null
           duration_value?: number | null
           holder_type?: Database["public"]["Enums"]["holder_type"]
@@ -517,6 +520,7 @@ export type Database = {
           id: string
           kind: Database["public"]["Enums"]["service_kind"]
           name: string
+          price_note: string | null
           related_service_id: string | null
           requirements_intro: string | null
           seo_description: string | null
@@ -524,6 +528,7 @@ export type Database = {
           slug: string
           sort_order: number
           summary: string | null
+          timeline: string | null
           updated_at: string
           visible: boolean
         }
@@ -540,6 +545,7 @@ export type Database = {
           id?: string
           kind?: Database["public"]["Enums"]["service_kind"]
           name: string
+          price_note?: string | null
           related_service_id?: string | null
           requirements_intro?: string | null
           seo_description?: string | null
@@ -547,6 +553,7 @@ export type Database = {
           slug: string
           sort_order?: number
           summary?: string | null
+          timeline?: string | null
           updated_at?: string
           visible?: boolean
         }
@@ -563,6 +570,7 @@ export type Database = {
           id?: string
           kind?: Database["public"]["Enums"]["service_kind"]
           name?: string
+          price_note?: string | null
           related_service_id?: string | null
           requirements_intro?: string | null
           seo_description?: string | null
@@ -570,6 +578,7 @@ export type Database = {
           slug?: string
           sort_order?: number
           summary?: string | null
+          timeline?: string | null
           updated_at?: string
           visible?: boolean
         }
