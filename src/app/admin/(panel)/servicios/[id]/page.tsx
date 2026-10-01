@@ -7,6 +7,7 @@ import { CheckboxField } from "@/components/admin/checkbox-field";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { PriceField } from "@/components/admin/price-field";
 import { FormField } from "@/components/sitio/form-field";
+import { isUuid } from "@/lib/admin-forms";
 import {
   HOLDER_LABELS,
   holderTypes,
@@ -84,8 +85,9 @@ export default async function EditServicePage({
   params,
 }: PageProps<"/admin/servicios/[id]">) {
   const { id } = await params;
-  // A malformed id is just a missing service.
-  const service = await getServiceForAdmin(id).catch(() => null);
+  // A malformed id is just a missing service; any other error is shown as such.
+  if (!isUuid(id)) notFound();
+  const service = await getServiceForAdmin(id);
   if (!service) notFound();
 
   return (
@@ -160,6 +162,7 @@ function PlanEditor({
           : "Agregar un plan"}
       </h3>
       <ActionForm
+        resetKey={plan?.updated_at}
         action={savePlan}
         submitLabel={plan ? "Guardar plan" : "Agregar plan"}
         variant={plan ? "primary" : "secondary"}
@@ -232,7 +235,11 @@ function PlanEditor({
 
 function ServiceEditor({ service }: { service: ServiceForAdmin }) {
   return (
-    <ActionForm action={updateService} submitLabel="Guardar servicio">
+    <ActionForm
+      resetKey={service.updated_at}
+      action={updateService}
+      submitLabel="Guardar servicio"
+    >
       <input type="hidden" name="id" value={service.id} />
       <CheckboxField
         id="service-visible"
@@ -344,7 +351,11 @@ function HolderContent({ service }: { service: ServiceForAdmin }) {
         className="flex flex-col gap-6 rounded-control border border-border p-5"
       >
         <h3 className="text-h4">{label}</h3>
-        <ActionForm action={saveRequirements} submitLabel="Guardar requisitos">
+        <ActionForm
+          resetKey={items.map((item) => item.text).join("|")}
+          action={saveRequirements}
+          submitLabel="Guardar requisitos"
+        >
           <input type="hidden" name="service_id" value={service.id} />
           <input type="hidden" name="holder_type" value={holder} />
           <FormField
@@ -357,7 +368,11 @@ function HolderContent({ service }: { service: ServiceForAdmin }) {
             hint="Uno por línea, en el orden en que se muestran. Se aplican a todos los planes de este tipo."
           />
         </ActionForm>
-        <ActionForm action={saveHolderNote} submitLabel="Guardar aviso">
+        <ActionForm
+          resetKey={note?.body ?? ""}
+          action={saveHolderNote}
+          submitLabel="Guardar aviso"
+        >
           <input type="hidden" name="service_id" value={service.id} />
           <input type="hidden" name="holder_type" value={holder} />
           <FormField
@@ -386,6 +401,7 @@ function StepEditor({
     <div className="flex flex-col gap-4 rounded-control border border-border p-5">
       {!step && <h3 className="text-h4">Agregar un paso</h3>}
       <ActionForm
+        resetKey={step?.updated_at}
         action={saveStep}
         submitLabel={step ? "Guardar paso" : "Agregar paso"}
         variant={step ? "primary" : "secondary"}
@@ -437,6 +453,7 @@ function FaqEditor({
     <div className="flex flex-col gap-4 rounded-control border border-border p-5">
       {!faq && <h3 className="text-h4">Agregar una pregunta</h3>}
       <ActionForm
+        resetKey={faq?.updated_at}
         action={saveFaq}
         submitLabel={faq ? "Guardar pregunta" : "Agregar pregunta"}
         variant={faq ? "primary" : "secondary"}

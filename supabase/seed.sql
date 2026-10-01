@@ -155,3 +155,33 @@ select s.id, 'legal_entity', 'Los planes de 7 y 30 días no están disponibles.'
 from public.service s
 where s.slug = 'firma-electronica'
 on conflict (service_id, holder_type) do nothing;
+
+-- Portfolio services (E6-01): the migration runs before the seed, when the
+-- services do not exist yet.
+insert into public.project_service (project_id, service_id)
+select p.id, s.id
+from (values
+  ('bi-de-seguros-y-reporteria-a-entes-de-control', 'analisis-de-datos-bi'),
+  ('encuestas-hospitalarias', 'apps-y-desarrollo-a-medida'),
+  ('bypass-de-aplicaciones-bi', 'apps-y-desarrollo-a-medida'),
+  ('encuestas-a100', 'apps-y-desarrollo-a-medida'),
+  ('dwh-y-piloto-de-bi-con-hypercards', 'analisis-de-datos-bi'),
+  ('constelaciones-ecuador', 'paginas-web'),
+  ('piloto-de-bi-con-hypercards-banca', 'analisis-de-datos-bi'),
+  ('figlac', 'paginas-web'),
+  ('dwh-y-bi-empresarial', 'analisis-de-datos-bi'),
+  ('cg-comercio-exterior', 'landing-page'),
+  ('mbs-connection-flower', 'paginas-web'),
+  ('banco-de-motos', 'apps-y-desarrollo-a-medida')
+) as link (project_slug, service_slug)
+join public.project p on p.slug = link.project_slug
+join public.service s on s.slug = link.service_slug
+on conflict do nothing;
+
+-- First article's service (E6-04): the migration runs before the seed.
+insert into public.post_service (post_id, service_id)
+select p.id, s.id
+from public.post p
+join public.service s on s.slug = 'firma-electronica'
+where p.slug = 'firma-electronica-en-ecuador'
+on conflict do nothing;

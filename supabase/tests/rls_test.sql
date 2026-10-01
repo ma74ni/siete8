@@ -119,7 +119,7 @@ update public.profile set role = 'admin' where id = '00000000-0000-0000-0000-000
 
 reset role;
 select is((select count(*) from public.plan where price_without_vat = 0)::int, 0, 'user: cannot update prices');
-select is((select count(*) from public.project)::int, 2, 'user: cannot delete projects');
+select is((select count(*) from public.project where slug like 'test-project-%')::int, 2, 'user: cannot delete projects');
 select is(
   (select role from public.profile where id = '00000000-0000-0000-0000-00000000aa02'), null::public.app_role,
   'user: cannot grant themselves the admin role'
@@ -133,8 +133,8 @@ select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000
 select is((select public.is_admin()), true, 'admin: is admin');
 select is((select count(*) from public.category)::int, 6, 'admin: reads hidden categories');
 select is((select count(*) from public.service)::int, 16, 'admin: reads hidden services');
-select is((select count(*) from public.post)::int, 3, 'admin: reads drafts and scheduled posts');
-select is((select count(*) from public.project)::int, 2, 'admin: reads unpublished projects');
+select is((select count(*) from public.post where slug like 'test-%')::int, 3, 'admin: reads drafts and scheduled posts');
+select is((select count(*) from public.project where slug like 'test-project-%')::int, 2, 'admin: reads unpublished projects');
 select is((select count(*) from public.lead)::int, 1, 'admin: reads leads');
 select is((select count(*) from public.site_settings)::int, 4, 'admin: reads private settings');
 select is((select count(*) from public.profile)::int, 2, 'admin: reads all profiles');

@@ -2,13 +2,9 @@
 
 import "server-only";
 
-import { revalidatePath } from "next/cache";
-import type { z } from "zod";
-
 import {
   faqForm,
   type FormState,
-  formValues,
   holderNoteForm,
   idForm,
   planForm,
@@ -16,37 +12,18 @@ import {
   serviceForm,
   stepForm,
 } from "@/lib/admin-forms";
+import {
+  failed,
+  INVALID,
+  parse,
+  refreshSite,
+} from "@/server/admin-action-helpers";
 import { requireAdmin } from "@/server/auth";
 import { createSessionClient } from "@/server/supabase/session";
 
 // Panel writes of the catalog (E4-02, E4-03). Every action checks the admin
 // role, validates with Zod and writes as the signed-in user (RLS applies).
 // Texts from docs/COPY.md §13.
-
-const INVALID: FormState = {
-  status: "error",
-  message: "Revisa los campos marcados: hay datos que no son válidos.",
-};
-
-function failed(what: string): FormState {
-  return {
-    status: "error",
-    message: `No se pudo ${what}. Inténtalo de nuevo; si sigue fallando, avísanos.`,
-  };
-}
-
-/**
- * Every public page shows the catalog (the menu is in the layout), so a
- * change regenerates them all: it shows on the site without a deploy
- * (E3-09, RF-ADM-09).
- */
-function refreshSite() {
-  revalidatePath("/", "layout");
-}
-
-function parse<T extends z.ZodType>(schema: T, formData: FormData) {
-  return schema.safeParse(formValues(formData));
-}
 
 export async function updateService(
   _state: FormState,
@@ -74,6 +51,19 @@ export async function savePlan(
   const { id, ...fields } = parsed.data;
 
   const supabase = await createSessionClient();
+  // Only one recommended plan per holder type (database index): marking this
+  // one unmarks the previous one.
+  if (fields.recommended) {
+    let others = supabase
+      .from("plan")
+      .update({ recommended: false })
+      .eq("service_id", fields.service_id)
+      .eq("holder_type", fields.holder_type)
+      .eq("recommended", true);
+    if (id) others = others.neq("id", id);
+    const { error: unmarkError } = await others;
+    if (unmarkError) return failed("guardar el plan");
+  }
   const { error } = id
     ? await supabase.from("plan").update(fields).eq("id", id)
     : await supabase.from("plan").insert(fields);

@@ -164,6 +164,7 @@ export type Database = {
       post: {
         Row: {
           author_id: string | null
+          author_name: string | null
           body_md: string | null
           cover_url: string | null
           created_at: string
@@ -173,12 +174,14 @@ export type Database = {
           seo_description: string | null
           seo_title: string | null
           slug: string
+          social_sent_at: string | null
           status: Database["public"]["Enums"]["post_status"]
           title: string
           updated_at: string
         }
         Insert: {
           author_id?: string | null
+          author_name?: string | null
           body_md?: string | null
           cover_url?: string | null
           created_at?: string
@@ -188,12 +191,14 @@ export type Database = {
           seo_description?: string | null
           seo_title?: string | null
           slug: string
+          social_sent_at?: string | null
           status?: Database["public"]["Enums"]["post_status"]
           title: string
           updated_at?: string
         }
         Update: {
           author_id?: string | null
+          author_name?: string | null
           body_md?: string | null
           cover_url?: string | null
           created_at?: string
@@ -203,6 +208,7 @@ export type Database = {
           seo_description?: string | null
           seo_title?: string | null
           slug?: string
+          social_sent_at?: string | null
           status?: Database["public"]["Enums"]["post_status"]
           title?: string
           updated_at?: string

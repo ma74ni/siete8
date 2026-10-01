@@ -76,6 +76,11 @@ export const planForm = z.object({
 
 export const idForm = z.object({ id: z.uuid() });
 
+/** Whether a route parameter is a valid id, before querying with it. */
+export function isUuid(value: string): boolean {
+  return z.uuid().safeParse(value).success;
+}
+
 /** One requirement per line; blank lines are dropped. */
 export const requirementLines = z
   .string()
@@ -114,6 +119,148 @@ export const holderNoteForm = z.object({
   holder_type: holderType,
   body: optionalText(300),
 });
+
+// Portfolio (E4-06) ------------------------------------------------------------
+
+/** Same rule as the `slug` check constraints in the database. */
+export const slug = z
+  .string()
+  .trim()
+  .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/)
+  .max(80);
+
+/** Lowercase, accents removed, words joined by hyphens: "Año Nuevo" → "ano-nuevo". */
+export function slugify(text: string): string {
+  return text
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80)
+    .replace(/-+$/, "");
+}
+
+export const projectStatus = z.enum([
+  "in_development",
+  "active",
+  "internal",
+  "replaced",
+  "archived",
+]);
+
+export const projectForm = z
+  .object({
+    id: z.uuid().optional(),
+    title: requiredText(120),
+    slug,
+    status: projectStatus,
+    client_name: optionalText(120),
+    show_client_name: checkbox,
+    sector: optionalText(120),
+    year: z
+      .string()
+      .optional()
+      .transform((value) => (value?.trim() ? Number(value) : null))
+      .pipe(z.number().int().min(2000).max(2100).nullable()),
+    summary: optionalText(300),
+    challenge_md: optionalText(5000),
+    solution_md: optionalText(5000),
+    results_md: optionalText(5000),
+    /** Comma separated: "Laravel, MySQL". */
+    tech_stack: z
+      .string()
+      .optional()
+      .transform((value) =>
+        (value ?? "")
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean),
+      )
+      .pipe(z.array(z.string().max(40)).max(20)),
+    live_url: optionalText(300).pipe(
+      z
+        .string()
+        .regex(/^https:\/\/\S+$/)
+        .nullable(),
+    ),
+    featured: checkbox,
+    published: checkbox,
+    sort_order: order,
+  })
+  // Same rule as the database: the card shows the client's name or the sector.
+  .refine(
+    (project) =>
+      project.show_client_name
+        ? project.client_name !== null
+        : project.sector !== null,
+    { path: ["sector"] },
+  );
+
+/** Images accepted by the Storage bucket (E1-08). */
+export const IMAGE_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/avif",
+];
+export const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
+
+export const imageFile = z
+  .instanceof(File)
+  .refine((file) => file.size > 0 && file.size <= MAX_IMAGE_BYTES)
+  .refine((file) => IMAGE_TYPES.includes(file.type));
+
+export const projectImageForm = z.object({
+  project_id: z.uuid(),
+  alt: requiredText(200),
+  device: z.enum(["desktop", "mobile"]),
+  sort_order: order,
+});
+
+export const projectCoverForm = z.object({ project_id: z.uuid() });
+
+export const projectServicesForm = z.object({
+  project_id: z.uuid(),
+  service_ids: z.array(z.uuid()).max(20),
+});
+
+// Blog (E4-05) ------------------------------------------------------------------
+
+export const postForm = z
+  .object({
+    id: z.uuid().optional(),
+    title: requiredText(160),
+    slug,
+    excerpt: optionalText(300),
+    body_md: optionalText(40_000),
+    author_name: optionalText(80),
+    status: z.enum(["draft", "published"]),
+    /** `datetime-local` value in Quito time; empty means "now" when publishing. */
+    published_at: z
+      .string()
+      .optional()
+      .transform((value) => value?.trim() || null)
+      .pipe(
+        z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/)
+          .nullable(),
+      ),
+    seo_title: optionalText(70),
+    seo_description: optionalText(160),
+    service_id: z
+      .string()
+      .optional()
+      .transform((value) => value || null)
+      .pipe(z.uuid().nullable()),
+  })
+  // Same rule as the database: a published article needs its body.
+  .refine((post) => post.status === "draft" || post.body_md !== null, {
+    path: ["body_md"],
+  });
+
+export const postCoverForm = z.object({ post_id: z.uuid() });
 
 /** Result of a panel Server Action, shown next to its form. */
 export type FormState =

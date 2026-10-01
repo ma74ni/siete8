@@ -6,10 +6,11 @@ import { useEffect, useId, useRef, useState } from "react";
 
 import { Button } from "@/components/sitio/button";
 import { cx } from "@/lib/cx";
-import { NAV_LINKS, type MenuCategory } from "@/lib/menu";
+import { type MenuCategory, type NavLink } from "@/lib/menu";
 
 type MobileMenuProps = {
   categories: MenuCategory[];
+  links: NavLink[];
   cta: { label: string; href: string };
 };
 
@@ -21,7 +22,7 @@ const navItem =
  * Servicios (folded until tapped), the main links and the WhatsApp button.
  * Escape closes the panel and returns focus to the toggle.
  */
-export function MobileMenu({ categories, cta }: MobileMenuProps) {
+export function MobileMenu({ categories, links, cta }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const panelId = useId();
@@ -119,7 +120,7 @@ export function MobileMenu({ categories, cta }: MobileMenuProps) {
                 ))}
               </ul>
             </li>
-            {NAV_LINKS.map((link) => (
+            {links.map((link) => (
               <li key={link.href}>
                 <Link href={link.href} onClick={close} className={navItem}>
                   {link.label}

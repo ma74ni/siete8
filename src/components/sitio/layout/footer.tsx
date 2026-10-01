@@ -2,16 +2,8 @@ import Link from "next/link";
 
 import { CookieSettingsButton } from "@/components/sitio/analytics";
 import { clientEnv } from "@/env/client";
+import { navLinks, type PublishedSections } from "@/lib/menu";
 import { SOCIAL_LINKS } from "@/lib/social";
-
-// COPY §2. Proyectos and Blog join once their pages exist.
-const links = [
-  { label: "Servicios", href: "/servicios" },
-  { label: "Nosotros", href: "/nosotros" },
-  { label: "Contacto", href: "/contacto" },
-  { label: "Privacidad", href: "/privacidad" },
-  { label: "Términos", href: "/terminos" },
-];
 
 const item = "flex min-h-11 items-center";
 
@@ -20,7 +12,15 @@ const item = "flex min-h-11 items-center";
  * social networks (COPY §2, §8). It follows each page's `Closing`, on the
  * same floor. The bottom padding leaves room for the floating WhatsApp button.
  */
-export function Footer() {
+export function Footer({ published }: { published: PublishedSections }) {
+  // COPY §2: Servicios, the main links, then the legal pages.
+  const links = [
+    { label: "Servicios", href: "/servicios" },
+    ...navLinks(published),
+    { label: "Privacidad", href: "/privacidad" },
+    { label: "Términos", href: "/terminos" },
+  ];
+
   return (
     <footer className="on-ink">
       <div className="mx-auto max-w-[1200px] px-5 pt-4 pb-28 lg:px-12">

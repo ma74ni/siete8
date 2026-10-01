@@ -108,7 +108,7 @@ function Hero() {
           Tu web, tu correo, tu firma y tus facturas, resueltos por un mismo
           equipo.
         </h1>
-        <p className="max-w-[68ch]">
+        <p>
           Somos Siete8, un estudio tecnológico de Quito. Diseñamos sitios y
           sistemas, administramos tu hosting y tu correo, y te ayudamos con la
           firma electrónica y la facturación.
@@ -141,7 +141,7 @@ function FeaturedService({
     <div className="grid gap-10 lg:grid-cols-2 lg:gap-12">
       <div className="flex flex-col items-start gap-6">
         <h2>Tu firma electrónica, en minutos y sin salir de tu negocio</h2>
-        <p className="max-w-[68ch]">
+        <p>
           Te la entregamos entre 5 y 10 minutos después de recibir tus
           requisitos completos, de 07:00 a 20:00. Sirve para facturar en el SRI,
           firmar contratos y hacer trámites en línea.
@@ -263,7 +263,7 @@ function LatestPost({
   return (
     <div className="flex flex-col gap-10">
       <h2>Del blog</h2>
-      <article className="flex max-w-[68ch] flex-col gap-3">
+      <article className="flex flex-col gap-3">
         <h3>
           <Link href={`/blog/${post.slug}`} className="text-fg">
             {post.title}

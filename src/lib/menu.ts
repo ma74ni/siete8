@@ -45,9 +45,20 @@ export function visibleCatalog(rows: CatalogRow[]): MenuCategory[] {
     .filter((category) => category.services.length > 0);
 }
 
-/** Main navigation (COPY §2), after Servicios. */
-// Proyectos and Blog join once their pages exist (COPY §2).
-export const NAV_LINKS = [
-  { label: "Nosotros", href: "/nosotros" },
-  { label: "Contacto", href: "/contacto" },
-] as const;
+export type NavLink = { label: string; href: string };
+
+/** What the site has published, to hide links to empty sections. */
+export type PublishedSections = { projects: boolean; posts: boolean };
+
+/**
+ * Main navigation (COPY §2), after Servicios. Proyectos and Blog only show
+ * once something is published there, so no link lands on an empty page.
+ */
+export function navLinks(published: PublishedSections): NavLink[] {
+  return [
+    ...(published.projects ? [{ label: "Proyectos", href: "/proyectos" }] : []),
+    ...(published.posts ? [{ label: "Blog", href: "/blog" }] : []),
+    { label: "Nosotros", href: "/nosotros" },
+    { label: "Contacto", href: "/contacto" },
+  ];
+}

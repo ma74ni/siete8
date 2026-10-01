@@ -32,7 +32,7 @@ export default function ContactPage() {
   return (
     <>
       <Floor>
-        <div className="flex max-w-[68ch] flex-col items-start gap-6">
+        <div className="flex flex-col items-start gap-6">
           <h1>Contacto</h1>
           <p>
             Escríbenos por WhatsApp y te respondemos todos los días, de 07:00 a

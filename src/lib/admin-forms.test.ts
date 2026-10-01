@@ -3,13 +3,91 @@ import { describe, expect, it } from "vitest";
 import {
   faqForm,
   holderNoteForm,
+  imageFile,
   money,
   planForm,
+  projectForm,
   requirementsForm,
   serviceForm,
+  slugify,
 } from "@/lib/admin-forms";
 
 const serviceId = "3f2b8a4e-9c1d-4e5f-8a7b-6c5d4e3f2a1b";
+
+describe("slugify", () => {
+  it("removes accents and joins words with hyphens", () => {
+    expect(slugify("BI de Seguros y Reportería")).toBe(
+      "bi-de-seguros-y-reporteria",
+    );
+    expect(slugify("  C&G Comercio Exterior! ")).toBe("c-g-comercio-exterior");
+  });
+});
+
+describe("projectForm", () => {
+  const project = {
+    title: "Banco de Motos",
+    slug: "banco-de-motos",
+    status: "replaced",
+    client_name: "Banco de Motos",
+    show_client_name: "on",
+    tech_stack: "Laravel, MySQL, ",
+    year: "",
+    live_url: "",
+    sort_order: "1",
+  };
+
+  it("parses the technologies, an empty year and an empty link", () => {
+    expect(projectForm.parse(project)).toMatchObject({
+      tech_stack: ["Laravel", "MySQL"],
+      year: null,
+      live_url: null,
+      show_client_name: true,
+      published: false,
+    });
+  });
+
+  it("needs the client's name when shown, or the sector otherwise", () => {
+    expect(projectForm.safeParse({ ...project, client_name: "" }).success).toBe(
+      false,
+    );
+    expect(
+      projectForm.safeParse({ ...project, show_client_name: undefined })
+        .success,
+    ).toBe(false);
+    expect(
+      projectForm.safeParse({
+        ...project,
+        show_client_name: undefined,
+        sector: "Banca",
+      }).success,
+    ).toBe(true);
+  });
+
+  it("rejects a bad slug or a link without https", () => {
+    expect(
+      projectForm.safeParse({ ...project, slug: "Banco Motos" }).success,
+    ).toBe(false);
+    expect(
+      projectForm.safeParse({ ...project, live_url: "http://example.com" })
+        .success,
+    ).toBe(false);
+  });
+});
+
+describe("imageFile", () => {
+  it("accepts the bucket's types up to 2 MB", () => {
+    const ok = new File([new Uint8Array(10)], "a.webp", { type: "image/webp" });
+    const svg = new File([new Uint8Array(10)], "a.svg", {
+      type: "image/svg+xml",
+    });
+    const big = new File([new Uint8Array(2 * 1024 * 1024 + 1)], "a.png", {
+      type: "image/png",
+    });
+    expect(imageFile.safeParse(ok).success).toBe(true);
+    expect(imageFile.safeParse(svg).success).toBe(false);
+    expect(imageFile.safeParse(big).success).toBe(false);
+  });
+});
 
 describe("money", () => {
   it("accepts a decimal comma or point with up to two decimals", () => {

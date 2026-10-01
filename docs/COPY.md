@@ -280,3 +280,46 @@ Textos internos del panel (`/admin`). El panel usa la misma voz que el sitio: tu
 | Mensajes | Requisitos sin planes | Agrega primero un plan de este tipo de titular. |
 | Mensajes | Error | Revisa los campos marcados: hay datos que no son válidos. / No se pudo {acción}. Inténtalo de nuevo; si sigue fallando, avísanos. |
 | Botones | Mientras guarda | Guardando… |
+| Proyectos | Listado | Proyectos. Solo los publicados aparecen en el sitio. Botón: Nuevo proyecto. Estado: Publicado / Sin publicar, destacado, {etiqueta del estado}, sin portada. Vacío: Todavía no hay proyectos. |
+| Proyectos | Nuevo | Nuevo proyecto. Después de crearlo podrás subir la portada y la galería. Botón: Crear proyecto. |
+| Proyectos | Datos | Título. Dirección (Parte final del enlace: /proyectos/banco-de-motos. Vacía: se arma con el título.). Estado, con su significado (SRS 3.7). Cliente. Sector (Se muestra si no muestras el nombre del cliente. Ej: Seguros). Año. Mostrar el nombre del cliente (solo si lo autorizó). Resumen (Una o dos frases para la tarjeta.). Reto, Solución, Resultado (Markdown: **negrita**, listas con guion. Vacío: no se muestra.). Tecnologías (Separadas por comas: Laravel, MySQL). Enlace al sitio (Con https://. Solo se muestra si el estado es En línea.). Publicado en el sitio. Destacado en la portada. Botón: Guardar proyecto. |
+| Proyectos | Imágenes | Portada (Se ve en las tarjetas y arriba de la página del proyecto, en proporción 16:10.). Botones: Subir portada, Cambiar portada. Galería; Agregar una captura; Imagen (JPEG, PNG, WebP o AVIF. Si pesa más de 2 MB, la reducimos al subirla. Súbela ya recortada.; mientras la revisa: Revisando la imagen…; al reducirla: La reducimos de {x} MB a {y} MB para subirla.; errores: El navegador no pudo leer esta imagen. Usa JPEG, PNG, WebP o AVIF. / No pudimos dejar la imagen por debajo de 2 MB. Elige otra o redúcela antes de subirla.); Texto alternativo (Describe lo que se ve, para quien no puede ver la imagen.); Dispositivo: Escritorio, Celular. Botones: Agregar imagen, Borrar imagen. Mientras sube: Subiendo… |
+| Proyectos | Servicios y borrar | Servicios relacionados (Sirven para filtrar el portafolio y para enlazar al servicio desde la página del proyecto.). Botón: Guardar servicios. Borrar el proyecto: ¿Borrar {título}? Se borran también sus imágenes y no se puede deshacer. |
+| Mensajes | Proyectos | Proyecto guardado. Portada guardada. Imagen agregada. Imagen borrada. Servicios guardados. Ya hay un proyecto con esa dirección. Elige una imagen JPEG, PNG, WebP o AVIF de hasta 2 MB. |
+| Blog | Listado | Blog. Los borradores y los programados no aparecen en el sitio. Botón: Nuevo artículo. Estado: Borrador / Programado para el {fecha} / Publicado el {fecha}, sin portada. Vacío: Todavía no hay artículos. |
+| Blog | Nuevo | Nuevo artículo. Después de crearlo podrás subir la portada. Botón: Crear artículo. |
+| Blog | Campos | Título. Dirección (Parte final del enlace: /blog/firma-electronica-en-ecuador. Vacía: se arma con el título.). Autor (Vacío: Siete8). Extracto (Una o dos frases para el listado y la vista previa en redes.). Artículo, con pestañas Escribir y Vista previa (Markdown: ## Subtítulo, **negrita**, listas con guion, [texto](/servicios/firma-electronica) para enlazar.; sin texto: Sin texto todavía.). Estado: Borrador, Publicado. Fecha de publicación (Hora de Quito. Vacía: al publicar. Si es futura, aparece ese día.). Servicio relacionado (Ninguno). SEO: Título SEO (Hasta 70 caracteres. Vacío: el título.), Descripción SEO (Hasta 160 caracteres. Vacío: el extracto.). Botón: Guardar artículo. |
+| Blog | Editar | Volver al blog. Ver en el sitio / No aparece en el sitio: es un borrador o está programado. Portada (Se ve arriba del artículo y al compartirlo en redes y WhatsApp. Usa una imagen horizontal, idealmente de 1200 × 630.). Borrar el artículo: ¿Borrar "{título}"? No se puede deshacer. Botón: Borrar artículo. |
+| Blog | Redes | Anunciado en redes el {fecha}. / Se anunciará en redes hasta 15 minutos después de salir publicado. |
+| Mensajes | Blog | Artículo guardado. Portada guardada. Ya hay un artículo con esa dirección. |
+
+## 14. Portafolio
+
+Página `/proyectos` y una página por proyecto. Los textos de cada proyecto se editan en el panel; los importados vienen del portafolio anterior (anexo F).
+
+| Elemento | Texto |
+| --- | --- |
+| Título (h1) | Proyectos |
+| Introducción | Sitios web, sistemas y proyectos de inteligencia de negocio que hicimos para empresas del Ecuador. |
+| Filtro | Filtrar por servicio: Todos, {servicios con proyectos} |
+| Sin proyectos | Pronto publicaremos nuestros proyectos. |
+| Proyecto | Volver a proyectos. Cliente o Sector. Año. Estado (etiqueta pública, SRS 3.7). Botón, solo si está En línea: Ver el sitio. Secciones: Reto, Solución, Resultado, Tecnologías, Galería, Servicio relacionado (botón: Ver planes y requisitos). |
+
+SEO: título "Proyectos \| Siete8"; descripción "Sitios web, sistemas y proyectos de inteligencia de negocio que Siete8 hizo para empresas del Ecuador." Por proyecto: "{título} \| Proyectos de Siete8" y su resumen; la imagen al compartir es su portada.
+
+## 15. Blog
+
+Página `/blog` (9 artículos por página; las siguientes en `/blog/pagina/{n}`) y una página por artículo. Los artículos se escriben en el panel.
+
+| Elemento | Texto |
+| --- | --- |
+| Título (h1) | Blog |
+| Introducción | Guías cortas sobre firma electrónica, facturación, sitios web y tecnología para negocios en Ecuador. |
+| Sin artículos | Pronto publicaremos el primer artículo. |
+| Paginación | Artículos más recientes. Artículos anteriores. |
+| RSS | Canal `/blog/rss.xml`: título "Blog de Siete8" y la introducción del blog como descripción. |
+| Artículo | Volver al blog. Por {autor, o Siete8}. {fecha}. {n} minutos de lectura (1 minuto). Al final, el servicio relacionado con el botón Ver planes y requisitos. |
+
+SEO: título "Blog \| Siete8"; descripción "Guías cortas sobre firma electrónica, facturación, sitios web y tecnología para negocios en Ecuador." Por artículo: su título SEO (o "{título} \| Siete8") y su descripción SEO (o el extracto); la imagen al compartir es su portada.
+
+El primer artículo (sección 3, "Del blog") se carga como borrador con la migración `blog_author_first_post`: solo usa textos de la sección 4 y afirmaciones verificadas de la sección 5, sin precios.

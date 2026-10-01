@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useActionState } from "react";
+import { Fragment, type ReactNode, useActionState } from "react";
 
 import { Button } from "@/components/sitio/button";
 import { type FormState, IDLE } from "@/lib/admin-forms";
@@ -13,6 +13,12 @@ type ActionFormProps = {
   pendingLabel?: string;
   variant?: "primary" | "secondary";
   className?: string;
+  /**
+   * Changes when the record is saved (e.g. its `updated_at`). The fields
+   * remount with the saved values: React resets a form after its action, and
+   * selects and checkboxes would otherwise go back to the first render.
+   */
+  resetKey?: string;
   children?: ReactNode;
 };
 
@@ -26,13 +32,14 @@ export function ActionForm({
   pendingLabel = "Guardando…",
   variant = "primary",
   className,
+  resetKey,
   children,
 }: ActionFormProps) {
   const [state, formAction, pending] = useActionState(action, IDLE);
 
   return (
     <form action={formAction} className={cx("flex flex-col gap-4", className)}>
-      {children}
+      <Fragment key={resetKey}>{children}</Fragment>
       <div className="flex flex-wrap items-center gap-4">
         <Button type="submit" variant={variant} disabled={pending}>
           {pending ? pendingLabel : submitLabel}

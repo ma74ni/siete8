@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { PROJECT_STATUS_LABELS } from "@/lib/project-status";
-import type { ProjectCardData } from "@/server/portfolio";
+import type { ProjectCardData } from "@/lib/portfolio-filter";
 
 /**
  * Portfolio card (DESIGN §7): 16:10 capture on `mist` without shadow, title,
@@ -11,8 +11,9 @@ import type { ProjectCardData } from "@/server/portfolio";
 export function ProjectCard({ project }: { project: ProjectCardData }) {
   return (
     <article className="flex flex-col gap-3">
-      {project.coverUrl && (
-        <div className="relative aspect-[16/10] bg-mist">
+      {/* Without a cover, the empty frame keeps the cards aligned. */}
+      <div className="relative aspect-[16/10] bg-mist">
+        {project.coverUrl && (
           <Image
             src={project.coverUrl}
             alt=""
@@ -20,8 +21,8 @@ export function ProjectCard({ project }: { project: ProjectCardData }) {
             sizes="(min-width: 1024px) 368px, (min-width: 768px) 50vw, 100vw"
             className="object-cover"
           />
-        </div>
-      )}
+        )}
+      </div>
       <h3 className="text-h4">
         <Link href={`/proyectos/${project.slug}`} className="text-fg">
           {project.title}

@@ -97,7 +97,7 @@ Una sola familia en dos anchos, en eco del logotipo ancho de SIETE8: **Archivo**
 
 ### Reglas
 
-- Largo de línea del cuerpo: máximo 68 caracteres (`max-width: 68ch`).
+- El texto ocupa todo el ancho de su contenedor (máximo 1200 px de la página), también en artículos, proyectos y páginas legales. No se limita el largo de línea.
 - Nada de mayúsculas sostenidas en etiquetas ni "eyebrows" sobre los títulos.
 - No se resalta una sola palabra del titular con otro color, cursiva o peso. El titular funciona completo.
 - Los precios usan cifras tabulares (`font-variant-numeric: tabular-nums`) para que se alineen en tablas.
