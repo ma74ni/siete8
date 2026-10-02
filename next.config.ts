@@ -24,6 +24,8 @@ const clientEnv = parseEnv(clientSchema, {
 // 'unsafe-inline'. Google Analytics (E5-04) loads only after consent, from
 // the hosts Google documents for GA4. `next dev` also needs 'unsafe-eval'.
 const google = "https://*.googletagmanager.com";
+// Cloudflare Turnstile on the contact form (E3-08): script and iframe.
+const turnstile = "https://challenges.cloudflare.com";
 // With Google signals, GA4 also reports to google.com, the local Google
 // domain (google.com.ec) and doubleclick.
 const analytics = [
@@ -35,12 +37,12 @@ const analytics = [
 ].join(" ");
 const contentSecurityPolicy = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""} ${google}`,
+  `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""} ${google} ${turnstile}`,
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: blob: ${google} ${analytics}`,
   "font-src 'self'",
-  `connect-src 'self' ${google} ${analytics}`,
-  "frame-src 'none'",
+  `connect-src 'self' ${google} ${analytics} ${turnstile}`,
+  `frame-src ${turnstile}`,
   "frame-ancestors 'none'",
   "object-src 'none'",
   "base-uri 'self'",

@@ -4,8 +4,18 @@ import {
   generalMessage,
   serviceMessage,
   signaturePlanMessage,
+  whatsappChatUrl,
   whatsappUrl,
 } from "./whatsapp";
+
+describe("whatsappChatUrl", () => {
+  it("adds Ecuador's code to local numbers and keeps international ones", () => {
+    expect(whatsappChatUrl("099 123 4567")).toBe("https://wa.me/593991234567");
+    expect(whatsappChatUrl("+593 99 123 4567")).toBe(
+      "https://wa.me/593991234567",
+    );
+  });
+});
 
 describe("prefilled messages (COPY §2)", () => {
   it("general button", () => {
