@@ -16,7 +16,7 @@ import { submitLead } from "@/server/leads";
 
 const title = "Contacto | Siete8";
 const description =
-  "Escríbenos por WhatsApp al 0961128233, todos los días de 07:00 a 20:00. También por teléfono o a hola@siete8.com.";
+  "Escríbenos por WhatsApp al 0967155626, todos los días de 07:00 a 20:00. También por teléfono o a hola@siete8.com.";
 
 export const metadata: Metadata = pageMetadata({
   title,
@@ -27,7 +27,7 @@ export const metadata: Metadata = pageMetadata({
 const whatsapp = whatsappUrl(generalMessage());
 
 const details = [
-  { label: "WhatsApp", value: "0961128233", href: whatsapp },
+  { label: "WhatsApp", value: "0967155626", href: whatsapp },
   { label: "Teléfono", value: "0999843108", href: "tel:+593999843108" },
   { label: "Correo", value: "hola@siete8.com", href: "mailto:hola@siete8.com" },
 ];

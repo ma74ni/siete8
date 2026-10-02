@@ -1,7 +1,7 @@
 import { formatPriceWithVat } from "@/lib/price";
 
-/** Commercial WhatsApp, 0961128233, in international format for wa.me. */
-export const WHATSAPP_NUMBER = "593961128233";
+/** Commercial WhatsApp, 0967155626, in international format for wa.me. */
+export const WHATSAPP_NUMBER = "593967155626";
 
 /** wa.me link that opens a chat with Siete8 and the message already typed. */
 export function whatsappUrl(message: string): string {

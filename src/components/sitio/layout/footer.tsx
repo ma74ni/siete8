@@ -26,8 +26,8 @@ export function Footer({ published }: { published: PublishedSections }) {
       <div className="mx-auto max-w-[1200px] px-5 pt-4 pb-28 lg:px-12">
         <div className="grid gap-8 md:grid-cols-3">
           <address className="flex flex-col not-italic">
-            <a href="tel:+593961128233" className={item}>
-              0961128233
+            <a href="tel:+593967155626" className={item}>
+              0967155626
             </a>
             <a href="tel:+593999843108" className={item}>
               0999843108

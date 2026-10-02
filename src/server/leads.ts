@@ -27,7 +27,7 @@ const SENT = {
 const FAILED: ContactState = {
   status: "error",
   message:
-    "No pudimos enviar tu mensaje. Inténtalo de nuevo o escríbenos por WhatsApp al 0961128233.",
+    "No pudimos enviar tu mensaje. Inténtalo de nuevo o escríbenos por WhatsApp al 0967155626.",
 };
 
 /** Same phone or email more than this many times in 10 minutes: rejected. */
@@ -153,7 +153,7 @@ async function handleLead(formData: FormData): Promise<ContactState> {
     return {
       status: "error",
       message:
-        "Ya recibimos tus mensajes. Te escribimos pronto; si es urgente, escríbenos por WhatsApp al 0961128233.",
+        "Ya recibimos tus mensajes. Te escribimos pronto; si es urgente, escríbenos por WhatsApp al 0967155626.",
     };
   }
 

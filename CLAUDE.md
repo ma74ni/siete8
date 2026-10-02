@@ -127,7 +127,7 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 
 ## Datos del negocio
 
-- WhatsApp comercial: 0961128233 (en `wa.me`: 593961128233). Atención de 07:00 a 20:00.
+- WhatsApp comercial: 0967155626 (en `wa.me`: 593967155626). Atención de 07:00 a 20:00.
 - Teléfono: 0999843108.
 - Correo: hola@siete8.com. Dominio: siete8.com, registrado en Namecheap, con el DNS en **Netlify DNS** (NS1): los registros se agregan en Netlify > Domains, no en Namecheap. El correo vive en DreamHost y sus registros de la raíz (MX, SPF, DKIM y DMARC) no se tocan. Resend usa solo `resend._domainkey` (TXT), `send` y `rsend` (CNAME).
 - Redes: facebook.com/siete8.ec, instagram.com/siete8.ec, linkedin.com/company/siete8.ec.

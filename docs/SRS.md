@@ -64,7 +64,7 @@ Sitio público con contenido administrable, un asistente conversacional y un pan
 ### 2.4 Restricciones
 
 - Stack: TypeScript y React. Decisión propuesta: Next.js (App Router) + Supabase (Postgres, Auth, Storage).
-- Despliegue en Netlify; dominio siete8.com registrado en Namecheap. Contacto: WhatsApp comercial 0961128233, teléfono 0999843108, hola@siete8.com; atención de 07:00 a 20:00.
+- Despliegue en Netlify; dominio siete8.com registrado en Namecheap. Contacto: WhatsApp comercial 0967155626, teléfono 0999843108, hola@siete8.com; atención de 07:00 a 20:00.
 - Solo español.
 - El sitio no recibe ni almacena fotos de cédula, RUC ni nombramientos; esos documentos se envían por WhatsApp (ver 4.4).
 - Identidad visual (logo, colores) la entrega Siete8 en la documentación del proyecto.

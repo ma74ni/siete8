@@ -51,7 +51,7 @@ No son de desarrollo, pero bloquean tareas concretas. La columna "Bloquea" indic
 | --- | --- | --- |
 | P-01 | Recomendado, interno: pedir a Click Identy el nombre de la entidad acreditada que respalda la emisión. No se publica en el sitio | Nada |
 | P-02 | Hecho: la firma se entrega como archivo .p12 | Copy final de firma (E6-02) |
-| P-03 | Hecho: WhatsApp comercial 0961128233, atención de 07:00 a 20:00 | E3-01 |
+| P-03 | Hecho: WhatsApp comercial 0967155626 (WhatsApp Business, desde el 1 de octubre de 2026; antes 0961128233), atención de 07:00 a 20:00 | E3-01 |
 | P-04 | Crear proyecto en Supabase (cabe en el plan gratuito: hay 1 activo) y compartir URL y claves de forma segura | E1-01 |
 | P-05 | Crear repositorio en GitHub y sitio en Netlify conectado | E0-01, E7-01 |
 | P-06 | Subir imágenes originales del portafolio | E6-03 |

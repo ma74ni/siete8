@@ -42,7 +42,7 @@ const sections = [
   },
   {
     heading: "Contacto",
-    body: "Escríbenos a hola@siete8.com o por WhatsApp al 0961128233.",
+    body: "Escríbenos a hola@siete8.com o por WhatsApp al 0967155626.",
   },
 ];
 

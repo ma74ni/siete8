@@ -12,7 +12,7 @@ describe("localBusiness", () => {
   it("describes the business with its contact and hours", () => {
     const data = localBusiness(site);
     expect(data["@id"]).toBe("https://siete8.com/#organizacion");
-    expect(data.telephone).toBe("+593961128233");
+    expect(data.telephone).toBe("+593967155626");
     expect(data.openingHours).toBe("Mo-Su 07:00-20:00");
     expect(data.sameAs).toHaveLength(3);
   });
