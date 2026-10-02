@@ -304,6 +304,7 @@ Textos internos del panel (`/admin`). El panel usa la misma voz que el sitio: tu
 | Leads | Listado | Leads. Las personas que te dejaron sus datos, de la más reciente a la más antigua. Filtros: Estado, Origen, Servicio (Todos). Botón: Filtrar. Vacío: No hay leads con estos filtros. Estados: Nuevo, Contactado, Cerrado, Perdido. Origen: Formulario, WhatsApp, Asistente. |
 | Leads | Detalle | Volver a leads. Celular (abre WhatsApp), Correo, Servicio, Plan, Origen, Campaña, Recibido, Consentimiento. Mensaje (Sin mensaje.). Seguimiento: Estado, Notas (Solo las ves tú, en el panel.). Botón: Guardar lead. Historial de estados: {estado}: {fecha, hora}. Mensaje: Lead guardado. |
 | Configuración | Página | Configuración. Lo que guardes aquí cambia en todo el sitio: los botones de WhatsApp, el pie de página, Contacto y los datos para Google. Secciones: WhatsApp y horario (WhatsApp: Como se marca en Ecuador, con el 0: 0967155626. Los enlaces de WhatsApp se arman solos. Abre. Cierra: Todos los días. Los textos escritos a mano en los servicios (pasos, preguntas) se cambian en cada servicio.), Teléfono y correo, Redes sociales (En el pie de página y en Contacto, en este orden. Deja la fila vacía para quitar una red. Red {n}, Ej: Instagram; Enlace, Con https://). Botón: Guardar configuración. Mensaje: Configuración guardada. |
+| Enlaces | Página | Enlaces. Los botones de siete8.com/enlaces, la página para la biografía de tus redes. Para saber de qué red llega cada visita, usa el enlace con su origen, por ejemplo siete8.com/enlaces?utm_source=instagram. Campos: Texto (En el último artículo, es el texto pequeño sobre su título.), Tipo (Enlace; WhatsApp (número de Configuración); Último artículo del blog), Enlace (Solo para el tipo Enlace: una página del sitio (/servicios) o una dirección con https://.), Orden, Visible, Destacado (botón principal). Botones: Guardar botón, Agregar botón, Borrar botón. Mensajes: Botón guardado. Botón agregado. Botón borrado. |
 | Mensajes | Blog | Artículo guardado. Portada guardada. Ya hay un artículo con esa dirección. |
 
 ## 14. Portafolio
@@ -511,3 +512,17 @@ Pregunta común a los servicios a medida, "¿Cuánto cuesta?": Depende de lo que
   - ¿Atienden fuera de Quito? Sí, de forma remota en todo el país. Las visitas presenciales son solo en Quito.
 - **Cierre:** ¿Qué necesitas resolver? (el cierre general)
 - **SEO:** "Soporte técnico remoto y en Quito | Siete8"; "Ayuda con tus equipos, programas y correo, remota en todo el Ecuador y presencial en Quito. Escríbenos por WhatsApp."
+
+## 17. Página de enlaces
+
+Página `/enlaces`, para la biografía de las redes. Sin menú ni pie del sitio. Los botones se editan en el panel (Enlaces).
+
+| Elemento | Texto |
+| --- | --- |
+| Encabezado | Logo. Soluciones tecnológicas para personas y negocios pequeños. |
+| Botones iniciales | Escríbenos por WhatsApp (destacado; usa el número de Configuración). Firma electrónica. Servicios. Del blog (sobre el título del último artículo; no aparece si no hay artículos). Cuéntanos tu proyecto (formulario de contacto). Proyectos (oculto hasta que haya proyectos publicados). |
+| Pie | Las redes de Configuración y siete8.com. |
+
+SEO: título "Enlaces \| Siete8"; descripción "Escríbenos por WhatsApp, conoce nuestros servicios o lee el blog de Siete8."
+
+Para medir cada red, el enlace de la biografía lleva su origen: `siete8.com/enlaces?utm_source=instagram` (o `facebook`, `tiktok`, `linkedin`).

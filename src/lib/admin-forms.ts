@@ -284,6 +284,33 @@ export const leadFilters = z.object({
   servicio: z.uuid().optional().catch(undefined),
 });
 
+// Links page (/enlaces) ----------------------------------------------------------
+
+export const linkButtonForm = z
+  .object({
+    id: z.uuid().optional(),
+    label: requiredText(60),
+    kind: z.enum(["url", "whatsapp", "latest_post"]),
+    url: z
+      .string()
+      .optional()
+      .transform((value) => value?.trim() || null),
+    highlight: checkbox,
+    visible: checkbox,
+    sort_order: order,
+  })
+  // Only plain links take an address: a page of the site or https.
+  .transform((form) => ({
+    ...form,
+    url: form.kind === "url" ? form.url : null,
+  }))
+  .refine(
+    (form) =>
+      form.kind !== "url" ||
+      (form.url !== null && /^(\/|https:\/\/)\S*$/.test(form.url)),
+    { path: ["url"] },
+  );
+
 /** Result of a panel Server Action, shown next to its form. */
 export type FormState =
   | { status: "idle" }

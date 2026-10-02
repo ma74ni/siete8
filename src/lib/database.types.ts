@@ -147,6 +147,42 @@ export type Database = {
           },
         ]
       }
+      link_button: {
+        Row: {
+          created_at: string
+          highlight: boolean
+          id: string
+          kind: Database["public"]["Enums"]["link_kind"]
+          label: string
+          sort_order: number
+          updated_at: string
+          url: string | null
+          visible: boolean
+        }
+        Insert: {
+          created_at?: string
+          highlight?: boolean
+          id?: string
+          kind?: Database["public"]["Enums"]["link_kind"]
+          label: string
+          sort_order?: number
+          updated_at?: string
+          url?: string | null
+          visible?: boolean
+        }
+        Update: {
+          created_at?: string
+          highlight?: boolean
+          id?: string
+          kind?: Database["public"]["Enums"]["link_kind"]
+          label?: string
+          sort_order?: number
+          updated_at?: string
+          url?: string | null
+          visible?: boolean
+        }
+        Relationships: []
+      }
       plan: {
         Row: {
           created_at: string
@@ -742,6 +778,7 @@ export type Database = {
       image_device: "desktop" | "mobile"
       lead_source: "assistant" | "form" | "whatsapp"
       lead_status: "new" | "contacted" | "closed" | "lost"
+      link_kind: "url" | "whatsapp" | "latest_post"
       post_status: "draft" | "published"
       project_status:
         | "in_development"
@@ -883,6 +920,7 @@ export const Constants = {
       image_device: ["desktop", "mobile"],
       lead_source: ["assistant", "form", "whatsapp"],
       lead_status: ["new", "contacted", "closed", "lost"],
+      link_kind: ["url", "whatsapp", "latest_post"],
       post_status: ["draft", "published"],
       project_status: [
         "in_development",
