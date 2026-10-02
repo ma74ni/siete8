@@ -137,7 +137,7 @@ select is((select count(*) from public.service)::int, 16, 'admin: reads hidden s
 select is((select count(*) from public.post where slug like 'test-%')::int, 3, 'admin: reads drafts and scheduled posts');
 select is((select count(*) from public.project where slug like 'test-project-%')::int, 2, 'admin: reads unpublished projects');
 select is((select count(*) from public.lead)::int, 1, 'admin: reads leads');
-select is((select count(*) from public.site_settings)::int, 5, 'admin: reads private settings');
+select is((select count(*) from public.site_settings)::int, 6, 'admin: reads private settings');
 select is((select count(*) from public.profile)::int, 2, 'admin: reads all profiles');
 
 select lives_ok(

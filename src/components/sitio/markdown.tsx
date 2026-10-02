@@ -73,8 +73,24 @@ const checklist: Components = {
     ),
 };
 
+// Assistant answers (E10): short text in a chat bubble, so lists are tight
+// and headings read as bold lines.
+const chat: Components = {
+  ...components,
+  h1: ({ children }) => <p className="font-medium">{children}</p>,
+  h2: ({ children }) => <p className="font-medium">{children}</p>,
+  h3: ({ children }) => <p className="font-medium">{children}</p>,
+  ul: ({ children }) => (
+    <ul className="flex list-disc flex-col gap-1 pl-5">{children}</ul>
+  ),
+  ol: ({ children }) => (
+    <ol className="flex list-decimal flex-col gap-1 pl-5">{children}</ol>
+  ),
+};
+
 /**
- * Markdown written in the panel (project texts, articles, service pages).
+ * Markdown written in the panel (project texts, articles, service pages)
+ * or by the assistant.
  * Raw HTML is not rendered: react-markdown escapes it, so a pasted script
  * stays text.
  */
@@ -84,16 +100,31 @@ export function Markdown({
   className,
 }: {
   children: string;
-  /** `checklist`: bullet lists get a check mark (service pages). */
-  variant?: "prose" | "checklist";
+  /**
+   * `checklist`: bullet lists get a check mark (service pages). `chat`:
+   * compact, for the assistant's answers.
+   */
+  variant?: "prose" | "checklist" | "chat";
   className?: string;
 }) {
   return (
-    <div className={cx("flex flex-col gap-4", className)}>
+    <div
+      className={cx(
+        "flex flex-col",
+        variant === "chat" ? "gap-2" : "gap-4",
+        className,
+      )}
+    >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={variant === "checklist" ? [rehypeChecklist] : []}
-        components={variant === "checklist" ? checklist : components}
+        components={
+          variant === "checklist"
+            ? checklist
+            : variant === "chat"
+              ? chat
+              : components
+        }
       >
         {children}
       </ReactMarkdown>

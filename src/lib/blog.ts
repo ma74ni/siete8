@@ -16,6 +16,17 @@ export function formatPostDate(iso: string): string {
   }).format(new Date(iso));
 }
 
+/** "30 de septiembre de 2026, 17:15", in Quito time (panel). */
+export function formatDateTime(iso: string): string {
+  const time = new Intl.DateTimeFormat("es-EC", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: TIME_ZONE,
+  }).format(new Date(iso));
+  return `${formatPostDate(iso)}, ${time}`;
+}
+
 /** ISO date → value of a `datetime-local` input, in Quito time. */
 export function toQuitoInput(iso: string): string {
   const quito = new Date(new Date(iso).getTime() - 5 * 60 * 60 * 1000);
