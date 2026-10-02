@@ -55,7 +55,10 @@ Número de WhatsApp: 0967155626 (en enlaces wa.me: 593967155626). Horario de ate
 ### Pie de página
 
 - Cierre: **¿Qué necesitas resolver?** (en la página de firma: **¿Listo para sacar tu firma?**)
-- Contacto: 0967155626, 0999843108, hola@siete8.com, Quito, Ecuador.
+- Marca: logo y "Soluciones tecnológicas para personas y negocios pequeños."
+- Contacto (columna "Contacto"): WhatsApp: {número}; Teléfono: {número}, solo si es distinto del WhatsApp; {correo}; Quito, Ecuador. Salen de la configuración del panel.
+- Columnas: Sitio (Servicios y el menú principal) y Redes (las de la configuración).
+- Franja inferior: © {año} Siete8. Todos los derechos reservados. Privacidad. Términos. Preferencias de cookies.
 - Enlaces: Servicios, Proyectos, Blog, Nosotros, Contacto, Privacidad, Términos, Preferencias de cookies (este último abre el aviso de cookies).
 
 ## 3. Portada
@@ -300,6 +303,7 @@ Textos internos del panel (`/admin`). El panel usa la misma voz que el sitio: tu
 | Blog | Redes | Anunciado en redes el {fecha}. / Se anunciará en redes hasta 15 minutos después de salir publicado. |
 | Leads | Listado | Leads. Las personas que te dejaron sus datos, de la más reciente a la más antigua. Filtros: Estado, Origen, Servicio (Todos). Botón: Filtrar. Vacío: No hay leads con estos filtros. Estados: Nuevo, Contactado, Cerrado, Perdido. Origen: Formulario, WhatsApp, Asistente. |
 | Leads | Detalle | Volver a leads. Celular (abre WhatsApp), Correo, Servicio, Plan, Origen, Campaña, Recibido, Consentimiento. Mensaje (Sin mensaje.). Seguimiento: Estado, Notas (Solo las ves tú, en el panel.). Botón: Guardar lead. Historial de estados: {estado}: {fecha, hora}. Mensaje: Lead guardado. |
+| Configuración | Página | Configuración. Lo que guardes aquí cambia en todo el sitio: los botones de WhatsApp, el pie de página, Contacto y los datos para Google. Secciones: WhatsApp y horario (WhatsApp: Como se marca en Ecuador, con el 0: 0967155626. Los enlaces de WhatsApp se arman solos. Abre. Cierra: Todos los días. Los textos escritos a mano en los servicios (pasos, preguntas) se cambian en cada servicio.), Teléfono y correo, Redes sociales (En el pie de página y en Contacto, en este orden. Deja la fila vacía para quitar una red. Red {n}, Ej: Instagram; Enlace, Con https://). Botón: Guardar configuración. Mensaje: Configuración guardada. |
 | Mensajes | Blog | Artículo guardado. Portada guardada. Ya hay un artículo con esa dirección. |
 
 ## 14. Portafolio

@@ -105,7 +105,7 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 - Tipografía: `text-display`, `text-h2`, `text-h3`, `text-h4`, `text-body` y `text-small`, fluidas entre 360 y 1440 px. `h1`–`h4` ya traen ancho, peso y tamaño por defecto.
 - Componentes base en `src/components/sitio/`: `Button` (principal o secundario, como botón o enlace), `TextLink`, `PlanTable` (portada), `PlanGrid` (página de cada servicio), `Tabs`, `Faq` y `FormField`. No se escriben estilos de botón, tabla de planes ni campo a mano. Muestra en `/dev/ui` (con `pnpm dev` y en los previews; 404 en producción).
 - Los precios se muestran solo con `formatPriceWithVat` de `@/lib/price` (o `PlanTable` y `PlanGrid`, que la usan).
-- Los enlaces de WhatsApp se arman solo con `@/lib/whatsapp` (`whatsappUrl` y los mensajes de COPY §2); nunca se escribe un `wa.me` a mano.
+- Los enlaces de WhatsApp se arman solo con `@/lib/whatsapp` (`whatsappUrl(mensaje, waMe)` y los mensajes de COPY §2); nunca se escribe un `wa.me` a mano. El número, el horario, el teléfono, el correo y las redes salen de la configuración del sitio (`getSiteSettings` de `src/server/site-settings.ts`, E4-08), que se edita en el panel (Configuración); nunca se escriben en el código. Los valores de respaldo, si falta una fila, están en `DEFAULT_SETTINGS` de `@/lib/site-settings`. La imagen `public/og.png` no lleva el número, para que no quede vieja.
 - Las páginas públicas viven en el grupo `src/app/(sitio)/`, cuyo layout pone encabezado, pie y botón flotante, y ya envuelve el contenido en `<main id="contenido">`: las páginas no renderizan su propio `<main>`. El menú Servicios se lee de la base (`getServiceMenu`), así que la visibilidad y el orden se controlan desde el panel.
 - Texto en Markdown escrito en el panel (proyectos, artículos): siempre con `Markdown` (`@/components/sitio/markdown`, react-markdown sin HTML crudo), nunca con `dangerouslySetInnerHTML`.
 - Proyectos y Blog aparecen en el menú y el pie solo si hay algo publicado (`getPublishedSections` y `navLinks`).
@@ -127,7 +127,7 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 
 ## Datos del negocio
 
-- WhatsApp comercial: 0967155626 (en `wa.me`: 593967155626). Atención de 07:00 a 20:00.
+- WhatsApp comercial: 0967155626 (en `wa.me`: 593967155626). Atención de 07:00 a 20:00. Se cambian en el panel (Configuración); estos son los valores actuales.
 - Teléfono: 0999843108.
 - Correo: hola@siete8.com. Dominio: siete8.com, registrado en Namecheap, con el DNS en **Netlify DNS** (NS1): los registros se agregan en Netlify > Domains, no en Namecheap. El correo vive en DreamHost y sus registros de la raíz (MX, SPF, DKIM y DMARC) no se tocan. Resend usa solo `resend._domainkey` (TXT), `send` y `rsend` (CNAME).
 - Redes: facebook.com/siete8.ec, instagram.com/siete8.ec, linkedin.com/company/siete8.ec.

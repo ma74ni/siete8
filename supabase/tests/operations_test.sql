@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(16);
+select plan(17);
 
 -- Tables and RLS
 select has_table('public', t, t || ' exists')
@@ -64,13 +64,18 @@ select is(
 -- Seeded settings
 select set_eq(
   $$select key from public.site_settings where is_public$$,
-  array['whatsapp', 'social', 'assistant_enabled'],
+  array['whatsapp', 'social', 'contact', 'assistant_enabled'],
   'public settings are seeded'
 );
 
 select is(
   (select value ->> 'wa_me' from public.site_settings where key = 'whatsapp'),
   '593967155626', 'WhatsApp number for wa.me links'
+);
+
+select is(
+  (select jsonb_array_length(value) from public.site_settings where key = 'social'),
+  3, 'social networks are a list'
 );
 
 select * from finish();

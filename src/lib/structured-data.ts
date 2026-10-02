@@ -1,6 +1,6 @@
 import { priceWithVatCents } from "@/lib/price";
 import { HOLDER_LABELS, type HolderType } from "@/lib/service-page";
-import { SOCIAL_LINKS } from "@/lib/social";
+import { type SiteSettings, toTel } from "@/lib/site-settings";
 
 /**
  * JSON-LD for search engines (RNF-05): the business, each service with its
@@ -9,7 +9,7 @@ import { SOCIAL_LINKS } from "@/lib/social";
 
 const ORG_ID = "#organizacion";
 
-export function localBusiness(siteUrl: string) {
+export function localBusiness(siteUrl: string, settings: SiteSettings) {
   return {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
@@ -17,15 +17,15 @@ export function localBusiness(siteUrl: string) {
     name: "Siete8",
     url: new URL("/", siteUrl).toString(),
     image: new URL("/og.png", siteUrl).toString(),
-    telephone: "+593967155626",
-    email: "hola@siete8.com",
+    telephone: toTel(settings.whatsapp.number),
+    email: settings.email,
     address: {
       "@type": "PostalAddress",
       addressLocality: "Quito",
       addressCountry: "EC",
     },
-    openingHours: "Mo-Su 07:00-20:00",
-    sameAs: SOCIAL_LINKS.map((link) => link.href),
+    openingHours: `Mo-Su ${settings.whatsapp.from}-${settings.whatsapp.to}`,
+    sameAs: settings.social.map((link) => link.url),
   };
 }
 

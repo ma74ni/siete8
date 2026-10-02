@@ -7,8 +7,10 @@ import { Header } from "@/components/sitio/layout/header";
 import { WhatsAppButton } from "@/components/sitio/layout/whatsapp-button";
 import { clientEnv } from "@/env/client";
 import { navLinks } from "@/lib/menu";
+import { generalMessage, whatsappUrl } from "@/lib/whatsapp";
 import { getServiceMenu } from "@/server/catalog";
 import { getPublishedSections } from "@/server/published";
+import { getSiteSettings } from "@/server/site-settings";
 
 /**
  * Public site frame: header, content, footer and the floating WhatsApp
@@ -16,10 +18,12 @@ import { getPublishedSections } from "@/server/published";
  * outside that group.
  */
 export async function SiteShell({ children }: { children: ReactNode }) {
-  const [categories, published] = await Promise.all([
+  const [categories, published, settings] = await Promise.all([
     getServiceMenu(),
     getPublishedSections(),
+    getSiteSettings(),
   ]);
+  const whatsappHref = whatsappUrl(generalMessage(), settings.whatsapp.waMe);
 
   return (
     <>
@@ -29,12 +33,16 @@ export async function SiteShell({ children }: { children: ReactNode }) {
       >
         Saltar al contenido
       </a>
-      <Header categories={categories} links={navLinks(published)} />
+      <Header
+        categories={categories}
+        links={navLinks(published)}
+        whatsappHref={whatsappHref}
+      />
       <main id="contenido" tabIndex={-1} className="outline-none">
         {children}
       </main>
-      <Footer published={published} />
-      <WhatsAppButton />
+      <Footer published={published} settings={settings} />
+      <WhatsAppButton href={whatsappHref} />
       <CampaignCapture />
       {clientEnv.NEXT_PUBLIC_GA_ID && (
         <Analytics

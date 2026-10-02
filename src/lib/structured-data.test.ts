@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { DEFAULT_SETTINGS } from "@/lib/site-settings";
 import {
   articleData,
   localBusiness,
@@ -10,7 +11,7 @@ const site = "https://siete8.com";
 
 describe("localBusiness", () => {
   it("describes the business with its contact and hours", () => {
-    const data = localBusiness(site);
+    const data = localBusiness(site, DEFAULT_SETTINGS);
     expect(data["@id"]).toBe("https://siete8.com/#organizacion");
     expect(data.telephone).toBe("+593967155626");
     expect(data.openingHours).toBe("Mo-Su 07:00-20:00");
