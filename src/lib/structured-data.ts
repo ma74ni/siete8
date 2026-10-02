@@ -17,7 +17,7 @@ export function localBusiness(siteUrl: string) {
     name: "Siete8",
     url: new URL("/", siteUrl).toString(),
     image: new URL("/og.png", siteUrl).toString(),
-    telephone: "+593961128233",
+    telephone: "+593967155626",
     email: "hola@siete8.com",
     address: {
       "@type": "PostalAddress",

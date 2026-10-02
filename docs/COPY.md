@@ -50,12 +50,12 @@ Menú Servicios, por categoría:
 | Fila de un plan de firma | Hola, vengo del sitio de Siete8. Quiero una firma electrónica de {persona natural / representante legal} con vigencia de {vigencia} ({precio} con IVA). |
 | Cotizador (fase 1.1) | Hola, vengo del cotizador de Siete8. Me interesa: {resumen}. Rango estimado: {rango}. |
 
-Número de WhatsApp: 0961128233 (en enlaces wa.me: 593961128233). Horario de atención: todos los días, incluidos feriados, de 07:00 a 20:00.
+Número de WhatsApp: 0967155626 (en enlaces wa.me: 593967155626). Horario de atención: todos los días, incluidos feriados, de 07:00 a 20:00.
 
 ### Pie de página
 
 - Cierre: **¿Qué necesitas resolver?** (en la página de firma: **¿Listo para sacar tu firma?**)
-- Contacto: 0961128233, 0999843108, hola@siete8.com, Quito, Ecuador.
+- Contacto: 0967155626, 0999843108, hola@siete8.com, Quito, Ecuador.
 - Enlaces: Servicios, Proyectos, Blog, Nosotros, Contacto, Privacidad, Términos, Preferencias de cookies (este último abre el aviso de cookies).
 
 ## 3. Portada
@@ -195,7 +195,7 @@ Página `/terminos`. Título (h1): **Términos de uso**. Nota bajo el título: �
 | Proyectos a medida | El alcance, el precio y el plazo de cada sitio, sistema o servicio a medida se fijan en su propuesta, que aceptas antes de empezar. |
 | Uso del sitio | El contenido, el logo y el diseño de este sitio son de Siete8. No los copies ni los uses sin permiso. |
 | Ley aplicable | Estos términos se rigen por las leyes del Ecuador. Cualquier controversia se resuelve ante los jueces de Quito. |
-| Contacto | Escríbenos a hola@siete8.com o por WhatsApp al 0961128233. |
+| Contacto | Escríbenos a hola@siete8.com o por WhatsApp al 0967155626. |
 
 SEO: título "Términos de uso | Siete8"; descripción "Condiciones de uso del sitio y de los servicios de Siete8: precios, firma electrónica y proyectos a medida."
 
@@ -228,17 +228,17 @@ Página `/contacto`. El formulario (E3-08) se muestra cuando Turnstile está con
 | Título (h1) | Contacto |
 | Introducción | Escríbenos por WhatsApp y te respondemos todos los días, de 07:00 a 20:00. |
 | Botón | Escríbenos por WhatsApp |
-| Datos | WhatsApp: 0961128233. Teléfono: 0999843108. Correo: hola@siete8.com. Quito, Ecuador. |
+| Datos | WhatsApp: 0967155626. Teléfono: 0999843108. Correo: hola@siete8.com. Quito, Ecuador. |
 | Redes (h2) | Síguenos: Facebook, Instagram, LinkedIn (enlaces de la sección 8). |
 | Formulario (h2) | ¿Prefieres que te escribamos? Déjanos tus datos y te respondemos en el horario de atención. |
 | Campos | Nombre. Celular (Te respondemos por WhatsApp.). Correo (opcional). Servicio (opcional): Todavía no sé, {servicios visibles}. ¿En qué te ayudamos? (opcional). |
 | Consentimiento | Acepto que Siete8 use mis datos para responder mi solicitud, según la política de privacidad. |
 | Botón | Enviar mensaje. Mientras envía: Enviando… |
 | Enviado | Recibimos tu mensaje. Te escribimos por WhatsApp o al correo, todos los días de 07:00 a 20:00. |
-| Errores | Revisa los campos marcados. (cada campo: Revisa este campo.) / No pudimos comprobar que no eres un robot. Espera a que aparezca la marca de verificación y envía de nuevo. / Ya recibimos tus mensajes. Te escribimos pronto; si es urgente, escríbenos por WhatsApp al 0961128233. / No pudimos enviar tu mensaje. Inténtalo de nuevo o escríbenos por WhatsApp al 0961128233. |
+| Errores | Revisa los campos marcados. (cada campo: Revisa este campo.) / No pudimos comprobar que no eres un robot. Espera a que aparezca la marca de verificación y envía de nuevo. / Ya recibimos tus mensajes. Te escribimos pronto; si es urgente, escríbenos por WhatsApp al 0967155626. / No pudimos enviar tu mensaje. Inténtalo de nuevo o escríbenos por WhatsApp al 0967155626. |
 | Correo de aviso (al admin) | Asunto: Nuevo contacto desde el sitio: {nombre} ({servicio}). Cuerpo: Nombre, Celular, Correo, Servicio, Origen, el mensaje (o "(Sin mensaje)") y Ver en el panel: {enlace}. Remitente: Siete8 <avisos@siete8.com>. |
 
-SEO: título "Contacto | Siete8"; descripción "Escríbenos por WhatsApp al 0961128233, todos los días de 07:00 a 20:00. También por teléfono o a hola@siete8.com."
+SEO: título "Contacto | Siete8"; descripción "Escríbenos por WhatsApp al 0967155626, todos los días de 07:00 a 20:00. También por teléfono o a hola@siete8.com."
 
 ## 11. Página no encontrada (404)
 

@@ -70,7 +70,7 @@ select set_eq(
 
 select is(
   (select value ->> 'wa_me' from public.site_settings where key = 'whatsapp'),
-  '593961128233', 'WhatsApp number for wa.me links'
+  '593967155626', 'WhatsApp number for wa.me links'
 );
 
 select * from finish();
