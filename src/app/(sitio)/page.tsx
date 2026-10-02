@@ -22,6 +22,8 @@ import {
 import { getLatestPost } from "@/server/blog";
 import { getServiceMenu, getServicePlans } from "@/server/catalog";
 import { getFeaturedProjects } from "@/server/portfolio";
+import { getSiteSettings } from "@/server/site-settings";
+import type { SiteSettings } from "@/lib/site-settings";
 import { pageMetadata } from "@/lib/metadata";
 
 // Texts from docs/COPY.md §3.
@@ -53,18 +55,21 @@ const steps = [
 ];
 
 export default async function Home() {
-  const [signature, categories, projects, post] = await Promise.all([
+  const [signature, categories, projects, post, settings] = await Promise.all([
     getServicePlans("firma-electronica"),
     getServiceMenu(),
     getFeaturedProjects(),
     getLatestPost(),
+    getSiteSettings(),
   ]);
 
   // Sections without content (no projects or articles yet) are left out; the
   // floors keep alternating over the ones that remain.
   const sections: ReactNode[] = [
-    <Hero key="hero" />,
-    signature && <FeaturedService key="featured" service={signature} />,
+    <Hero key="hero" waMe={settings.whatsapp.waMe} />,
+    signature && (
+      <FeaturedService key="featured" service={signature} settings={settings} />
+    ),
     categories.length > 0 && (
       <Categories key="categories" categories={categories} />
     ),
@@ -75,7 +80,7 @@ export default async function Home() {
 
   return (
     <>
-      <JsonLd data={localBusiness(clientEnv.NEXT_PUBLIC_SITE_URL)} />
+      <JsonLd data={localBusiness(clientEnv.NEXT_PUBLIC_SITE_URL, settings)} />
       {sections.map((section, index) => (
         // On desktop the whole hero fits in the first screen.
         <Floor key={index} alt={index % 2 === 1} fitScreen={index === 0}>
@@ -87,7 +92,7 @@ export default async function Home() {
   );
 }
 
-function Hero() {
+function Hero({ waMe }: { waMe: string }) {
   return (
     <div className="grid w-full items-center gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-12">
       <HeroMotif
@@ -114,7 +119,7 @@ function Hero() {
           firma electrónica y la facturación.
         </p>
         <div className="flex flex-wrap items-center gap-4">
-          <Button href={whatsappUrl(generalMessage())}>
+          <Button href={whatsappUrl(generalMessage(), waMe)}>
             Escríbenos por WhatsApp
           </Button>
           <Button href="/servicios" variant="secondary">
@@ -128,8 +133,10 @@ function Hero() {
 
 function FeaturedService({
   service,
+  settings,
 }: {
   service: NonNullable<Awaited<ReturnType<typeof getServicePlans>>>;
+  settings: SiteSettings;
 }) {
   const natural = service.plans.filter((plan) => plan.holderType === "natural");
   const legal = service.plans.filter(
@@ -143,8 +150,9 @@ function FeaturedService({
         <h2>Tu firma electrónica, en minutos y sin salir de tu negocio</h2>
         <p>
           Te la entregamos entre 5 y 10 minutos después de recibir tus
-          requisitos completos, de 07:00 a 20:00. Sirve para facturar en el SRI,
-          firmar contratos y hacer trámites en línea.
+          requisitos completos, de {settings.whatsapp.from} a{" "}
+          {settings.whatsapp.to}. Sirve para facturar en el SRI, firmar
+          contratos y hacer trámites en línea.
         </p>
         <Button href={`/servicios/${service.slug}`} variant="secondary">
           Ver planes y requisitos
@@ -167,6 +175,7 @@ function FeaturedService({
                   priceWithoutVat: plan.priceWithoutVat,
                   vatRate: plan.vatRate,
                 }),
+                settings.whatsapp.waMe,
               ),
             },
           }))}

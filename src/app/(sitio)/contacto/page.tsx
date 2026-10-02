@@ -6,33 +6,41 @@ import { ContactForm } from "@/components/sitio/contact-form";
 import { Floor } from "@/components/sitio/floor";
 import { TextLink } from "@/components/sitio/text-link";
 import { clientEnv } from "@/env/client";
-import { SOCIAL_LINKS } from "@/lib/social";
+import { hoursText, toTel } from "@/lib/site-settings";
 import { generalMessage, whatsappUrl } from "@/lib/whatsapp";
 import { pageMetadata } from "@/lib/metadata";
 import { getServiceMenu } from "@/server/catalog";
 import { submitLead } from "@/server/leads";
+import { getSiteSettings } from "@/server/site-settings";
 
 // Texts from docs/COPY.md §10 and §8.
 
-const title = "Contacto | Siete8";
-const description =
-  "Escríbenos por WhatsApp al 0967155626, todos los días de 07:00 a 20:00. También por teléfono o a hola@siete8.com.";
-
-export const metadata: Metadata = pageMetadata({
-  title,
-  description,
-  path: "/contacto",
-});
-
-const whatsapp = whatsappUrl(generalMessage());
-
-const details = [
-  { label: "WhatsApp", value: "0967155626", href: whatsapp },
-  { label: "Teléfono", value: "0999843108", href: "tel:+593999843108" },
-  { label: "Correo", value: "hola@siete8.com", href: "mailto:hola@siete8.com" },
-];
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return pageMetadata({
+    title: "Contacto | Siete8",
+    description: `Escríbenos por WhatsApp al ${settings.whatsapp.number}, ${hoursText(settings).toLowerCase()}. También por teléfono o a ${settings.email}.`,
+    path: "/contacto",
+  });
+}
 
 export default async function ContactPage() {
+  const settings = await getSiteSettings();
+  const whatsapp = whatsappUrl(generalMessage(), settings.whatsapp.waMe);
+  const details = [
+    { label: "WhatsApp", value: settings.whatsapp.number, href: whatsapp },
+    {
+      label: "Teléfono",
+      value: settings.phone,
+      href: `tel:${toTel(settings.phone)}`,
+    },
+    {
+      label: "Correo",
+      value: settings.email,
+      href: `mailto:${settings.email}`,
+    },
+  ];
+
   const siteKey = clientEnv.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const services = siteKey
     ? (await getServiceMenu()).flatMap((category) =>
@@ -46,8 +54,8 @@ export default async function ContactPage() {
         <div className="flex flex-col items-start gap-6">
           <h1>Contacto</h1>
           <p>
-            Escríbenos por WhatsApp y te respondemos todos los días, de 07:00 a
-            20:00.
+            Escríbenos por WhatsApp y te respondemos{" "}
+            {hoursText(settings).toLowerCase()}.
           </p>
           <Button href={whatsapp}>Escríbenos por WhatsApp</Button>
         </div>
@@ -89,9 +97,9 @@ export default async function ContactPage() {
           <div className="flex flex-col gap-4">
             <h2 className="text-h3">Síguenos</h2>
             <ul className="flex flex-col gap-2">
-              {SOCIAL_LINKS.map((link) => (
-                <li key={link.href}>
-                  <TextLink href={link.href}>{link.label}</TextLink>
+              {settings.social.map((link) => (
+                <li key={link.url}>
+                  <TextLink href={link.url}>{link.label}</TextLink>
                 </li>
               ))}
             </ul>

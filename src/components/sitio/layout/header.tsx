@@ -5,21 +5,19 @@ import { MobileMenu } from "@/components/sitio/layout/mobile-menu";
 import { ServicesMenu } from "@/components/sitio/layout/services-menu";
 import { Logo } from "@/components/sitio/logo";
 import { type MenuCategory, type NavLink } from "@/lib/menu";
-import { generalMessage, whatsappUrl } from "@/lib/whatsapp";
-
-const cta = {
-  label: "Escríbenos por WhatsApp",
-  href: whatsappUrl(generalMessage()),
-};
 
 /** Site header (COPY §2): logo, Servicios menu, main links and WhatsApp. */
 export function Header({
   categories,
   links,
+  whatsappHref,
 }: {
   categories: MenuCategory[];
   links: NavLink[];
+  /** General WhatsApp link, built from the site settings. */
+  whatsappHref: string;
 }) {
+  const cta = { label: "Escríbenos por WhatsApp", href: whatsappHref };
   return (
     <header className="relative border-b border-border bg-bg">
       <div className="mx-auto flex h-[4.5rem] max-w-[1200px] items-center justify-between gap-4 px-5 lg:px-12">
