@@ -4,6 +4,7 @@ import {
   faqForm,
   holderNoteForm,
   imageFile,
+  linkButtonForm,
   money,
   planForm,
   projectForm,
@@ -210,5 +211,32 @@ describe("faqForm and holderNoteForm", () => {
         body: "  ",
       }).body,
     ).toBeNull();
+  });
+});
+
+describe("linkButtonForm", () => {
+  const base = { label: "Servicios", sort_order: "1", visible: "on" };
+
+  it("keeps the address of a link and drops it for WhatsApp", () => {
+    expect(
+      linkButtonForm.parse({ ...base, kind: "url", url: " /servicios " }),
+    ).toMatchObject({ url: "/servicios", visible: true, highlight: false });
+    expect(
+      linkButtonForm.parse({ ...base, kind: "whatsapp", url: "/ignorada" }).url,
+    ).toBeNull();
+  });
+
+  it("needs a site page or an https address for a link", () => {
+    expect(
+      linkButtonForm.safeParse({ ...base, kind: "url", url: "" }).success,
+    ).toBe(false);
+    expect(
+      linkButtonForm.safeParse({ ...base, kind: "url", url: "http://x.com" })
+        .success,
+    ).toBe(false);
+    expect(
+      linkButtonForm.safeParse({ ...base, kind: "url", url: "https://x.com" })
+        .success,
+    ).toBe(true);
   });
 });
