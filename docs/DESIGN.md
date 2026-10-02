@@ -171,6 +171,8 @@ Una sola familia en dos anchos, en eco del logotipo ancho de SIETE8: **Archivo**
 - **Separador de categorías:** tres barras de 4 × 24 px en `--bars-gradient`, junto al título de cada categoría del catálogo.
 - **Prohibido:** usar el motivo como patrón de fondo repetido, deformarlo o cambiar el orden de sus colores.
 
+- **Hero de la página de un servicio:** el mismo motivo de la portada, **sin animación** (la única animación automática sigue siendo la de la portada), con la categoría del servicio subrayada en `carmin`. Solo en escritorio; en el celular el hero muestra el texto, los botones y los datos clave.
+
 ## 7. Componentes
 
 | Componente | Especificación |

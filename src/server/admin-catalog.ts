@@ -35,10 +35,10 @@ export async function getServiceForAdmin(id: string) {
       supabase
         .from("service")
         .select(
-          `id, name, slug, visible, updated_at, summary, requirements_intro, closing_title,
+          `id, name, slug, visible, updated_at, summary, body_md, timeline, price_note, requirements_intro, closing_title,
            seo_title, seo_description, related_service_id, cross_sell_text, cross_sell_cta,
            category(name),
-           plan(id, name, holder_type, price_without_vat, vat_rate, visible, recommended, sort_order, updated_at,
+           plan(id, name, detail, holder_type, price_without_vat, vat_rate, visible, recommended, sort_order, updated_at,
                 requirement(text, required, sort_order)),
            service_step(id, body, sort_order, updated_at),
            service_faq(id, question, answer, sort_order, updated_at),

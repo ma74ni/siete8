@@ -54,7 +54,8 @@ select is(
   'anon: a visible service in a hidden category is hidden'
 );
 select is((select count(*) from public.service where slug = 'facturacion-electronica')::int, 0, 'anon: hidden service is hidden');
-select is((select count(*) from public.plan)::int, 12, 'anon: only visible plans of visible services');
+-- 12 signature plans plus the 9 hosting and email plans (E6-02).
+select is((select count(*) from public.plan)::int, 21, 'anon: only visible plans of visible services');
 select is((select count(*) from public.plan where name = 'Plan oculto')::int, 0, 'anon: hidden plan is hidden');
 select is((select count(*) from public.requirement)::int, 65, 'anon: requirements of visible plans');
 select is(

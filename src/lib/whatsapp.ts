@@ -8,6 +8,18 @@ export function whatsappUrl(message: string): string {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
+/**
+ * wa.me link to chat with a lead from the panel (E4-07). Ecuadorian numbers
+ * typed locally (099…) get the country code: 59399…
+ */
+export function whatsappChatUrl(phone: string): string {
+  const digits = phone.replace(/\D/g, "");
+  const international = digits.startsWith("0")
+    ? `593${digits.slice(1)}`
+    : digits;
+  return `https://wa.me/${international}`;
+}
+
 // Prefilled messages, verbatim from docs/COPY.md §2.
 const INTRO = "Hola, vengo del sitio de Siete8.";
 

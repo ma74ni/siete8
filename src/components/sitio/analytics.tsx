@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/sitio/button";
 import {
   CAMPAIGN_KEY,
-  campaignFromSearch,
   CONSENT_KEY,
   type Consent,
   isSiteOrigin,
@@ -98,9 +97,7 @@ export function Analytics({
     // Local runs and previews stay silent even if built with the ID.
     if (!isSiteOrigin(location.origin, siteUrl)) return;
 
-    const campaign = campaignFromSearch(location.search);
-    if (campaign)
-      write("sessionStorage", CAMPAIGN_KEY, JSON.stringify(campaign));
+    // The landing page's UTM are kept by CampaignCapture, even without GA.
 
     const stored = read("localStorage", CONSENT_KEY);
     // Reading storage is only possible after mounting.

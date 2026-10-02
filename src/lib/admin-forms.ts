@@ -49,6 +49,9 @@ export const serviceForm = z.object({
   id: z.uuid(),
   visible: checkbox,
   summary: optionalText(400),
+  body_md: optionalText(10_000),
+  timeline: optionalText(60),
+  price_note: optionalText(60),
   requirements_intro: optionalText(400),
   closing_title: optionalText(120),
   seo_title: optionalText(70),
@@ -66,6 +69,7 @@ export const planForm = z.object({
   id: z.uuid().optional(),
   service_id: z.uuid(),
   name: requiredText(60),
+  detail: optionalText(200),
   holder_type: holderType,
   price_without_vat: money,
   vat_rate: vatPercent,
@@ -261,6 +265,24 @@ export const postForm = z
   });
 
 export const postCoverForm = z.object({ post_id: z.uuid() });
+
+// Leads (E4-07) -----------------------------------------------------------------
+
+export const leadStatus = z.enum(["new", "contacted", "closed", "lost"]);
+export const leadSource = z.enum(["form", "whatsapp", "assistant"]);
+
+export const leadAdminForm = z.object({
+  id: z.uuid(),
+  status: leadStatus,
+  notes: optionalText(4000),
+});
+
+/** Filters of the leads list, from the address; unknown values are dropped. */
+export const leadFilters = z.object({
+  estado: leadStatus.optional().catch(undefined),
+  origen: leadSource.optional().catch(undefined),
+  servicio: z.uuid().optional().catch(undefined),
+});
 
 /** Result of a panel Server Action, shown next to its form. */
 export type FormState =

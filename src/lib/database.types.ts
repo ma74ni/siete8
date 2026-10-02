@@ -48,6 +48,7 @@ export type Database = {
           created_at: string
           email: string | null
           id: string
+          message: string | null
           name: string | null
           notes: string | null
           phone: string | null
@@ -63,6 +64,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          message?: string | null
           name?: string | null
           notes?: string | null
           phone?: string | null
@@ -78,6 +80,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          message?: string | null
           name?: string | null
           notes?: string | null
           phone?: string | null
@@ -105,9 +108,49 @@ export type Database = {
           },
         ]
       }
+      lead_status_event: {
+        Row: {
+          changed_by: string | null
+          created_at: string
+          id: string
+          lead_id: string
+          status: Database["public"]["Enums"]["lead_status"]
+        }
+        Insert: {
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          lead_id: string
+          status: Database["public"]["Enums"]["lead_status"]
+        }
+        Update: {
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          lead_id?: string
+          status?: Database["public"]["Enums"]["lead_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_status_event_changed_by_fkey"
+            columns: ["changed_by"]
+            isOneToOne: false
+            referencedRelation: "profile"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_status_event_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "lead"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       plan: {
         Row: {
           created_at: string
+          detail: string | null
           duration_unit: Database["public"]["Enums"]["duration_unit"] | null
           duration_value: number | null
           holder_type: Database["public"]["Enums"]["holder_type"]
@@ -123,6 +166,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          detail?: string | null
           duration_unit?: Database["public"]["Enums"]["duration_unit"] | null
           duration_value?: number | null
           holder_type?: Database["public"]["Enums"]["holder_type"]
@@ -138,6 +182,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          detail?: string | null
           duration_unit?: Database["public"]["Enums"]["duration_unit"] | null
           duration_value?: number | null
           holder_type?: Database["public"]["Enums"]["holder_type"]
@@ -475,6 +520,7 @@ export type Database = {
           id: string
           kind: Database["public"]["Enums"]["service_kind"]
           name: string
+          price_note: string | null
           related_service_id: string | null
           requirements_intro: string | null
           seo_description: string | null
@@ -482,6 +528,7 @@ export type Database = {
           slug: string
           sort_order: number
           summary: string | null
+          timeline: string | null
           updated_at: string
           visible: boolean
         }
@@ -498,6 +545,7 @@ export type Database = {
           id?: string
           kind?: Database["public"]["Enums"]["service_kind"]
           name: string
+          price_note?: string | null
           related_service_id?: string | null
           requirements_intro?: string | null
           seo_description?: string | null
@@ -505,6 +553,7 @@ export type Database = {
           slug: string
           sort_order?: number
           summary?: string | null
+          timeline?: string | null
           updated_at?: string
           visible?: boolean
         }
@@ -521,6 +570,7 @@ export type Database = {
           id?: string
           kind?: Database["public"]["Enums"]["service_kind"]
           name?: string
+          price_note?: string | null
           related_service_id?: string | null
           requirements_intro?: string | null
           seo_description?: string | null
@@ -528,6 +578,7 @@ export type Database = {
           slug?: string
           sort_order?: number
           summary?: string | null
+          timeline?: string | null
           updated_at?: string
           visible?: boolean
         }

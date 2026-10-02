@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -30,20 +31,70 @@ const components: Components = {
   ),
 };
 
+type HastNode = {
+  type: string;
+  tagName?: string;
+  properties?: Record<string, unknown>;
+  children?: HastNode[];
+};
+
+/** Marks the items of bullet lists (not numbered ones) for the checklist. */
+function rehypeChecklist() {
+  const walk = (node: HastNode) => {
+    for (const child of node.children ?? []) {
+      if (node.tagName === "ul" && child.tagName === "li") {
+        child.properties = { ...child.properties, dataCheck: "" };
+      }
+      walk(child);
+    }
+  };
+  return (tree: HastNode) => walk(tree);
+}
+
+// Service pages (E6-02): "Qué incluye" reads as a checklist, two columns on
+// wide screens. Numbered lists keep their numbers.
+const checklist: Components = {
+  ...components,
+  ul: ({ children }) => (
+    <ul className="grid gap-x-10 gap-y-3 md:grid-cols-2">{children}</ul>
+  ),
+  li: ({ children, node }) =>
+    node?.properties && "dataCheck" in node.properties ? (
+      <li className="flex gap-3">
+        <Check
+          aria-hidden
+          strokeWidth={1.5}
+          className="mt-0.5 size-6 shrink-0 text-action"
+        />
+        <span>{children}</span>
+      </li>
+    ) : (
+      <li>{children}</li>
+    ),
+};
+
 /**
- * Markdown written in the panel (project texts, articles). Raw HTML is not
- * rendered: react-markdown escapes it, so a pasted script stays text.
+ * Markdown written in the panel (project texts, articles, service pages).
+ * Raw HTML is not rendered: react-markdown escapes it, so a pasted script
+ * stays text.
  */
 export function Markdown({
   children,
+  variant = "prose",
   className,
 }: {
   children: string;
+  /** `checklist`: bullet lists get a check mark (service pages). */
+  variant?: "prose" | "checklist";
   className?: string;
 }) {
   return (
     <div className={cx("flex flex-col gap-4", className)}>
-      <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={variant === "checklist" ? [rehypeChecklist] : []}
+        components={variant === "checklist" ? checklist : components}
+      >
         {children}
       </ReactMarkdown>
     </div>

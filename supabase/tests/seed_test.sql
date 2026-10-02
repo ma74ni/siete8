@@ -72,8 +72,8 @@ select is(
 );
 select is(
   (select count(*) from public.plan p join public.service s on s.id = p.service_id
-   where s.slug in ('hosting', 'correo-corporativo') and p.visible)::int,
-  0, 'hosting and email plans are hidden until validated'
+   where s.slug in ('hosting', 'correo-corporativo') and p.visible and p.detail is not null)::int,
+  9, 'hosting and email plans are visible, each with what it includes (E6-02)'
 );
 
 select is(

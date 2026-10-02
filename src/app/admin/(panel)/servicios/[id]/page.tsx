@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { ActionForm } from "@/components/admin/action-form";
 import { CheckboxField } from "@/components/admin/checkbox-field";
 import { DeleteButton } from "@/components/admin/delete-button";
+import { MarkdownEditor } from "@/components/admin/markdown-editor";
 import { PriceField } from "@/components/admin/price-field";
 import { FormField } from "@/components/sitio/form-field";
 import { isUuid } from "@/lib/admin-forms";
@@ -201,6 +202,14 @@ function PlanEditor({
             hint="Menor número, primero"
           />
         </div>
+        <FormField
+          label="Qué incluye"
+          name="detail"
+          id={`detail-${key}`}
+          maxLength={200}
+          defaultValue={plan?.detail ?? ""}
+          hint="Una línea bajo el nombre del plan. Ej: 1 sitio web y 3 cuentas de correo de 5 GB"
+        />
         <PriceField
           idPrefix={`plan-${key}`}
           price={plan?.price_without_vat ?? 0}
@@ -254,6 +263,28 @@ function ServiceEditor({ service }: { service: ServiceForAdmin }) {
         maxLength={400}
         defaultValue={service.summary ?? ""}
         hint="Párrafo del hero y texto del catálogo."
+      />
+      <div className="grid gap-4 md:grid-cols-2">
+        <FormField
+          label="Plazo aproximado"
+          name="timeline"
+          maxLength={60}
+          defaultValue={service.timeline ?? ""}
+          hint="Dato del hero. Ej: De 7 a 10 días. Vacío: no se muestra."
+        />
+        <FormField
+          label="Precio (si no tiene planes)"
+          name="price_note"
+          maxLength={60}
+          defaultValue={service.price_note ?? ""}
+          hint="Ej: Cotización por WhatsApp. Con planes, el hero muestra Desde $…"
+        />
+      </div>
+      <MarkdownEditor
+        name="body_md"
+        label="Contenido de la página"
+        defaultValue={service.body_md ?? ""}
+        hint="Va después del hero: para quién es, qué incluye y plazo. Markdown: ## Subtítulo, **negrita**, listas con guion. Vacío: no se muestra."
       />
       <FormField
         label="Introducción de requisitos"

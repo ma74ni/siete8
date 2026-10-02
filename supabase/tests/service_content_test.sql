@@ -1,4 +1,5 @@
 -- E3-03: service page texts (steps, questions, requirements intro, cross-sell).
+-- Counts are scoped to the signature: other services have texts too (E6-02).
 -- Run with `pnpm db:test`. The seed loads the signature texts from COPY §4.
 begin;
 create extension if not exists pgtap with schema extensions;
@@ -47,8 +48,8 @@ select throws_ok(
 set local role anon;
 select set_config('request.jwt.claims', '{"role": "anon"}', true);
 
-select is((select count(*) from public.service_step)::int, 3, 'anon: reads steps of visible services');
-select is((select count(*) from public.service_faq)::int, 5, 'anon: reads questions of visible services');
+select is((select count(*) from public.service_step st join public.service s on s.id = st.service_id where s.slug = 'firma-electronica')::int, 3, 'anon: reads steps of visible services');
+select is((select count(*) from public.service_faq q join public.service s on s.id = q.service_id where s.slug = 'firma-electronica')::int, 5, 'anon: reads questions of visible services');
 select throws_ok(
   $$insert into public.service_faq (service_id, question, answer)
     select id, 'q', 'a' from public.service where slug = 'firma-electronica'$$,
@@ -60,8 +61,8 @@ update public.service set visible = false where slug = 'firma-electronica';
 set local role anon;
 select set_config('request.jwt.claims', '{"role": "anon"}', true);
 
-select is((select count(*) from public.service_step)::int, 0, 'anon: a hidden service hides its steps');
-select is((select count(*) from public.service_faq)::int, 0, 'anon: a hidden service hides its questions');
+select is((select count(*) from public.service_step st join public.service s on s.id = st.service_id where s.slug = 'firma-electronica')::int, 0, 'anon: a hidden service hides its steps');
+select is((select count(*) from public.service_faq q join public.service s on s.id = q.service_id where s.slug = 'firma-electronica')::int, 0, 'anon: a hidden service hides its questions');
 
 reset role;
 update public.service set visible = true where slug = 'firma-electronica';
@@ -81,7 +82,7 @@ delete from public.service_step;
 
 reset role;
 select is((select count(*) from public.service_faq where answer = 'cambiado')::int, 0, 'user: cannot edit questions');
-select is((select count(*) from public.service_step)::int, 3, 'user: cannot delete steps');
+select is((select count(*) from public.service_step st join public.service s on s.id = st.service_id where s.slug = 'firma-electronica')::int, 3, 'user: cannot delete steps');
 
 -- Admin ----------------------------------------------------------------------
 
@@ -94,7 +95,8 @@ select lives_ok(
   'admin: adds questions'
 );
 select lives_ok(
-  $$update public.service_step set body = 'Paso editado.' where sort_order = 1$$,
+  $$update public.service_step set body = 'Paso editado.'
+    where sort_order = 1 and service_id = (select id from public.service where slug = 'firma-electronica')$$,
   'admin: edits steps'
 );
 select lives_ok(
@@ -103,8 +105,9 @@ select lives_ok(
 );
 
 reset role;
-select is((select count(*) from public.service_faq)::int, 6, 'admin: question was added');
-select is((select body from public.service_step where sort_order = 1), 'Paso editado.', 'admin: step was edited');
+select is((select count(*) from public.service_faq q join public.service s on s.id = q.service_id where s.slug = 'firma-electronica')::int, 6, 'admin: question was added');
+select is((select st.body from public.service_step st join public.service s on s.id = st.service_id
+  where s.slug = 'firma-electronica' and st.sort_order = 1), 'Paso editado.', 'admin: step was edited');
 
 select * from finish();
 rollback;

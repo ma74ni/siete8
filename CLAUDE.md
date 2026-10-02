@@ -84,6 +84,7 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 - Los precios se guardan sin IVA (`price_without_vat`) junto con `vat_rate`. El sitio siempre muestra el total con IVA: `round(price * (1 + vat_rate), 2)`, con coma decimal (`$20,69`). El cálculo se hace en una sola función compartida, en centavos enteros, para evitar errores de coma flotante; ningún componente calcula el IVA por su cuenta.
 - El sitio y cualquier formulario nunca piden ni guardan documentos de identidad. Esos se envían por WhatsApp.
 - Un lead no se guarda sin consentimiento (`consent_at`).
+- Formulario de contacto (E3-08): `submitLead` en `src/server/leads.ts` valida en este orden: honeypot (`website`), Turnstile, esquema `leadForm` de `@/lib/contact-form` (consentimiento incluido) y un límite de 3 envíos por celular o correo cada 10 minutos; solo entonces inserta con `createAdminClient()`, y avisa por Resend a `ADMIN_NOTIFICATION_EMAIL`. El celular se guarda normalizado (sin espacios ni guiones). Tras un error devuelve lo escrito, porque React vacía el formulario. El historial de estados del lead lo escribe el trigger `record_lead_status` en `lead_status_event`. `CampaignCapture` guarda los UTM de la página de llegada para GA y para el lead.
 
 **Seguridad**
 - Row Level Security en todas las tablas. Lectura anónima solo de lo publicado y visible.
@@ -97,7 +98,7 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 
 **Diseño**
 - Mobile-first. Contraste WCAG 2.1 AA: los naranjas y amarillos de marca nunca van como texto sobre fondo blanco.
-- El motivo del logo (7 = `111`, tres barras; 8 = `1000`, un módulo sólido y tres huecos) se reproduce con la geometría de `docs/DESIGN.md`, nunca deformado. Sus coordenadas salen de `docs/brand/logo.ai` y viven solo en `src/components/sitio/motif/motif-geometry.ts`; se usan `HeroMotif`, `CategoryDivider` y `ReadingProgress`, nunca un SVG dibujado a mano.
+- El motivo del logo (7 = `111`, tres barras; 8 = `1000`, un módulo sólido y tres huecos) se reproduce con la geometría de `docs/DESIGN.md`, nunca deformado. Sus coordenadas salen de `docs/brand/logo.ai` y viven solo en `src/components/sitio/motif/motif-geometry.ts`; se usan `HeroMotif` (en la portada, animado; en cada servicio, con `still` y la categoría en `active`), `CategoryDivider` y `ReadingProgress`, nunca un SVG dibujado a mano.
 - Sin etiquetas en mayúsculas sobre títulos, sin separadores con punto medio, sin fuente monoespaciada en la interfaz pública.
 - Una sola animación automática: el hero de la portada.
 - Los tokens viven en `src/app/globals.css`, único archivo de `src/` con colores literales. Los componentes usan los colores semánticos (`bg`, `surface`, `fg`, `fg-muted`, `accent`, `action`, `action-hover`, `on-action`, `border`, `focus`), que ya cambian con el modo oscuro: no se usa `dark:` salvo excepción. La paleta de Tailwind está desactivada. El texto secundario (`fg-muted`) no va sobre `surface` (no pasa AA); ahí se usa `fg`. `src/app/design-tokens.test.ts` verifica contraste, colores literales y esa regla.
@@ -113,7 +114,7 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 - Imágenes del panel: `uploadImage`/`removeImage` de `src/server/admin-action-helpers.ts`, validadas con `imageFile`. En el navegador, `ImageField` (`@/components/admin/image-field`) decodifica el archivo y, si pesa más de 2 MB o no es de un tipo aceptado, lo reduce a WebP (lado mayor 2400 px) antes de enviarlo: así nunca se pasa del límite de 3 MB de las Server Actions. Las de galería exigen texto alternativo; las portadas son decorativas (el título va al lado). `images.dangerouslyAllowLocalIP` solo se activa cuando Supabase corre en local.
 - Cada sección de página es un `Floor` (piso `paper`/`mist` con el espaciado de DESIGN §5). Una sección sin contenido (sin proyectos, sin artículos) no se renderiza, y los pisos se alternan sobre las que quedan. Las tarjetas de portafolio usan `ProjectCard` y las etiquetas de estado de `@/lib/project-status`.
 - Cada página pública termina con `<Closing />` (cierre sobre `ink`, justo antes del pie); el pie del layout solo tiene contacto, enlaces y redes. La página de un servicio usa su propio cierre (`service.closing_title`).
-- Los textos de la página de un servicio viven en la base, no en el código, para que el panel los edite: `service.summary` (párrafo del hero), `requirements_intro`, `cross_sell_text`/`cross_sell_cta` con `related_service_id`, `closing_title`, `seo_title`/`seo_description`, y las tablas `service_step`, `service_faq` y `service_holder_note` (aviso bajo los planes de un tipo de titular, como el de representante legal). Las secciones sin datos no se renderizan.
+- Los textos de la página de un servicio viven en la base, no en el código, para que el panel los edite: `service.summary` (párrafo del hero), `body_md` (para quién es, qué incluye y plazo, en Markdown con la variante `checklist`), `timeline` y `price_note` (datos del hero), `plan.detail` (qué incluye cada plan), `requirements_intro`, `cross_sell_text`/`cross_sell_cta` con `related_service_id`, `closing_title`, `seo_title`/`seo_description`, y las tablas `service_step`, `service_faq` y `service_holder_note` (aviso bajo los planes de un tipo de titular, como el de representante legal). Las secciones sin datos no se renderizan.
 - `pnpm build` borra `.next/cache/fetch-cache` antes de compilar: Next reutiliza ahí las respuestas de Supabase entre builds (y Netlify conserva `.next/cache`), lo que dejaría precios o menús viejos. No se usa `cache: "no-store"` en el cliente público porque vuelve dinámicas las páginas.
 - Una sección sobre fondo `ink` usa la clase `.on-ink`, que ajusta los tokens semánticos para mantener el contraste.
 - El logo es el componente `Logo` (de `docs/brand/logo_horizontal.svg`); no se usa como imagen.
@@ -128,7 +129,7 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 
 - WhatsApp comercial: 0961128233 (en `wa.me`: 593961128233). Atención de 07:00 a 20:00.
 - Teléfono: 0999843108.
-- Correo: hola@siete8.com. Dominio: siete8.com (DNS en Namecheap; el correo vive en DreamHost y sus registros MX, SPF, DKIM y DMARC no se tocan).
+- Correo: hola@siete8.com. Dominio: siete8.com, registrado en Namecheap, con el DNS en **Netlify DNS** (NS1): los registros se agregan en Netlify > Domains, no en Namecheap. El correo vive en DreamHost y sus registros de la raíz (MX, SPF, DKIM y DMARC) no se tocan. Resend usa solo `resend._domainkey` (TXT), `send` y `rsend` (CNAME).
 - Redes: facebook.com/siete8.ec, instagram.com/siete8.ec, linkedin.com/company/siete8.ec.
 
 ## Variables de entorno
@@ -147,7 +148,7 @@ Se validan con Zod al arrancar: `next.config.ts` importa `src/env/schema.ts`, as
 | `NEXT_PUBLIC_SITE_URL` | pública | E0-03 (exigida) |
 | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | pública | E1-06 |
 | `SUPABASE_SECRET_KEY` | secreta | E1-06 |
-| `RESEND_API_KEY`, `ADMIN_NOTIFICATION_EMAIL`, `TURNSTILE_SECRET_KEY` | secreta | E3-08 |
+| `RESEND_API_KEY`, `ADMIN_NOTIFICATION_EMAIL`, `TURNSTILE_SECRET_KEY` | secreta, opcional | E3-08 (sin Turnstile no se muestra el formulario; sin Resend se guarda el lead pero no llega el correo) |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | pública | E3-08 |
 | `REVALIDATE_SECRET` | secreta | primera ruta de revalidación bajo demanda |
 | `NEXT_PUBLIC_GA_ID` | pública, opcional | E5-04 (solo producción, en `netlify.toml`) |

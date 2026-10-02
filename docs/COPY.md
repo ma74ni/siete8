@@ -221,7 +221,7 @@ SEO: título "Servicios: sitios web, hosting, firma electrónica y más | Siete8
 
 ## 10. Contacto
 
-Página `/contacto`. Sin formulario hasta la tarea E3-08.
+Página `/contacto`. El formulario (E3-08) se muestra cuando Turnstile está configurado; si no, la página queda solo con WhatsApp.
 
 | Elemento | Texto |
 | --- | --- |
@@ -230,6 +230,13 @@ Página `/contacto`. Sin formulario hasta la tarea E3-08.
 | Botón | Escríbenos por WhatsApp |
 | Datos | WhatsApp: 0961128233. Teléfono: 0999843108. Correo: hola@siete8.com. Quito, Ecuador. |
 | Redes (h2) | Síguenos: Facebook, Instagram, LinkedIn (enlaces de la sección 8). |
+| Formulario (h2) | ¿Prefieres que te escribamos? Déjanos tus datos y te respondemos en el horario de atención. |
+| Campos | Nombre. Celular (Te respondemos por WhatsApp.). Correo (opcional). Servicio (opcional): Todavía no sé, {servicios visibles}. ¿En qué te ayudamos? (opcional). |
+| Consentimiento | Acepto que Siete8 use mis datos para responder mi solicitud, según la política de privacidad. |
+| Botón | Enviar mensaje. Mientras envía: Enviando… |
+| Enviado | Recibimos tu mensaje. Te escribimos por WhatsApp o al correo, todos los días de 07:00 a 20:00. |
+| Errores | Revisa los campos marcados. (cada campo: Revisa este campo.) / No pudimos comprobar que no eres un robot. Espera a que aparezca la marca de verificación y envía de nuevo. / Ya recibimos tus mensajes. Te escribimos pronto; si es urgente, escríbenos por WhatsApp al 0961128233. / No pudimos enviar tu mensaje. Inténtalo de nuevo o escríbenos por WhatsApp al 0961128233. |
+| Correo de aviso (al admin) | Asunto: Nuevo contacto desde el sitio: {nombre} ({servicio}). Cuerpo: Nombre, Celular, Correo, Servicio, Origen, el mensaje (o "(Sin mensaje)") y Ver en el panel: {enlace}. Remitente: Siete8 <avisos@siete8.com>. |
 
 SEO: título "Contacto | Siete8"; descripción "Escríbenos por WhatsApp al 0961128233, todos los días de 07:00 a 20:00. También por teléfono o a hola@siete8.com."
 
@@ -291,6 +298,8 @@ Textos internos del panel (`/admin`). El panel usa la misma voz que el sitio: tu
 | Blog | Campos | Título. Dirección (Parte final del enlace: /blog/firma-electronica-en-ecuador. Vacía: se arma con el título.). Autor (Vacío: Siete8). Extracto (Una o dos frases para el listado y la vista previa en redes.). Artículo, con pestañas Escribir y Vista previa (Markdown: ## Subtítulo, **negrita**, listas con guion, [texto](/servicios/firma-electronica) para enlazar.; sin texto: Sin texto todavía.). Estado: Borrador, Publicado. Fecha de publicación (Hora de Quito. Vacía: al publicar. Si es futura, aparece ese día.). Servicio relacionado (Ninguno). SEO: Título SEO (Hasta 70 caracteres. Vacío: el título.), Descripción SEO (Hasta 160 caracteres. Vacío: el extracto.). Botón: Guardar artículo. |
 | Blog | Editar | Volver al blog. Ver en el sitio / No aparece en el sitio: es un borrador o está programado. Portada (Se ve arriba del artículo y al compartirlo en redes y WhatsApp. Usa una imagen horizontal, idealmente de 1200 × 630.). Borrar el artículo: ¿Borrar "{título}"? No se puede deshacer. Botón: Borrar artículo. |
 | Blog | Redes | Anunciado en redes el {fecha}. / Se anunciará en redes hasta 15 minutos después de salir publicado. |
+| Leads | Listado | Leads. Las personas que te dejaron sus datos, de la más reciente a la más antigua. Filtros: Estado, Origen, Servicio (Todos). Botón: Filtrar. Vacío: No hay leads con estos filtros. Estados: Nuevo, Contactado, Cerrado, Perdido. Origen: Formulario, WhatsApp, Asistente. |
+| Leads | Detalle | Volver a leads. Celular (abre WhatsApp), Correo, Servicio, Plan, Origen, Campaña, Recibido, Consentimiento. Mensaje (Sin mensaje.). Seguimiento: Estado, Notas (Solo las ves tú, en el panel.). Botón: Guardar lead. Historial de estados: {estado}: {fecha, hora}. Mensaje: Lead guardado. |
 | Mensajes | Blog | Artículo guardado. Portada guardada. Ya hay un artículo con esa dirección. |
 
 ## 14. Portafolio
@@ -323,3 +332,178 @@ Página `/blog` (9 artículos por página; las siguientes en `/blog/pagina/{n}`)
 SEO: título "Blog \| Siete8"; descripción "Guías cortas sobre firma electrónica, facturación, sitios web y tecnología para negocios en Ecuador." Por artículo: su título SEO (o "{título} \| Siete8") y su descripción SEO (o el extracto); la imagen al compartir es su portada.
 
 El primer artículo (sección 3, "Del blog") se carga como borrador con la migración `blog_author_first_post`: solo usa textos de la sección 4 y afirmaciones verificadas de la sección 5, sin precios.
+
+## 16. Páginas de los demás servicios (E6-02)
+
+Aprobado el 1 de octubre de 2026. Sale del SRS: anexo C (qué incluye y plazos), anexo D (catálogo) y anexo E (planes de hosting y correo), y del portafolio (anexo F). No agrega afirmaciones nuevas. Los precios de hosting y correo son los del anexo E, confirmados; se cambian en el panel. Los servicios a medida no muestran precio: se cotizan por WhatsApp.
+
+Cada servicio tiene: resumen (hero y catálogo), contenido (para quién es, qué incluye, plazo), pasos (título de la sección: **Cómo funciona**; la firma conserva "Así la obtienes"), preguntas, cierre y SEO. Los servicios a medida usan los pasos de la portada (sección 3, "Cómo trabajamos"):
+
+1. Conversamos. Nos cuentas qué necesitas por WhatsApp o en una llamada. Sin formularios largos.
+2. Te proponemos. Recibes una propuesta con alcance, precio y plazo claros antes de empezar.
+3. Construimos y te acompañamos. Entregamos, te enseñamos a usarlo y seguimos disponibles cuando algo falla.
+
+Elementos comunes de la página de un servicio:
+
+| Elemento | Texto |
+| --- | --- |
+| Hero, segundo botón (sin planes) | Cuéntanos tu proyecto (abre el formulario de contacto con el servicio elegido). Con planes: Ver planes. |
+| Hero, datos | Plazo aproximado: {plazo del servicio}. Precio: Desde {precio}, incluye IVA (con planes) o {nota de precio}. Atención: Todos los días, de 07:00 a 20:00. |
+| Plazos y notas de precio | Páginas web: De 2 a 5 semanas. Landing page: De 7 a 10 días. Tiendas virtuales: De 4 a 6 semanas. Apps y BI: Según el alcance. Precio de los servicios a medida: Cotización por WhatsApp. Dominios: Según la terminación del dominio. Soporte: Por hora. |
+| Proyectos relacionados (h2) | Proyectos relacionados. Botón: Ver todos los proyectos. Solo aparece si hay proyectos publicados del servicio. |
+
+Pregunta común a los servicios a medida, "¿Cuánto cuesta?": Depende de lo que necesites. Cuéntanos tu caso por WhatsApp y te enviamos una propuesta con alcance, precio y plazo antes de empezar.
+
+### 16.1 Páginas web (`paginas-web`)
+
+- **Resumen:** Un sitio con diseño propio para que tu negocio se vea profesional y te encuentren en Google.
+- **Para quién es:** Para negocios y profesionales que necesitan presentar sus servicios en internet y recibir contactos por WhatsApp.
+- **Qué incluye:**
+  - **Sitio informativo:** hasta 5 páginas, diseño propio y SEO técnico.
+  - **Sitio autoadministrable:** hasta 8 páginas, con un panel para editar textos y un blog.
+  - Botón de WhatsApp y formulario de contacto.
+  - Se puede sumar: páginas adicionales, catálogo de productos, reservas o citas en línea, otro idioma, redacción de textos, logo e identidad básica y SEO inicial.
+- **Plazo aproximado:** sitio informativo, de 2 a 3 semanas; autoadministrable, de 3 a 5 semanas. Corre desde que tenemos tus textos e imágenes.
+- **Preguntas:**
+  - ¿Cuánto cuesta? (pregunta común)
+  - ¿Qué necesito para empezar? Tu logo, los textos y las fotos de tu negocio. Si no los tienes, podemos redactar los textos y diseñar un logo básico.
+  - ¿Puedo cambiar los textos yo mismo? Sí, si eliges el sitio autoadministrable: incluye un panel para editar textos y publicar en el blog.
+  - ¿Incluye el dominio y el hosting? Se contratan aparte. Mira los planes de hosting y dominios; te ayudamos a configurarlos.
+- **Venta cruzada:** Hosting. "Tu sitio necesita dónde vivir: el hosting incluye la configuración del dominio y soporte." Botón: Ver planes de hosting.
+- **Cierre:** ¿Listo para tu sitio web?
+- **SEO:** "Páginas web para negocios en Quito | Siete8"; "Sitios web con diseño propio, SEO técnico y botón de WhatsApp. Informativos o autoadministrables, con blog. Cotiza por WhatsApp."
+
+### 16.2 Landing page (`landing-page`)
+
+- **Resumen:** Una sola página pensada para un objetivo: vender un producto, promocionar un servicio o recibir contactos.
+- **Para quién es:** Para lanzar un producto o una campaña, o para empezar en internet con una página clara y rápida.
+- **Qué incluye:** una página con secciones, formulario de contacto, botón de WhatsApp y SEO técnico.
+- **Plazo aproximado:** de 7 a 10 días desde que tenemos tus textos e imágenes.
+- **Preguntas:**
+  - ¿Cuánto cuesta? (pregunta común)
+  - ¿Cuál es la diferencia con un sitio web? Una landing page es una sola página con un objetivo. Un sitio web tiene varias páginas: servicios, nosotros, contacto y, si quieres, blog.
+  - ¿Puedo convertirla en un sitio más grande después? Sí. Se le pueden sumar páginas cuando tu negocio lo necesite.
+- **Venta cruzada:** Hosting. Mismo texto que 16.1.
+- **Cierre:** ¿Lanzamos tu landing page?
+- **SEO:** "Landing page en Quito, lista en 7 a 10 días | Siete8"; "Una página con formulario, botón de WhatsApp y SEO técnico para lanzar un producto o una campaña. Cotiza por WhatsApp."
+
+### 16.3 Tiendas virtuales (`tiendas-virtuales`)
+
+- **Resumen:** Tu catálogo en línea, con carrito y pedidos por WhatsApp. Si lo necesitas, con pagos con tarjeta.
+- **Para quién es:** Para negocios que venden productos y quieren recibir pedidos en línea.
+- **Qué incluye:**
+  - **Tienda o catálogo:** productos, carrito y pedidos por WhatsApp.
+  - **Con pagos en línea:** integración con Payphone, Kushki o Datafast. La pasarela cobra su propia comisión.
+  - Se puede sumar la integración con el facturador de Siete8.
+- **Plazo aproximado:** de 4 a 6 semanas para la tienda o catálogo. Con pasarela de pagos, según el alcance.
+- **Preguntas:**
+  - ¿Cuánto cuesta? (pregunta común)
+  - ¿Puedo recibir pagos con tarjeta? Sí. Integramos Payphone, Kushki o Datafast; cada pasarela cobra una comisión por venta.
+  - ¿Quién sube los productos? Tú, desde el panel de la tienda. Te enseñamos a hacerlo.
+- **Venta cruzada:** Hosting. Mismo texto que 16.1.
+- **Cierre:** ¿Empezamos tu tienda?
+- **SEO:** "Tiendas virtuales en Ecuador con pedidos por WhatsApp | Siete8"; "Catálogo en línea con carrito y pedidos por WhatsApp, o con pagos con Payphone, Kushki o Datafast. Cotiza por WhatsApp."
+
+### 16.4 Hosting (`hosting`)
+
+- **Resumen:** Dónde vive tu sitio web y, si lo eliges, tu correo con tu dominio. Con configuración y soporte incluidos.
+- **Para quién es:** Para quien tiene o va a tener un sitio web y quiere que alguien se encargue de dejarlo funcionando.
+- **Qué incluye:** todos los planes incluyen la configuración del dominio (SPF, DKIM y DMARC), la configuración del correo en el celular y la computadora, y soporte.
+- **Planes (anuales, el sitio muestra el precio con IVA):**
+  - Web Básico: 1 sitio web y 3 cuentas de correo de 5 GB.
+  - Web Negocio: 1 sitio web y 5 cuentas de correo de 5 GB.
+  - Web Pro: 1 sitio web y 10 cuentas de correo de 12 GB.
+  - Sitio moderno: para sitios hechos por Siete8. Sin correo.
+  - WordPress: para sitios WordPress. Sin correo.
+- **Pasos:**
+  1. Elige tu plan.
+  2. Escríbenos por WhatsApp con tu dominio.
+  3. Configuramos tu sitio, tu dominio y tu correo, y te ayudamos a instalar el correo en tus equipos.
+- **Preguntas:**
+  - ¿Puedo agregar más cuentas de correo? Sí. Cada cuenta adicional tiene su propio precio anual según el espacio: 2, 5, 12 o 25 GB.
+  - ¿Qué pasa si mi sitio no lo hizo Siete8? Elige el plan WordPress si tu sitio es WordPress, o escríbenos y revisamos tu caso.
+  - ¿El dominio está incluido? No. El dominio se contrata aparte; mira la página de dominios.
+- **Venta cruzada:** Dominios. "¿Todavía no tienes tu dominio? Lo registramos y lo dejamos listo para tu sitio y tu correo." Botón: Ver dominios.
+- **Cierre:** ¿Contratamos tu hosting?
+- **SEO:** "Hosting con correo y soporte en Ecuador | Siete8"; "Planes anuales de hosting web con cuentas de correo, configuración del dominio y soporte. Precios con IVA."
+
+### 16.5 Correo corporativo (`correo-corporativo`)
+
+- **Resumen:** Correos con el nombre de tu negocio (tu@tunegocio.com), configurados en tu celular y tu computadora.
+- **Para quién es:** Para negocios que quieren dejar de usar correos gratuitos y escribir a sus clientes con su propio dominio. También si tu sitio está en otro lado o todavía no tienes sitio.
+- **Qué incluye:** la configuración del dominio (SPF, DKIM y DMARC) para que tus correos no lleguen a spam, la configuración en tus equipos y soporte.
+- **Planes (anuales, el sitio muestra el precio con IVA):**
+  - Correo Inicial: 1 cuenta de 5 GB.
+  - Correo Equipo: 3 cuentas de 5 GB.
+  - Correo Negocio: 5 cuentas de 5 GB.
+  - Correo Pro: 10 cuentas de 12 GB.
+- **Pasos:**
+  1. Elige tu plan y cuántas cuentas necesitas.
+  2. Escríbenos por WhatsApp con tu dominio y los nombres de las cuentas.
+  3. Creamos tus cuentas y te ayudamos a configurarlas en tus equipos.
+- **Preguntas:**
+  - ¿Puedo ampliar el espacio de una cuenta? Sí. Ampliar cuesta la diferencia entre los dos tamaños.
+  - ¿Necesito tener un sitio web? No. Estos planes son solo de correo. Si también quieres sitio, mira los planes de hosting, que incluyen las dos cosas.
+  - ¿Necesito un dominio? Sí, tus correos llevan tu dominio. Si no lo tienes, lo registramos.
+- **Venta cruzada:** Dominios. Mismo texto que 16.4.
+- **Cierre:** ¿Creamos tus correos?
+- **SEO:** "Correo corporativo con tu dominio en Ecuador | Siete8"; "Cuentas de correo con el nombre de tu negocio, configuradas en tu celular y tu computadora. Planes anuales con precios con IVA."
+
+### 16.6 Dominios (`dominios`)
+
+- **Resumen:** El nombre de tu negocio en internet (.com, .ec o .com.ec), registrado y configurado para tu sitio y tu correo.
+- **Para quién es:** Para quien va a tener un sitio web o un correo con el nombre de su negocio.
+- **Qué incluye:** el registro anual del dominio y su configuración para tu sitio y tu correo.
+- **Pasos:**
+  1. Dinos qué nombre quieres.
+  2. Revisamos si está disponible y te confirmamos el precio.
+  3. Lo registramos a tu nombre y lo configuramos.
+- **Preguntas:**
+  - ¿Cuánto cuesta? Depende de la terminación (.com, .ec o .com.ec). Escríbenos y te confirmamos el precio y si el nombre está disponible.
+  - ¿Cada cuánto se renueva? Cada año.
+- **Venta cruzada:** Correo corporativo. "Con tu dominio puedes tener correos con el nombre de tu negocio." Botón: Ver planes de correo.
+- **Cierre:** ¿Registramos tu dominio?
+- **SEO:** "Registro de dominios .com, .ec y .com.ec | Siete8"; "Registramos tu dominio y lo configuramos para tu sitio y tu correo. Escríbenos por WhatsApp y te confirmamos si está disponible."
+
+### 16.7 Apps y desarrollo a medida (`apps-y-desarrollo-a-medida`)
+
+- **Resumen:** Sistemas y aplicaciones web hechos para tu proceso, cuando ya no alcanza con hojas de cálculo.
+- **Para quién es:** Para empresas con procesos propios (pedidos, encuestas, inventarios, reportes) que hoy se manejan a mano o en hojas de cálculo.
+- **Qué incluye:** el análisis de tu proceso, el diseño y el desarrollo de la aplicación, su puesta en marcha y el acompañamiento después de entregarla. Puede integrarse con los sistemas que ya usas.
+- **Casos:** aplicaciones web de gestión y tabulación de encuestas, integradas con los sistemas de una clínica, y herramientas de administración de aplicaciones de inteligencia de negocio (ver Proyectos).
+- **Preguntas:**
+  - ¿Cuánto cuesta? (pregunta común)
+  - ¿Cuánto tarda? Depende del alcance: el plazo va en la propuesta, antes de empezar.
+  - ¿Se puede conectar con mis sistemas? Sí, en la mayoría de casos. Lo revisamos al conversar tu proyecto.
+- **Venta cruzada:** Análisis de datos / BI. "Con tus datos ordenados, puedes tener tableros y reportes para decidir." Botón: Ver análisis de datos.
+- **Cierre:** ¿Qué proceso quieres resolver?
+- **SEO:** "Desarrollo de software y apps a medida en Quito | Siete8"; "Sistemas y aplicaciones web hechos para tu proceso, integrados con lo que ya usas. Cuéntanos tu caso por WhatsApp."
+
+### 16.8 Análisis de datos / BI (`analisis-de-datos-bi`)
+
+- **Resumen:** Tableros y reportes con tus datos, para decidir con información y no a ciegas.
+- **Para quién es:** Para empresas con datos repartidos en varios sistemas que necesitan reportes confiables, también para entes de control.
+- **Qué incluye:** la integración de tus fuentes de datos en un almacén de datos (DWH), los tableros y reportes, y la capacitación para usarlos.
+- **Casos:** proyectos de DWH e inteligencia de negocio en banca, seguros y salud, incluidos reportes para entidades de control (ver Proyectos).
+- **Preguntas:**
+  - ¿Cuánto cuesta? (pregunta común)
+  - ¿Qué herramientas usan? Trabajamos con SQL Server, PDI y MicroStrategy, entre otras. Elegimos según tus sistemas y tu presupuesto.
+  - ¿Puedo empezar con algo pequeño? Sí. Podemos empezar con un piloto sobre un área de tu negocio.
+- **Venta cruzada:** Apps y desarrollo a medida. "Si tus datos todavía viven en hojas de cálculo, empecemos por un sistema que los ordene." Botón: Ver desarrollo a medida.
+- **Cierre:** ¿Qué te gustaría medir?
+- **SEO:** "Inteligencia de negocio y análisis de datos en Ecuador | Siete8"; "Almacenes de datos, tableros y reportes, con experiencia en banca, seguros y salud. Cuéntanos qué quieres medir."
+
+### 16.9 Soporte técnico (`soporte-tecnico`)
+
+- **Resumen:** Ayuda con tus equipos, programas y correo: remota en todo el país y presencial en Quito.
+- **Para quién es:** Para negocios y personas que necesitan resolver un problema técnico sin tener un área de sistemas.
+- **Qué incluye:** soporte remoto en todo el Ecuador y presencial solo en Quito. Se cobra por hora.
+- **Pasos:**
+  1. Cuéntanos el problema por WhatsApp.
+  2. Te decimos si lo resolvemos de forma remota o con una visita, y cuánto tiempo calculamos.
+  3. Lo resolvemos y te explicamos qué pasó.
+- **Preguntas:**
+  - ¿Cuánto cuesta? Se cobra por hora. Escríbenos y te confirmamos la tarifa y cuánto tiempo calculamos para tu caso.
+  - ¿Atienden fuera de Quito? Sí, de forma remota en todo el país. Las visitas presenciales son solo en Quito.
+- **Cierre:** ¿Qué necesitas resolver? (el cierre general)
+- **SEO:** "Soporte técnico remoto y en Quito | Siete8"; "Ayuda con tus equipos, programas y correo, remota en todo el Ecuador y presencial en Quito. Escríbenos por WhatsApp."

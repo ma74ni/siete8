@@ -4,6 +4,11 @@
 
 [build.environment]
   NODE_VERSION = "22"
+  # Netlify's secret scanning found secret values inside Turbopack's build
+  # cache (.next/cache/turbopack/*.sst), which is kept between builds and
+  # never published. Only the cache is skipped: the published output and
+  # the repository are still scanned.
+  SECRETS_SCAN_OMIT_PATHS = ".netlify/.next/cache/**,.next/cache/**"
 
 # Google Analytics 4 (E5-04): production only, so previews send nothing. The
 # measurement ID is public; it ends up in every page anyway.
