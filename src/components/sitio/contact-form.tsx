@@ -5,44 +5,14 @@ import { Fragment, useActionState, useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/sitio/button";
 import { FormField } from "@/components/sitio/form-field";
+import { loadTurnstile } from "@/components/sitio/turnstile";
 import { CAMPAIGN_KEY } from "@/lib/analytics";
 import type { ContactState } from "@/lib/contact-form";
 import { cx } from "@/lib/cx";
 
 // Texts from docs/COPY.md §10.
 
-type Turnstile = {
-  render: (element: HTMLElement, options: Record<string, unknown>) => string;
-  reset: (widgetId: string) => void;
-  remove: (widgetId: string) => void;
-};
-declare global {
-  interface Window {
-    turnstile?: Turnstile;
-  }
-}
-
-const SCRIPT =
-  "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
 const IDLE: ContactState = { status: "idle" };
-
-/** Loads Turnstile once per page and resolves when it is ready. */
-function loadTurnstile(): Promise<Turnstile> {
-  if (window.turnstile) return Promise.resolve(window.turnstile);
-  return new Promise((resolve, reject) => {
-    let script = document.querySelector<HTMLScriptElement>(
-      `script[src="${SCRIPT}"]`,
-    );
-    if (!script) {
-      script = document.createElement("script");
-      script.src = SCRIPT;
-      script.async = true;
-      document.head.appendChild(script);
-    }
-    script.addEventListener("load", () => resolve(window.turnstile!));
-    script.addEventListener("error", reject);
-  });
-}
 
 /**
  * Contact form (E3-08, RF-PUB-07): consent before saving (RNF-19), Turnstile

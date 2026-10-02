@@ -2,31 +2,22 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ActionForm } from "@/components/admin/action-form";
+import { Conversation } from "@/components/admin/conversation";
 import { SelectField } from "@/components/admin/fields";
 import { FormField } from "@/components/sitio/form-field";
 import { isUuid } from "@/lib/admin-forms";
-import { formatPostDate } from "@/lib/blog";
+import { formatDateTime as dateTime } from "@/lib/blog";
 import {
   LEAD_SOURCE_LABELS,
   LEAD_STATUS_LABELS,
   type LeadStatus,
 } from "@/lib/lead-status";
 import { whatsappChatUrl } from "@/lib/whatsapp";
+import { getLeadConversations } from "@/server/admin-assistant";
 import { getLeadForAdmin } from "@/server/admin-leads";
 import { saveLead } from "@/server/admin-leads-actions";
 
 // Texts from docs/COPY.md §13.
-
-/** "30 de septiembre de 2026, 17:15", in Quito time. */
-function dateTime(iso: string) {
-  const time = new Intl.DateTimeFormat("es-EC", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: "America/Guayaquil",
-  }).format(new Date(iso));
-  return `${formatPostDate(iso)}, ${time}`;
-}
 
 /** One lead: contact, message, origin, status with its history, notes (E4-07). */
 export default async function LeadPage({
@@ -37,6 +28,8 @@ export default async function LeadPage({
   if (!isUuid(id)) notFound();
   const lead = await getLeadForAdmin(id);
   if (!lead) notFound();
+  const conversations =
+    lead.source === "assistant" ? await getLeadConversations(id) : [];
 
   const utm = Object.entries(lead.utm as Record<string, string>)
     .map(([key, value]) => `${key}=${value}`)
@@ -90,6 +83,16 @@ export default async function LeadPage({
         <h2 className="text-h3">Mensaje</h2>
         <p className="whitespace-pre-line">{lead.message ?? "Sin mensaje."}</p>
       </section>
+
+      {conversations.map((conversation) => (
+        <section
+          key={conversation.id}
+          className="flex flex-col gap-3 border-t border-border pt-8"
+        >
+          <h2 className="text-h3">Conversación con el asistente</h2>
+          <Conversation messages={conversation.chat_message} />
+        </section>
+      ))}
 
       <section className="flex flex-col gap-6 border-t border-border pt-8">
         <h2 className="text-h3">Seguimiento</h2>

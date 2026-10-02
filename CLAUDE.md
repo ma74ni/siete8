@@ -95,6 +95,7 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 - Las políticas de RLS viven en migraciones y se prueban en `supabase/tests/rls_test.sql` como anónimo, usuario sin rol y admin. Toda tabla nueva agrega su política de lectura pública (si aplica), la de admin (`public.is_admin()`) y sus pruebas.
 - `anon` no tiene permisos de escritura en ninguna tabla. Los leads se insertan desde el servidor con la clave secreta, después de validar Turnstile y el consentimiento; nunca con una política de inserción anónima.
 - El rol admin se asigna solo por SQL; no existe política de escritura sobre `profile`.
+- Asistente del sitio (E10): `src/server/assistant.ts` y las rutas `api/chat/session` (inicia con aviso de privacidad y Turnstile) y `api/chat` (responde en streaming, una línea JSON por `ChatEvent`). Modelo `ASSISTANT_MODEL` y límites `LIMITS` en `@/lib/assistant`; el prompt de sistema (reglas fijas más el catálogo publicado, precios con `formatPriceWithVat`) en `@/lib/assistant-prompt`, y el panel solo agrega las instrucciones del negocio. El historial se lee de la base, nunca del navegador. Las conversaciones viven en `chat_session` y `chat_message` (solo admin lee; el servidor escribe con la clave secreta) y la IP se guarda solo como HMAC. La herramienta `registrar_contacto` crea el lead con origen `assistant` y devuelve el enlace de WhatsApp con el resumen. `assistant_enabled` (público) decide si el chat reemplaza al botón de WhatsApp; `assistant` (privado) guarda las instrucciones y el tope mensual, que apaga el chat al alcanzarse (`chat_cost_since`). Se edita en el panel (Asistente).
 
 **Diseño**
 - Mobile-first. Contraste WCAG 2.1 AA: los naranjas y amarillos de marca nunca van como texto sobre fondo blanco.
@@ -154,10 +155,11 @@ Se validan con Zod al arrancar: `next.config.ts` importa `src/env/schema.ts`, as
 | `REVALIDATE_SECRET` | secreta | primera ruta de revalidación bajo demanda |
 | `NEXT_PUBLIC_GA_ID` | pública, opcional | E5-04 (solo producción, en `netlify.toml`) |
 | `MAKE_WEBHOOK_URL` | secreta, solo en Netlify (producción) | redes sociales (`docs/MAKE.md`) |
+| `ANTHROPIC_API_KEY` | secreta, opcional | E10 (sin ella no se muestra el chat, aunque esté activado en el panel) |
 | `NEXT_PUBLIC_SENTRY_DSN` | pública | E7-06 |
 | `SENTRY_AUTH_TOKEN` | secreta (solo build, source maps) | E7-06 |
 
-La analítica es GA4: `NEXT_PUBLIC_GA_ID` (pública, opcional) solo se define para producción en `netlify.toml`, así que los previews y el entorno local no envían nada. GA4 solo se carga en el dominio del sitio (`NEXT_PUBLIC_SITE_URL`, con `isSiteOrigin`) y después de que el visitante acepta el aviso de cookies (`@/components/sitio/analytics`); los clics a WhatsApp se registran como `whatsapp_click`. `ANTHROPIC_API_KEY` (secreta) se agrega recién en la fase 1.1 (asistente).
+La analítica es GA4: `NEXT_PUBLIC_GA_ID` (pública, opcional) solo se define para producción en `netlify.toml`, así que los previews y el entorno local no envían nada. GA4 solo se carga en el dominio del sitio (`NEXT_PUBLIC_SITE_URL`, con `isSiteOrigin`) y después de que el visitante acepta el aviso de cookies (`@/components/sitio/analytics`); los clics a WhatsApp se registran como `whatsapp_click`.
 
 ## Base de datos
 
