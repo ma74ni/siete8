@@ -97,11 +97,15 @@ from (values
 ) as p (service_slug, name, price, sort_order)
 join public.service s on s.slug = p.service_slug;
 
--- Site settings (E1-04), from CLAUDE.md and docs/COPY.md. All public.
+-- Site settings (E1-04, E4-08), from CLAUDE.md and docs/COPY.md. All public.
+-- The panel edits them; the contact_social migration converts older rows.
 insert into public.site_settings (key, value, is_public) values
   ('whatsapp', '{"number": "0967155626", "wa_me": "593967155626", "hours": {"from": "07:00", "to": "20:00"}}', true),
-  ('social', '{"facebook": "https://www.facebook.com/siete8.ec", "instagram": "https://www.instagram.com/siete8.ec", "linkedin": "https://www.linkedin.com/company/siete8.ec"}', true),
-  ('assistant_enabled', 'false', true);
+  ('social', '[{"label": "Facebook", "url": "https://www.facebook.com/siete8.ec"}, {"label": "Instagram", "url": "https://www.instagram.com/siete8.ec"}, {"label": "LinkedIn", "url": "https://www.linkedin.com/company/siete8.ec"}]', true),
+  ('contact', '{"phone": "0999843108", "email": "hola@siete8.com"}', true),
+  ('assistant_enabled', 'false', true)
+-- The contact row also comes from a migration, which runs before the seed.
+on conflict (key) do nothing;
 
 -- Signature texts (docs/COPY.md §4) ------------------------------------------
 -- Same statements as the service_content migration, which covers databases

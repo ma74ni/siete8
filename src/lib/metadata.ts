@@ -5,7 +5,8 @@ const OG_IMAGE = {
   url: "/og.png",
   width: 1200,
   height: 630,
-  alt: "Siete8: sitios web, hosting, firma electrónica y facturación en Quito. Escríbenos por WhatsApp al 0967155626.",
+  // No phone number: the image must not go stale when the settings change.
+  alt: "Siete8: sitios web, hosting, firma electrónica y facturación en Quito. Escríbenos por WhatsApp.",
 };
 
 /**

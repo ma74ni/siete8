@@ -54,6 +54,7 @@ describe("whatsappClickParams", () => {
         priceWithoutVat: 17.99,
         vatRate: 0.15,
       }),
+      "593967155626",
     );
     const params = whatsappClickParams(
       href,

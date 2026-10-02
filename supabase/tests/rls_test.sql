@@ -67,7 +67,7 @@ select is(
   'anon: only published projects'
 );
 select is((select count(*) from public.project_image)::int, 1, 'anon: only images of published projects');
-select is((select count(*) from public.site_settings)::int, 3, 'anon: only public settings');
+select is((select count(*) from public.site_settings)::int, 4, 'anon: only public settings');
 select is((select count(*) from public.lead)::int, 0, 'anon: cannot read leads');
 select is((select count(*) from public.profile)::int, 0, 'anon: cannot read profiles');
 
@@ -98,7 +98,7 @@ select is((select public.is_admin()), false, 'user: is not admin');
 select is((select count(*) from public.service)::int, 10, 'user: only visible services');
 select is((select count(*) from public.post)::int, 1, 'user: only published posts');
 select is((select count(*) from public.lead)::int, 0, 'user: cannot read leads');
-select is((select count(*) from public.site_settings)::int, 3, 'user: only public settings');
+select is((select count(*) from public.site_settings)::int, 4, 'user: only public settings');
 select is(
   (select array_agg(id) from public.profile), array['00000000-0000-0000-0000-00000000aa02'::uuid],
   'user: reads only their own profile'
@@ -137,7 +137,7 @@ select is((select count(*) from public.service)::int, 16, 'admin: reads hidden s
 select is((select count(*) from public.post where slug like 'test-%')::int, 3, 'admin: reads drafts and scheduled posts');
 select is((select count(*) from public.project where slug like 'test-project-%')::int, 2, 'admin: reads unpublished projects');
 select is((select count(*) from public.lead)::int, 1, 'admin: reads leads');
-select is((select count(*) from public.site_settings)::int, 4, 'admin: reads private settings');
+select is((select count(*) from public.site_settings)::int, 5, 'admin: reads private settings');
 select is((select count(*) from public.profile)::int, 2, 'admin: reads all profiles');
 
 select lives_ok(

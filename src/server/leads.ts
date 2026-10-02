@@ -15,20 +15,25 @@ import {
   leadForm,
 } from "@/lib/contact-form";
 import { createAdminClient } from "@/server/supabase/admin";
+import { getSiteSettings } from "@/server/site-settings";
+import { hoursText, type SiteSettings } from "@/lib/site-settings";
 
 // Contact form (E3-08, RF-PUB-07, RNF-16, RNF-19). Texts from docs/COPY.md §10.
 
-const SENT = {
-  status: "success",
-  message:
-    "Recibimos tu mensaje. Te escribimos por WhatsApp o al correo, todos los días de 07:00 a 20:00.",
-} as const;
+// The number and hours come from the site settings (E4-08).
+function sent(settings: SiteSettings): ContactState {
+  return {
+    status: "success",
+    message: `Recibimos tu mensaje. Te escribimos por WhatsApp o al correo, ${hoursText(settings).toLowerCase()}.`,
+  };
+}
 
-const FAILED: ContactState = {
-  status: "error",
-  message:
-    "No pudimos enviar tu mensaje. Inténtalo de nuevo o escríbenos por WhatsApp al 0967155626.",
-};
+function failed(settings: SiteSettings): ContactState {
+  return {
+    status: "error",
+    message: `No pudimos enviar tu mensaje. Inténtalo de nuevo o escríbenos por WhatsApp al ${settings.whatsapp.number}.`,
+  };
+}
 
 /** Same phone or email more than this many times in 10 minutes: rejected. */
 const MAX_RECENT = 3;
@@ -108,6 +113,9 @@ export async function submitLead(
 
 async function handleLead(formData: FormData): Promise<ContactState> {
   const values = formValues(formData);
+  const settings = await getSiteSettings();
+  const SENT = sent(settings);
+  const FAILED = failed(settings);
 
   // A bot filled the hidden field: answer as if it worked, save nothing.
   if (values.website) return SENT;
@@ -152,8 +160,7 @@ async function handleLead(formData: FormData): Promise<ContactState> {
   if ((count ?? 0) >= MAX_RECENT) {
     return {
       status: "error",
-      message:
-        "Ya recibimos tus mensajes. Te escribimos pronto; si es urgente, escríbenos por WhatsApp al 0967155626.",
+      message: `Ya recibimos tus mensajes. Te escribimos pronto; si es urgente, escríbenos por WhatsApp al ${settings.whatsapp.number}.`,
     };
   }
 

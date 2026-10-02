@@ -34,6 +34,8 @@ import {
   type ServicePage,
 } from "@/server/catalog";
 import { getProjectsForService } from "@/server/portfolio";
+import { getSiteSettings } from "@/server/site-settings";
+import { hoursText, type SiteSettings } from "@/lib/site-settings";
 
 // Fixed texts from docs/COPY.md §2 and §4; everything else comes from the
 // service in the database, so the panel can edit it.
@@ -62,7 +64,10 @@ export default async function ServicePageRoute({
   const { slug } = await params;
   const service = await getServicePage(slug);
   if (!service) notFound();
-  const projects = await getProjectsForService(service.slug);
+  const [projects, settings] = await Promise.all([
+    getProjectsForService(service.slug),
+    getSiteSettings(),
+  ]);
 
   const sections = [
     service.body && (
@@ -83,7 +88,9 @@ export default async function ServicePageRoute({
         steps={service.steps}
       />
     ),
-    service.plans.length > 0 && <Plans key="plans" service={service} />,
+    service.plans.length > 0 && (
+      <Plans key="plans" service={service} waMe={settings.whatsapp.waMe} />
+    ),
     requirementsByHolder(service.plans).length > 0 && (
       <Requirements key="requirements" service={service} />
     ),
@@ -96,7 +103,10 @@ export default async function ServicePageRoute({
     ),
   ].filter(Boolean);
 
-  const request = whatsappUrl(serviceMessage(service.name));
+  const request = whatsappUrl(
+    serviceMessage(service.name),
+    settings.whatsapp.waMe,
+  );
 
   return (
     <>
@@ -107,7 +117,7 @@ export default async function ServicePageRoute({
         })}
       />
       <Floor fitScreen>
-        <Hero service={service} request={request} />
+        <Hero service={service} request={request} settings={settings} />
       </Floor>
       {sections.map((section, index) => (
         <Floor key={index} alt={index % 2 === 0}>
@@ -133,7 +143,15 @@ const MOTIF_CATEGORIES = [
   { slug: "desarrollo-y-datos", name: "Desarrollo y datos" },
 ] as const;
 
-function Hero({ service, request }: { service: ServicePage; request: string }) {
+function Hero({
+  service,
+  request,
+  settings,
+}: {
+  service: ServicePage;
+  request: string;
+  settings: SiteSettings;
+}) {
   const from = lowestPriceCents(service.plans);
   const hasPlans = service.plans.length > 0;
   const active = MOTIF_CATEGORIES.findIndex(
@@ -145,7 +163,7 @@ function Hero({ service, request }: { service: ServicePage; request: string }) {
     from !== null
       ? { label: "Precio", value: `Desde ${formatCents(from)}, incluye IVA` }
       : service.priceNote && { label: "Precio", value: service.priceNote },
-    { label: "Atención", value: "Todos los días, de 07:00 a 20:00" },
+    { label: "Atención", value: hoursText(settings) },
   ].filter((fact): fact is { label: string; value: string } => Boolean(fact));
 
   return (
@@ -228,7 +246,7 @@ function Steps({ title, steps }: { title: string; steps: string[] }) {
   );
 }
 
-function Plans({ service }: { service: ServicePage }) {
+function Plans({ service, waMe }: { service: ServicePage; waMe: string }) {
   const isSignature = service.slug === "firma-electronica";
 
   const rows = (holder: ServicePage["plans"][number]["holderType"]) =>
@@ -248,6 +266,7 @@ function Plans({ service }: { service: ServicePage }) {
                   vatRate: plan.vatRate,
                 })
               : serviceMessage(`${service.name} (${plan.name})`),
+            waMe,
           ),
         },
       }));
