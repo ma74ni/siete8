@@ -57,14 +57,14 @@ describe("prefilled messages (COPY §2)", () => {
 describe("whatsappUrl", () => {
   it("links to the commercial number with the encoded message", () => {
     const url = new URL(whatsappUrl(generalMessage()));
-    expect(url.origin + url.pathname).toBe("https://wa.me/593961128233");
+    expect(url.origin + url.pathname).toBe("https://wa.me/593967155626");
     expect(url.searchParams.get("text")).toBe(generalMessage());
   });
 
   it("encodes accents, $ and parentheses", () => {
     const url = whatsappUrl("Firma electrónica ($8,04 con IVA)");
     expect(url).toBe(
-      "https://wa.me/593961128233?text=Firma%20electr%C3%B3nica%20(%248%2C04%20con%20IVA)",
+      "https://wa.me/593967155626?text=Firma%20electr%C3%B3nica%20(%248%2C04%20con%20IVA)",
     );
   });
 });
