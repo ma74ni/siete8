@@ -35,6 +35,13 @@ function position(rect: Rect) {
 type HeroMotifProps = {
   /** One label per hollow module, top to bottom (COPY §3). */
   categories: readonly [string, string, string];
+  /** Index of the category to stress (a service page shows its own). */
+  active?: number;
+  /**
+   * Without the load animation: only the home hero animates (DESIGN §8,
+   * one automatic animation per site).
+   */
+  still?: boolean;
   className?: string;
 };
 
@@ -45,8 +52,15 @@ type HeroMotifProps = {
  * On a narrow motif the categories do not fit inside the modules, so they are
  * listed under it instead.
  */
-export function HeroMotif({ categories, className }: HeroMotifProps) {
+export function HeroMotif({
+  categories,
+  active,
+  still = false,
+  className,
+}: HeroMotifProps) {
   const gradientId = `${useId()}-rack`;
+  const barClass = still ? undefined : styles.bar;
+  const moduleClass = still ? undefined : styles.module;
 
   return (
     <div className={cx(styles.hero, className)}>
@@ -81,7 +95,7 @@ export function HeroMotif({ categories, className }: HeroMotifProps) {
             <polygon
               key={points}
               points={points}
-              className={styles.bar}
+              className={barClass}
               style={{
                 fill: BAR_FILLS[index],
                 animationDelay: `${BAR_DELAYS[index]}ms`,
@@ -91,7 +105,7 @@ export function HeroMotif({ categories, className }: HeroMotifProps) {
           <rect
             {...SOLID_MODULE}
             fill={`url(#${gradientId})`}
-            className={styles.module}
+            className={moduleClass}
             style={{ animationDelay: `${MODULE_DELAYS[0]}ms` }}
           />
           {HOLLOW_MODULES.map((module, index) => (
@@ -100,7 +114,7 @@ export function HeroMotif({ categories, className }: HeroMotifProps) {
               d={hollowPath(module)}
               fillRule="evenodd"
               fill={`url(#${gradientId})`}
-              className={styles.module}
+              className={moduleClass}
               style={{ animationDelay: `${MODULE_DELAYS[index + 1]}ms` }}
             />
           ))}
@@ -110,10 +124,15 @@ export function HeroMotif({ categories, className }: HeroMotifProps) {
             <li
               key={categories[index]}
               className={cx(
-                "absolute flex items-center justify-center text-center leading-tight font-medium",
+                "absolute flex items-center justify-center text-center leading-tight",
+                "font-medium",
+                // Underlined, not bold: the longest label must still fit.
+                index === active &&
+                  "underline decoration-action decoration-2 underline-offset-4",
                 styles.label,
-                styles.module,
+                moduleClass,
               )}
+              aria-current={index === active ? "true" : undefined}
               style={{
                 ...position(module.hole),
                 animationDelay: `${MODULE_DELAYS[index + 1]}ms`,

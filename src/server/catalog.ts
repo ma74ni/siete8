@@ -73,6 +73,11 @@ export type ServicePage = {
   name: string;
   slug: string;
   summary: string | null;
+  /** Markdown body: who it is for, what it includes, timeline (E6-02). */
+  body: string | null;
+  /** Hero facts (E6-02): e.g. "De 7 a 10 días", "Cotización por WhatsApp". */
+  timeline: string | null;
+  priceNote: string | null;
   requirementsIntro: string | null;
   closingTitle: string | null;
   seoTitle: string | null;
@@ -80,6 +85,8 @@ export type ServicePage = {
   category: { name: string; slug: string };
   plans: (PlanSummary & {
     holderType: HolderType;
+    /** What the plan includes, under its name. */
+    detail: string | null;
     requirements: { text: string; required: boolean; sortOrder: number }[];
   })[];
   steps: string[];
@@ -102,11 +109,11 @@ export async function getServicePage(
   const { data, error } = await supabase
     .from("service")
     .select(
-      `name, slug, summary, requirements_intro, closing_title, seo_title, seo_description,
+      `name, slug, summary, body_md, timeline, price_note, requirements_intro, closing_title, seo_title, seo_description,
        cross_sell_text, cross_sell_cta,
        category(name, slug, visible),
        related:related_service_id(name, slug, visible),
-       plan(id, name, holder_type, price_without_vat, vat_rate, recommended, sort_order, visible,
+       plan(id, name, holder_type, detail, price_without_vat, vat_rate, recommended, sort_order, visible,
             requirement(text, required, sort_order)),
        service_step(body, sort_order),
        service_faq(question, answer, sort_order),
@@ -130,6 +137,9 @@ export async function getServicePage(
     name: data.name,
     slug: data.slug,
     summary: data.summary,
+    body: data.body_md,
+    timeline: data.timeline,
+    priceNote: data.price_note,
     requirementsIntro: data.requirements_intro,
     closingTitle: data.closing_title,
     seoTitle: data.seo_title,
@@ -144,6 +154,7 @@ export async function getServicePage(
         holderType: plan.holder_type,
         priceWithoutVat: plan.price_without_vat,
         vatRate: plan.vat_rate,
+        detail: plan.detail,
         recommended: plan.recommended,
         sortOrder: plan.sort_order,
         requirements: plan.requirement.map((item) => ({
