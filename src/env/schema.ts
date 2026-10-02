@@ -19,6 +19,9 @@ export const serverSchema = z.object({
   TURNSTILE_SECRET_KEY: z.string().min(1).optional(),
   RESEND_API_KEY: z.string().startsWith("re_").optional(),
   ADMIN_NOTIFICATION_EMAIL: z.email().optional(),
+  // Assistant on the site (E10, RNF-15). Optional: without it the chat is
+  // not shown, even when it is turned on in the panel.
+  ANTHROPIC_API_KEY: z.string().startsWith("sk-ant-").optional(),
 });
 
 export const clientSchema = z.object({

@@ -22,6 +22,8 @@ export type SiteSettings = {
   phone: string;
   email: string;
   social: SocialLink[];
+  /** The assistant chat replaces the WhatsApp button (E10). */
+  assistantEnabled: boolean;
 };
 
 /** Used when a row is missing, so the site never renders without contact. */
@@ -39,6 +41,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
     { label: "Instagram", url: "https://www.instagram.com/siete8.ec" },
     { label: "LinkedIn", url: "https://www.linkedin.com/company/siete8.ec" },
   ],
+  assistantEnabled: false,
 };
 
 /** "0967155626" or "+593 96 715 5626" → "593967155626" (Ecuador's code). */
@@ -90,6 +93,7 @@ export function parseSettings(
     phone: contact.success ? contact.data.phone : DEFAULT_SETTINGS.phone,
     email: contact.success ? contact.data.email : DEFAULT_SETTINGS.email,
     social: social.success ? social.data : DEFAULT_SETTINGS.social,
+    assistantEnabled: value("assistant_enabled") === true,
   };
 }
 

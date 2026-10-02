@@ -42,6 +42,88 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_message: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          role: string
+          session_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+          session_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_message_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chat_session"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_session: {
+        Row: {
+          consent_at: string
+          cost_usd: number
+          created_at: string
+          id: string
+          input_tokens: number
+          ip_hash: string
+          lead_id: string | null
+          message_count: number
+          output_tokens: number
+          updated_at: string
+          utm: Json
+        }
+        Insert: {
+          consent_at: string
+          cost_usd?: number
+          created_at?: string
+          id?: string
+          input_tokens?: number
+          ip_hash: string
+          lead_id?: string | null
+          message_count?: number
+          output_tokens?: number
+          updated_at?: string
+          utm?: Json
+        }
+        Update: {
+          consent_at?: string
+          cost_usd?: number
+          created_at?: string
+          id?: string
+          input_tokens?: number
+          ip_hash?: string
+          lead_id?: string | null
+          message_count?: number
+          output_tokens?: number
+          updated_at?: string
+          utm?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_session_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "lead"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead: {
         Row: {
           consent_at: string
@@ -769,6 +851,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      chat_cost_since: { Args: { since: string }; Returns: number }
       is_admin: { Args: never; Returns: boolean }
     }
     Enums: {

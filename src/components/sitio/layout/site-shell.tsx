@@ -2,19 +2,21 @@ import type { ReactNode } from "react";
 
 import { Analytics } from "@/components/sitio/analytics";
 import { CampaignCapture } from "@/components/sitio/campaign-capture";
+import { AssistantChat } from "@/components/sitio/layout/assistant-chat";
 import { Footer } from "@/components/sitio/layout/footer";
 import { Header } from "@/components/sitio/layout/header";
 import { WhatsAppButton } from "@/components/sitio/layout/whatsapp-button";
 import { clientEnv } from "@/env/client";
 import { navLinks } from "@/lib/menu";
 import { generalMessage, whatsappUrl } from "@/lib/whatsapp";
+import { isAssistantAvailable } from "@/server/assistant";
 import { getServiceMenu } from "@/server/catalog";
 import { getPublishedSections } from "@/server/published";
 import { getSiteSettings } from "@/server/site-settings";
 
 /**
- * Public site frame: header, content, footer and the floating WhatsApp
- * button. Used by the (sitio) layout and by the root 404 page, which renders
+ * Public site frame: header, content, footer and one floating button: the
+ * assistant when it is on (E10), otherwise WhatsApp. Used by the (sitio) layout and by the root 404 page, which renders
  * outside that group.
  */
 export async function SiteShell({ children }: { children: ReactNode }) {
@@ -24,6 +26,8 @@ export async function SiteShell({ children }: { children: ReactNode }) {
     getSiteSettings(),
   ]);
   const whatsappHref = whatsappUrl(generalMessage(), settings.whatsapp.waMe);
+  const siteKey = clientEnv.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  const assistant = siteKey && (await isAssistantAvailable(settings));
 
   return (
     <>
@@ -42,7 +46,11 @@ export async function SiteShell({ children }: { children: ReactNode }) {
         {children}
       </main>
       <Footer published={published} settings={settings} />
-      <WhatsAppButton href={whatsappHref} />
+      {assistant ? (
+        <AssistantChat siteKey={siteKey} whatsappHref={whatsappHref} />
+      ) : (
+        <WhatsAppButton href={whatsappHref} />
+      )}
       <CampaignCapture />
       {clientEnv.NEXT_PUBLIC_GA_ID && (
         <Analytics

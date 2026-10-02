@@ -169,7 +169,7 @@ SEO de Nosotros: título "Nosotros | Siete8"; descripción "Siete8 es un estudio
 
 ### 7.1 Política de privacidad (borrador)
 
-Página `/privacidad`. Título (h1): **Política de privacidad**. Nota bajo el título: Última actualización: 29 de septiembre de 2026.
+Página `/privacidad`. Título (h1): **Política de privacidad**. Nota bajo el título: Última actualización: 2 de octubre de 2026.
 
 | Sección (h2) | Texto |
 | --- | --- |
@@ -178,7 +178,8 @@ Página `/privacidad`. Título (h1): **Política de privacidad**. Nota bajo el t
 | Documentos de identidad | El sitio no pide ni guarda documentos de identidad. Para tramitar una firma electrónica, nos envías tus requisitos por WhatsApp, y los usamos solo para tramitar esa firma con la entidad que la emite. |
 | Para qué los usamos | Para responder tus solicitudes, preparar y enviarte propuestas comerciales, y prestarte el servicio que contrates. No vendemos tus datos. |
 | Por qué podemos usarlos | Usamos tus datos porque nos das tu consentimiento al escribirnos o al enviar un formulario, y porque los necesitamos para preparar o cumplir el servicio que nos pides. |
-| Con quién los compartimos | Solo con los proveedores que necesitamos para operar: el alojamiento del sitio y de la base de datos, el correo, WhatsApp y Google Analytics. Algunos de ellos guardan la información en servidores fuera del Ecuador. Para una firma electrónica, compartimos tus requisitos con la entidad que la emite. |
+| Con quién los compartimos | Solo con los proveedores que necesitamos para operar: el alojamiento del sitio y de la base de datos, el correo, WhatsApp, Google Analytics y el servicio de inteligencia artificial del asistente. Algunos de ellos guardan la información en servidores fuera del Ecuador. Para una firma electrónica, compartimos tus requisitos con la entidad que la emite. |
+| Asistente del sitio | Si conversas con el asistente del sitio, guardamos la conversación para atenderte y revisar que sus respuestas sean correctas. No guardamos tu dirección IP: solo una huella cifrada que sirve para evitar abusos. Los mensajes se procesan con un servicio de inteligencia artificial, en servidores fuera del Ecuador. Si le das tu nombre y celular, quedan registrados para que te escribamos por WhatsApp. |
 | Cuánto tiempo los guardamos | Mientras sean necesarios para atender tu solicitud o prestarte el servicio, y después el tiempo que exijan las obligaciones legales y tributarias. |
 | Tus derechos | Puedes pedirnos acceder a tus datos, corregirlos o actualizarlos, eliminarlos, oponerte a su uso, suspender su tratamiento o recibirlos en un formato que puedas llevar a otro proveedor. Escríbenos a hola@siete8.com. Si no te respondemos o no estás de acuerdo con la respuesta, puedes presentar un reclamo ante la Superintendencia de Protección de Datos Personales. |
 | Cookies | Usamos Google Analytics para saber cómo llegas al sitio, qué páginas visitas y cuándo tocas un botón de WhatsApp. Solo se activa si lo aceptas en el aviso de cookies, y Google guarda esa información en servidores fuera del Ecuador. Puedes cambiar tu decisión cuando quieras desde «Preferencias de cookies», al pie de cada página. |
@@ -276,7 +277,7 @@ Textos internos del panel (`/admin`). El panel usa la misma voz que el sitio: tu
 | Ingreso | Sesión caducada | Tu sesión caducó. Ingresa de nuevo para seguir. |
 | Ingreso | Error | El correo o la contraseña no coinciden. Revísalos e inténtalo de nuevo. |
 | Acceso denegado | Título y texto | No tienes acceso al panel. Tu cuenta no tiene permiso de administrador. Cierra sesión e ingresa con otra cuenta. Botón: Cerrar sesión. |
-| Barra lateral | Enlaces | Servicios. Ver el sitio. Cerrar sesión. |
+| Barra lateral | Enlaces | Servicios. Proyectos. Blog. Leads. Asistente. Enlaces. Configuración. Ver el sitio. Cerrar sesión. |
 | Servicios | Título e introducción | Servicios. Elige un servicio para cambiar sus planes, precios y textos. Lo que guardes se ve en el sitio en menos de un minuto. |
 | Servicios | Estado | Visible / Oculto; "1 plan" / "{n} planes"; "(categoría oculta)". |
 | Servicio | Encabezado | Volver a servicios. Ver en el sitio. Si está oculto: Oculto: no aparece en el sitio. |
@@ -305,6 +306,8 @@ Textos internos del panel (`/admin`). El panel usa la misma voz que el sitio: tu
 | Leads | Detalle | Volver a leads. Celular (abre WhatsApp), Correo, Servicio, Plan, Origen, Campaña, Recibido, Consentimiento. Mensaje (Sin mensaje.). Seguimiento: Estado, Notas (Solo las ves tú, en el panel.). Botón: Guardar lead. Historial de estados: {estado}: {fecha, hora}. Mensaje: Lead guardado. |
 | Configuración | Página | Configuración. Lo que guardes aquí cambia en todo el sitio: los botones de WhatsApp, el pie de página, Contacto y los datos para Google. Secciones: WhatsApp y horario (WhatsApp: Como se marca en Ecuador, con el 0: 0967155626. Los enlaces de WhatsApp se arman solos. Abre. Cierra: Todos los días. Los textos escritos a mano en los servicios (pasos, preguntas) se cambian en cada servicio.), Teléfono y correo, Redes sociales (En el pie de página y en Contacto, en este orden. Deja la fila vacía para quitar una red. Red {n}, Ej: Instagram; Enlace, Con https://). Botón: Guardar configuración. Mensaje: Configuración guardada. |
 | Enlaces | Página | Enlaces. Los botones de siete8.com/enlaces, la página para la biografía de tus redes. Para saber de qué red llega cada visita, usa el enlace con su origen, por ejemplo siete8.com/enlaces?utm_source=instagram. Campos: Texto (En el último artículo, es el texto pequeño sobre su título.), Tipo (Enlace; WhatsApp (número de Configuración); Último artículo del blog), Enlace (Solo para el tipo Enlace: una página del sitio (/servicios) o una dirección con https://.), Orden, Visible, Destacado (botón principal). Botones: Guardar botón, Agregar botón, Borrar botón. Mensajes: Botón guardado. Botón agregado. Botón borrado. |
+| Asistente | Página | Asistente. El chat del sitio responde con los servicios, planes, precios y preguntas publicados, y pasa a WhatsApp a quien quiere contratar. Cuando está activado, reemplaza al botón flotante de WhatsApp. Este mes: {n} conversaciones, {gasto} de {tope}. Campos: Activado en el sitio. Instrucciones del negocio (Tono, servicios que quieres destacar, qué preguntar. Las reglas de no inventar precios ni pedir documentos ya vienen incluidas.). Tope mensual (USD) (Al llegar a este gasto, el chat se apaga hasta el mes siguiente y muestra WhatsApp. Pon también un límite en la consola de Anthropic.). Botón: Guardar asistente. Mensajes: Asistente guardado y activado. / Asistente guardado. Está apagado. Últimas conversaciones: {fecha, hora}: {n} mensajes, {costo}. Lead: {nombre}. Vacío: Aún no hay conversaciones. |
+| Asistente | Conversación | Volver al asistente. Conversación del {fecha, hora}. Dejó sus datos: {nombre}. Mensajes: Visitante / Asistente, {fecha, hora}. Sin mensajes. En el detalle del lead: Conversación con el asistente. |
 | Mensajes | Blog | Artículo guardado. Portada guardada. Ya hay un artículo con esa dirección. |
 
 ## 14. Portafolio
@@ -526,3 +529,24 @@ Página `/enlaces`, para la biografía de las redes. Sin menú ni pie del sitio.
 SEO: título "Enlaces \| Siete8"; descripción "Escríbenos por WhatsApp, conoce nuestros servicios o lee el blog de Siete8."
 
 Para medir cada red, el enlace de la biografía lleva su origen: `siete8.com/enlaces?utm_source=instagram` (o `facebook`, `tiktok`, `linkedin`).
+
+## 18. Asistente del sitio
+
+Chat con inteligencia artificial (E10). Cuando está activado en el panel, su botón reemplaza al botón flotante de WhatsApp. Responde solo con el catálogo publicado; las reglas viven en `src/lib/assistant-prompt.ts` y el panel agrega las instrucciones del negocio.
+
+| Elemento | Texto |
+| --- | --- |
+| Botón flotante | Etiqueta accesible: Abrir el asistente de Siete8 |
+| Encabezado de la ventana | Asistente de Siete8. Botón: Cerrar el asistente. Debajo, con el ícono de WhatsApp: Hablar con una persona por WhatsApp. |
+| Inicio | Te ayudo a elegir un servicio y te cuento precios y requisitos. Si quieres contratar, te paso a WhatsApp con un resumen de lo que hablamos. |
+| Aviso de documentos | No envíes por aquí documentos, fotos ni tu número de cédula: eso se envía por WhatsApp cuando te lo pidamos. |
+| Consentimiento | Soy un asistente con inteligencia artificial y puedo equivocarme; los precios del sitio son los que valen. Al empezar, aceptas que guardemos esta conversación como dice la Política de privacidad. |
+| Botones de inicio | Empezar (mientras abre: Abriendo…). Prefiero escribir por WhatsApp. |
+| Errores de inicio | Espera a que aparezca la marca de verificación. / No pudimos comprobar que no eres un robot. Espera la marca de verificación e inténtalo de nuevo. / No pudimos abrir el chat. Inténtalo de nuevo o escríbenos por WhatsApp. |
+| Saludo | Hola, ¿en qué te ayudo? Puedes preguntarme por la firma electrónica, el hosting, el correo o cualquier servicio. |
+| Campo | Tu mensaje (etiqueta oculta). Marcador: Escribe tu pregunta. Botón: Enviar. Mientras responde: Escribiendo… |
+| Paso a WhatsApp | Botón: Continuar por WhatsApp. Mensaje precargado: Hola, vengo del asistente del sitio de Siete8. Soy {nombre}. {resumen de lo que necesita}. |
+| Avisos | El asistente no está disponible ahora. Escríbenos por WhatsApp y te ayudamos. / Llegamos al límite de mensajes de esta conversación. Para seguir, escríbenos por WhatsApp. / Llegamos al límite de mensajes de hoy. Para seguir, escríbenos por WhatsApp. / No pude responder en este momento. Inténtalo de nuevo o escríbenos por WhatsApp. / No puedo ayudarte con eso por aquí. Si es sobre nuestros servicios, escríbenos por WhatsApp. Al cerrarse el chat: botón Escribir por WhatsApp. |
+| Correo al admin | Asunto: Nuevo contacto del asistente: {nombre} ({servicio}). Cuerpo: Nombre, Celular, Servicio, el resumen y "Ver la conversación en el panel: {enlace}". |
+
+Límites: 20 mensajes por conversación, 1000 caracteres por mensaje, 5 conversaciones y 60 mensajes por conexión cada 24 horas, y el tope mensual del panel.

@@ -41,7 +41,11 @@ function sections(settings: SiteSettings) {
     },
     {
       heading: "Con quién los compartimos",
-      body: "Solo con los proveedores que necesitamos para operar: el alojamiento del sitio y de la base de datos, el correo, WhatsApp y Google Analytics. Algunos de ellos guardan la información en servidores fuera del Ecuador. Para una firma electrónica, compartimos tus requisitos con la entidad que la emite.",
+      body: "Solo con los proveedores que necesitamos para operar: el alojamiento del sitio y de la base de datos, el correo, WhatsApp, Google Analytics y el servicio de inteligencia artificial del asistente. Algunos de ellos guardan la información en servidores fuera del Ecuador. Para una firma electrónica, compartimos tus requisitos con la entidad que la emite.",
+    },
+    {
+      heading: "Asistente del sitio",
+      body: "Si conversas con el asistente del sitio, guardamos la conversación para atenderte y revisar que sus respuestas sean correctas. No guardamos tu dirección IP: solo una huella cifrada que sirve para evitar abusos. Los mensajes se procesan con un servicio de inteligencia artificial, en servidores fuera del Ecuador. Si le das tu nombre y celular, quedan registrados para que te escribamos por WhatsApp.",
     },
     {
       heading: "Cuánto tiempo los guardamos",
@@ -67,7 +71,7 @@ export default async function PrivacyPage() {
   return (
     <LegalPage
       title="Política de privacidad"
-      updated="Última actualización: 29 de septiembre de 2026."
+      updated="Última actualización: 2 de octubre de 2026."
       sections={sections(settings)}
     />
   );

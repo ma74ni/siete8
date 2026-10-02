@@ -2,8 +2,6 @@
 
 import "server-only";
 
-import { headers } from "next/headers";
-
 import { clientEnv } from "@/env/client";
 import { serverEnv } from "@/env/server";
 import { formValues } from "@/lib/admin-forms";
@@ -14,8 +12,10 @@ import {
   leadEmail,
   leadForm,
 } from "@/lib/contact-form";
+import { notify } from "@/server/notify";
 import { createAdminClient } from "@/server/supabase/admin";
 import { getSiteSettings } from "@/server/site-settings";
+import { passesTurnstile } from "@/server/turnstile";
 import { hoursText, type SiteSettings } from "@/lib/site-settings";
 
 // Contact form (E3-08, RF-PUB-07, RNF-16, RNF-19). Texts from docs/COPY.md §10.
@@ -37,58 +37,6 @@ function failed(settings: SiteSettings): ContactState {
 
 /** Same phone or email more than this many times in 10 minutes: rejected. */
 const MAX_RECENT = 3;
-
-async function clientIp() {
-  const list = await headers();
-  return (
-    list.get("x-nf-client-connection-ip") ??
-    list.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    undefined
-  );
-}
-
-async function passesTurnstile(token: string, secret: string) {
-  const body = new URLSearchParams({ secret, response: token });
-  const ip = await clientIp();
-  if (ip) body.set("remoteip", ip);
-  const response = await fetch(
-    "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-    { method: "POST", body },
-  ).catch(() => null);
-  if (!response?.ok) return false;
-  const result = (await response.json()) as { success?: boolean };
-  return result.success === true;
-}
-
-async function notify(subject: string, text: string, replyTo: string | null) {
-  const { RESEND_API_KEY, ADMIN_NOTIFICATION_EMAIL } = serverEnv;
-  if (!RESEND_API_KEY || !ADMIN_NOTIFICATION_EMAIL) {
-    console.warn(
-      "Lead saved, but RESEND_API_KEY or ADMIN_NOTIFICATION_EMAIL is not set.",
-    );
-    return;
-  }
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${RESEND_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: "Siete8 <avisos@siete8.com>",
-      to: [ADMIN_NOTIFICATION_EMAIL],
-      subject,
-      text,
-      ...(replyTo && { reply_to: replyTo }),
-    }),
-  }).catch(() => null);
-  // The lead is already saved: a failed email only goes to the logs.
-  if (!response?.ok) {
-    console.error(
-      `Lead saved, but the email failed: HTTP ${response?.status ?? "network"}`,
-    );
-  }
-}
 
 /**
  * Saves a lead from the contact form. Only after the honeypot, Turnstile,
