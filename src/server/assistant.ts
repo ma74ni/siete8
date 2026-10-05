@@ -66,7 +66,7 @@ const CONTACT_TOOL: Anthropic.Tool = {
       summary: {
         type: "string",
         description:
-          "Resumen en primera persona, de una a tres frases, de lo que necesita la persona, con los datos clave que dio (plan, tipo de persona, urgencia). Es el mensaje que llegará por WhatsApp. Sin cédula, RUC ni datos sensibles.",
+          "Resumen en primera persona, de una a tres frases, de lo que necesita la persona, con los datos clave que dio (plan, tipo de persona, formato .p12 o nube, urgencia). Es el mensaje que llegará por WhatsApp. Sin cédula, RUC ni datos sensibles.",
       },
     },
     required: ["name", "phone", "summary"],
