@@ -41,7 +41,7 @@ function sections(settings: SiteSettings) {
     },
     {
       heading: "Con quién los compartimos",
-      body: "Solo con los proveedores que necesitamos para operar: el alojamiento del sitio y de la base de datos, el correo, WhatsApp, Google Analytics y el servicio de inteligencia artificial del asistente. Algunos de ellos guardan la información en servidores fuera del Ecuador. Para una firma electrónica, compartimos tus requisitos con la entidad que la emite.",
+      body: "Solo con los proveedores que necesitamos para operar: el alojamiento del sitio y de la base de datos, el correo, WhatsApp, Google Analytics, el servicio de inteligencia artificial del asistente y el de monitoreo de errores, que recibe los fallos técnicos del sitio sin tus datos personales ni lo que escribes. Algunos de ellos guardan la información en servidores fuera del Ecuador. Para una firma electrónica, compartimos tus requisitos con la entidad que la emite.",
     },
     {
       heading: "Asistente del sitio",

@@ -1,5 +1,7 @@
 import "server-only";
 
+import * as Sentry from "@sentry/nextjs";
+
 import { serverEnv } from "@/env/server";
 
 /**
@@ -33,8 +35,9 @@ export async function notify(
     }),
   }).catch(() => null);
   if (!response?.ok) {
-    console.error(
-      `Lead saved, but the email failed: HTTP ${response?.status ?? "network"}`,
-    );
+    const status = response?.status ?? "network";
+    console.error(`Lead saved, but the email failed: HTTP ${status}`);
+    // Without the email the admin would not learn about the lead (E7-06).
+    Sentry.captureMessage(`Lead email failed: HTTP ${status}`, "error");
   }
 }

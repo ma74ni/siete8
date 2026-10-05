@@ -182,7 +182,7 @@ Página `/privacidad`. Título (h1): **Política de privacidad**. Nota bajo el t
 | Documentos de identidad | El sitio no pide ni guarda documentos de identidad. Para tramitar una firma electrónica, nos envías tus requisitos por WhatsApp. Con esos datos actuamos por cuenta de la entidad de certificación que emite la firma, que es la responsable de su tratamiento: los usamos solo para tramitar tu firma, se los enviamos por sus canales autorizados y los borramos cuando ya no hacen falta. |
 | Para qué los usamos | Para responder tus solicitudes, preparar y enviarte propuestas comerciales, y prestarte el servicio que contrates. No vendemos tus datos. |
 | Por qué podemos usarlos | Usamos tus datos porque nos das tu consentimiento al escribirnos o al enviar un formulario, y porque los necesitamos para preparar o cumplir el servicio que nos pides. |
-| Con quién los compartimos | Solo con los proveedores que necesitamos para operar: el alojamiento del sitio y de la base de datos, el correo, WhatsApp, Google Analytics y el servicio de inteligencia artificial del asistente. Algunos de ellos guardan la información en servidores fuera del Ecuador. Para una firma electrónica, compartimos tus requisitos con la entidad que la emite. |
+| Con quién los compartimos | Solo con los proveedores que necesitamos para operar: el alojamiento del sitio y de la base de datos, el correo, WhatsApp, Google Analytics, el servicio de inteligencia artificial del asistente y el de monitoreo de errores, que recibe los fallos técnicos del sitio sin tus datos personales ni lo que escribes. Algunos de ellos guardan la información en servidores fuera del Ecuador. Para una firma electrónica, compartimos tus requisitos con la entidad que la emite. |
 | Asistente del sitio | Si conversas con el asistente del sitio, guardamos la conversación para atenderte y revisar que sus respuestas sean correctas. No guardamos tu dirección IP: solo una huella cifrada que sirve para evitar abusos. Los mensajes se procesan con un servicio de inteligencia artificial, en servidores fuera del Ecuador. Si le das tu nombre y celular, quedan registrados para que te escribamos por WhatsApp. |
 | Cuánto tiempo los guardamos | Mientras sean necesarios para atender tu solicitud o prestarte el servicio, y después el tiempo que exijan las obligaciones legales y tributarias. |
 | Tus derechos | Puedes pedirnos acceder a tus datos, corregirlos o actualizarlos, eliminarlos, oponerte a su uso, suspender su tratamiento o recibirlos en un formato que puedas llevar a otro proveedor. Escríbenos a hola@siete8.com. Si no te respondemos o no estás de acuerdo con la respuesta, puedes presentar un reclamo ante la Superintendencia de Protección de Datos Personales. |
@@ -257,6 +257,8 @@ SEO: título "Contacto | Siete8"; descripción "Escríbenos por WhatsApp al 0967
 | Botones | Ir al inicio (principal). Ver servicios (secundario). |
 
 SEO: título "Página no encontrada | Siete8".
+
+Error general (cuando una página falla al cargar): título (h1) Algo salió mal. Texto: Tuvimos un problema al cargar esta página. Inténtalo de nuevo; si sigue fallando, escríbenos por WhatsApp. Botones: Intentar de nuevo (principal). Ir al inicio (secundario).
 
 ## 12. Aviso de cookies
 
