@@ -3,6 +3,7 @@ import "server-only";
 import { createHmac } from "node:crypto";
 
 import Anthropic from "@anthropic-ai/sdk";
+import * as Sentry from "@sentry/nextjs";
 
 import { clientEnv } from "@/env/client";
 import { serverEnv } from "@/env/server";
@@ -435,6 +436,8 @@ export async function chat(
               ? `Assistant failed: HTTP ${error.status} ${error.message}`
               : `Assistant failed: ${error instanceof Error ? error.message : error}`,
           );
+          // The visitor only sees the notice: Sentry tells the admin (E7-06).
+          Sentry.captureException(error, { tags: { area: "assistant" } });
           send({ type: "notice", text: NOTICES.error, closed: false });
         }
       }

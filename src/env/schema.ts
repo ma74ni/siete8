@@ -39,6 +39,11 @@ export const clientSchema = z.object({
     .string()
     .regex(/^G-[A-Z0-9]+$/)
     .optional(),
+  // Sentry (E7-06): set only for Netlify's production context, so local runs
+  // and previews report nothing. The environment is Netlify's CONTEXT, set
+  // in next.config.ts.
+  NEXT_PUBLIC_SENTRY_DSN: z.url().optional(),
+  NEXT_PUBLIC_SENTRY_ENVIRONMENT: z.string().min(1).optional(),
 });
 
 export type ServerEnv = z.infer<typeof serverSchema>;
