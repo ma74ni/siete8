@@ -31,12 +31,12 @@ const request = { label: "Solicitar", href: "#solicitar" };
 // Prices without VAT, as in supabase/seed.sql.
 const natural: PlanRow[] = [
   ["7 días", 6.99, "para un trámite puntual"],
-  ["30 días", 9.99, "para un trámite puntual"],
+  ["30 días", 7.99, "para un trámite puntual"],
   ["1 año", 17.99],
   ["2 años", 26.99],
   ["3 años", 36.99],
-  ["4 años", 47.99],
-  ["5 años", 54.99],
+  ["4 años", 45.99],
+  ["5 años", 53.99],
 ].map(([name, price, detail]) => ({
   id: `natural-${name}`,
   name: name as string,
@@ -48,11 +48,11 @@ const natural: PlanRow[] = [
 }));
 
 const legal: PlanRow[] = [
-  ["1 año", 20.99],
-  ["2 años", 29.99],
-  ["3 años", 39.99],
-  ["4 años", 50.99],
-  ["5 años", 57.99],
+  ["1 año", 17.99],
+  ["2 años", 26.99],
+  ["3 años", 36.99],
+  ["4 años", 45.99],
+  ["5 años", 53.99],
 ].map(([name, price]) => ({
   id: `legal-${name}`,
   name: name as string,

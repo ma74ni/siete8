@@ -29,7 +29,7 @@ function sections(settings: SiteSettings) {
     },
     {
       heading: "Documentos de identidad",
-      body: "El sitio no pide ni guarda documentos de identidad. Para tramitar una firma electrónica, nos envías tus requisitos por WhatsApp, y los usamos solo para tramitar esa firma con la entidad que la emite.",
+      body: "El sitio no pide ni guarda documentos de identidad. Para tramitar una firma electrónica, nos envías tus requisitos por WhatsApp. Con esos datos actuamos por cuenta de la entidad de certificación que emite la firma, que es la responsable de su tratamiento: los usamos solo para tramitar tu firma, se los enviamos por sus canales autorizados y los borramos cuando ya no hacen falta.",
     },
     {
       heading: "Para qué los usamos",
@@ -71,7 +71,7 @@ export default async function PrivacyPage() {
   return (
     <LegalPage
       title="Política de privacidad"
-      updated="Última actualización: 2 de octubre de 2026."
+      updated="Última actualización: 5 de octubre de 2026."
       sections={sections(settings)}
     />
   );

@@ -77,7 +77,7 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 
 **Contenido**
 - Nunca inventes textos visibles, precios, plazos, afirmaciones legales ni de certificación. Si falta un texto, usa el marcador `[COPY PENDIENTE: descripción]` y avísalo.
-- No menciones en el sitio a la entidad que emite las firmas: ni a Click Identy (proveedor con el que se gestionan) ni a la entidad acreditada que las respalda. Tampoco uses las frases prohibidas de `docs/COPY.md` (sección "No usar").
+- No menciones en el sitio a la entidad que emite las firmas (la actual, con contrato de distribución desde octubre de 2026, ni proveedores anteriores como Click Identy): el contrato no permite usar su nombre ni su marca sin autorización. Sí se dice que la firma la emite "una entidad de certificación acreditada por ARCOTEL" y que Siete8 es distribuidor autorizado, porque el contrato tampoco permite presentarla como propia. Los requisitos de la firma son los de su política de validación (COPY §4): no se agregan ni se quitan. El contrato y sus anexos son confidenciales: no se suben al repositorio (es público) ni se citan sus precios, costos o el nombre del emisor. Tampoco uses las frases prohibidas de `docs/COPY.md` (sección "No usar").
 - Todo el sitio está en español de Ecuador, con tuteo. El código, nombres de variables y commits van en inglés.
 
 **Datos y precios**
@@ -131,7 +131,7 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 
 - WhatsApp comercial: 0967155626 (en `wa.me`: 593967155626). Atención de 07:00 a 20:00. Se cambian en el panel (Configuración); estos son los valores actuales.
 - Teléfono: 0999843108.
-- Correo: hola@siete8.com. Dominio: siete8.com, registrado en Namecheap, con el DNS en **Netlify DNS** (NS1): los registros se agregan en Netlify > Domains, no en Namecheap. El correo vive en DreamHost y sus registros de la raíz (MX, SPF, DKIM y DMARC) no se tocan. Resend usa solo `resend._domainkey` (TXT), `send` y `rsend` (CNAME).
+- Correo: hola@siete8.com. Dominio: siete8.com, registrado en Namecheap, con el DNS en **Netlify DNS** (NS1): los registros se agregan en Netlify > Domains, no en Namecheap. El correo vive en DreamHost y sus registros de la raíz (MX, SPF, DKIM y DMARC) no se tocan. Resend usa solo `resend._domainkey` (TXT), `send` y `rsend` (CNAME). El facturador envía con Mailjet y firma con `mailjet._domainkey` (TXT): no se borra. Su SPF no se agrega a la raíz; DMARC pasa con el DKIM.
 - Redes: facebook.com/siete8.ec, instagram.com/siete8.ec, linkedin.com/company/siete8.ec.
 
 ## Variables de entorno
