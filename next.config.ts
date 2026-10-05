@@ -1,3 +1,4 @@
+import { withSentryConfig } from "@sentry/nextjs/config";
 import type { NextConfig } from "next";
 
 import { clientSchema, parseEnv, serverSchema } from "./src/env/schema";
@@ -72,7 +73,11 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
-  env: siteUrl ? { NEXT_PUBLIC_SITE_URL: siteUrl } : {},
+  env: {
+    ...(siteUrl && { NEXT_PUBLIC_SITE_URL: siteUrl }),
+    // Netlify's deploy context names the Sentry environment (E7-06).
+    NEXT_PUBLIC_SENTRY_ENVIRONMENT: process.env.CONTEXT ?? "development",
+  },
   // `next dev` blocks its dev-only assets for hosts other than localhost, so
   // the page renders but never hydrates. Allow 127.0.0.1 and, per machine,
   // the network addresses in DEV_ALLOWED_ORIGINS (comma separated, hostnames
@@ -101,4 +106,14 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Error monitoring (E7-06). The browser reports through /monitoring on this
+// site, so the CSP needs no Sentry host and ad blockers do not drop them.
+// Source maps are uploaded only when SENTRY_AUTH_TOKEN is set (Netlify);
+// SENTRY_ORG and SENTRY_PROJECT come from the environment too.
+export default withSentryConfig(nextConfig, {
+  tunnelRoute: "/monitoring",
+  silent: !process.env.CI,
+  telemetry: false,
+  widenClientFileUpload: true,
+  sourcemaps: { disable: !process.env.SENTRY_AUTH_TOKEN },
+});
