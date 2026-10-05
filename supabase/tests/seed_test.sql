@@ -26,21 +26,21 @@ select is(
   12, '12 visible signature plans at 15 % VAT'
 );
 
--- Totals with VAT match annex A and docs/COPY.md
+-- Totals with VAT match docs/COPY.md (prices of October 2026)
 select set_eq(
   $$select p.holder_type::text, p.name, round(p.price_without_vat * (1 + p.vat_rate), 2)
     from public.plan p join public.service s on s.id = p.service_id
     where s.slug = 'firma-electronica'$$,
   $$values
-    ('natural', '7 días', 8.04), ('natural', '30 días', 11.49),
+    ('natural', '7 días', 8.04), ('natural', '30 días', 9.19),
     ('natural', '1 año', 20.69), ('natural', '2 años', 31.04), ('natural', '3 años', 42.54),
-    ('natural', '4 años', 55.19), ('natural', '5 años', 63.24),
-    ('legal_entity', '1 año', 24.14), ('legal_entity', '2 años', 34.49), ('legal_entity', '3 años', 45.99),
-    ('legal_entity', '4 años', 58.64), ('legal_entity', '5 años', 66.69)$$,
-  'signature totals with VAT match annex A'
+    ('natural', '4 años', 52.89), ('natural', '5 años', 62.09),
+    ('legal_entity', '1 año', 20.69), ('legal_entity', '2 años', 31.04), ('legal_entity', '3 años', 42.54),
+    ('legal_entity', '4 años', 52.89), ('legal_entity', '5 años', 62.09)$$,
+  'signature totals with VAT match docs/COPY.md'
 );
 
--- Requirements: 5 per natural plan, 6 per legal entity plan
+-- Requirements: 7 per natural plan, 6 per legal entity plan
 select is(
   (select count(distinct n) from (
      select count(r.id) as n from public.plan p
@@ -54,7 +54,7 @@ select is(
    join public.service s on s.id = p.service_id and s.slug = 'firma-electronica'
    join public.requirement r on r.plan_id = p.id
    where p.holder_type = 'natural' and p.name = '1 año')::int,
-  5, 'natural plans have 5 requirements'
+  7, 'natural plans have 7 requirements'
 );
 select is(
   (select count(r.id) from public.plan p

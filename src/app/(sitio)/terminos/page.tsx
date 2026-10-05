@@ -29,7 +29,7 @@ function sections(settings: SiteSettings) {
     },
     {
       heading: "Firma electrónica",
-      body: `La emisión depende de que tus requisitos estén completos y sean válidos. La entregamos entre 5 y 10 minutos después de validar tus datos, de ${settings.whatsapp.from} a ${settings.whatsapp.to}. Eres responsable de que tus datos sean verdaderos y de guardar tu archivo .p12 y su clave: no los compartas con nadie.`,
+      body: `La firma la emite una entidad de certificación acreditada por ARCOTEL; Siete8 gestiona tu solicitud como distribuidor autorizado. La emisión depende de que tus requisitos estén completos y sean válidos, y de que la entidad los apruebe. La entregamos entre 5 y 10 minutos después de validar tus datos, de ${settings.whatsapp.from} a ${settings.whatsapp.to}. Eres responsable de que tus datos sean verdaderos y de guardar tu archivo .p12 y su clave: no los compartas con nadie.`,
     },
     {
       heading: "Proyectos a medida",
@@ -55,7 +55,7 @@ export default async function TermsPage() {
   return (
     <LegalPage
       title="Términos de uso"
-      updated="Última actualización: 29 de septiembre de 2026."
+      updated="Última actualización: 5 de octubre de 2026."
       sections={sections(settings)}
     />
   );
