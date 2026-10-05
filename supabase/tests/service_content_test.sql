@@ -19,7 +19,7 @@ select is(
 );
 select is(
   (select count(*) from public.service_faq q join public.service s on s.id = q.service_id where s.slug = 'firma-electronica')::int,
-  5, 'signature: five questions'
+  6, 'signature: six questions'
 );
 select is(
   (select r.slug from public.service s join public.service r on r.id = s.related_service_id where s.slug = 'firma-electronica'),
@@ -49,7 +49,7 @@ set local role anon;
 select set_config('request.jwt.claims', '{"role": "anon"}', true);
 
 select is((select count(*) from public.service_step st join public.service s on s.id = st.service_id where s.slug = 'firma-electronica')::int, 3, 'anon: reads steps of visible services');
-select is((select count(*) from public.service_faq q join public.service s on s.id = q.service_id where s.slug = 'firma-electronica')::int, 5, 'anon: reads questions of visible services');
+select is((select count(*) from public.service_faq q join public.service s on s.id = q.service_id where s.slug = 'firma-electronica')::int, 6, 'anon: reads questions of visible services');
 select throws_ok(
   $$insert into public.service_faq (service_id, question, answer)
     select id, 'q', 'a' from public.service where slug = 'firma-electronica'$$,
@@ -105,7 +105,7 @@ select lives_ok(
 );
 
 reset role;
-select is((select count(*) from public.service_faq q join public.service s on s.id = q.service_id where s.slug = 'firma-electronica')::int, 6, 'admin: question was added');
+select is((select count(*) from public.service_faq q join public.service s on s.id = q.service_id where s.slug = 'firma-electronica')::int, 7, 'admin: question was added');
 select is((select st.body from public.service_step st join public.service s on s.id = st.service_id
   where s.slug = 'firma-electronica' and st.sort_order = 1), 'Paso editado.', 'admin: step was edited');
 

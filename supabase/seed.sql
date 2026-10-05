@@ -45,17 +45,17 @@ select s.id, p.name, p.holder::public.holder_type, p.duration_value, p.duration_
   p.duration_value = 1 and p.duration_unit = 'year'
 from (values
   ('7 días', 'natural', 7, 'day', 6.99, 1),
-  ('30 días', 'natural', 30, 'day', 9.99, 2),
+  ('30 días', 'natural', 30, 'day', 7.99, 2),
   ('1 año', 'natural', 1, 'year', 17.99, 3),
   ('2 años', 'natural', 2, 'year', 26.99, 4),
   ('3 años', 'natural', 3, 'year', 36.99, 5),
-  ('4 años', 'natural', 4, 'year', 47.99, 6),
-  ('5 años', 'natural', 5, 'year', 54.99, 7),
-  ('1 año', 'legal_entity', 1, 'year', 20.99, 1),
-  ('2 años', 'legal_entity', 2, 'year', 29.99, 2),
-  ('3 años', 'legal_entity', 3, 'year', 39.99, 3),
-  ('4 años', 'legal_entity', 4, 'year', 50.99, 4),
-  ('5 años', 'legal_entity', 5, 'year', 57.99, 5)
+  ('4 años', 'natural', 4, 'year', 45.99, 6),
+  ('5 años', 'natural', 5, 'year', 53.99, 7),
+  ('1 año', 'legal_entity', 1, 'year', 17.99, 1),
+  ('2 años', 'legal_entity', 2, 'year', 26.99, 2),
+  ('3 años', 'legal_entity', 3, 'year', 36.99, 3),
+  ('4 años', 'legal_entity', 4, 'year', 45.99, 4),
+  ('5 años', 'legal_entity', 5, 'year', 53.99, 5)
 ) as p (name, holder, duration_value, duration_unit, price, sort_order)
 join public.service s on s.slug = 'firma-electronica';
 
@@ -64,17 +64,19 @@ join public.service s on s.slug = 'firma-electronica';
 insert into public.requirement (plan_id, text, required, sort_order)
 select pl.id, r.text, r.required, r.sort_order
 from (values
-  ('natural', 'Fotos de tu cédula vigente, por ambos lados (no copias).', true, 1),
-  ('natural', 'Una foto de medio cuerpo sosteniendo tu cédula a la altura del mentón.', true, 2),
-  ('natural', 'RUC activo en PDF, si vas a facturar electrónicamente.', false, 3),
-  ('natural', 'Un correo al que tengas acceso y con espacio libre.', true, 4),
-  ('natural', 'Un celular activo, con buena señal, para recibir el código de activación.', true, 5),
-  ('legal_entity', 'Fotos de tu cédula vigente, por ambos lados.', true, 1),
-  ('legal_entity', 'Una foto de medio cuerpo sosteniendo tu cédula a la altura del mentón.', true, 2),
-  ('legal_entity', 'RUC activo de la empresa, en PDF o copia de las dos hojas.', true, 3),
-  ('legal_entity', 'Nombramiento vigente, con carta de aceptación y razón de inscripción en el Registro Mercantil.', true, 4),
-  ('legal_entity', 'Constitución notariada con razón de inscripción, o estatutos si la empresa no está bajo la Superintendencia de Compañías.', true, 5),
-  ('legal_entity', 'Un correo y un celular activos.', true, 6)
+  ('natural', 'Tu cédula vigente, por ambos lados: fotos nítidas o PDF.', true, 1),
+  ('natural', 'Una selfie sosteniendo tu cédula en la mano.', true, 2),
+  ('natural', 'Tu dirección: provincia, ciudad y calle.', true, 3),
+  ('natural', 'Tu RUC en PDF, si tienes uno (por ejemplo, para facturar).', false, 4),
+  ('natural', 'Un correo personal al que tengas acceso.', true, 5),
+  ('natural', 'Un celular activo.', true, 6),
+  ('natural', 'Si tienes 65 años o más: un video corto en el que digas la fecha de hoy, tu nombre completo y que autorizas emitir tu firma a tu correo.', false, 7),
+  ('legal_entity', 'Tu cédula vigente, por ambos lados: fotos nítidas o PDF.', true, 1),
+  ('legal_entity', 'Una selfie sosteniendo tu cédula en la mano.', true, 2),
+  ('legal_entity', 'RUC de la empresa, en PDF.', true, 3),
+  ('legal_entity', 'Nombramiento vigente en PDF: la carta de aceptación y su inscripción en el Registro Mercantil o el ente que corresponda (pueden ir en un solo archivo).', true, 4),
+  ('legal_entity', 'Escritura de constitución de la empresa, en PDF.', true, 5),
+  ('legal_entity', 'Tu correo personal y un celular activo.', true, 6)
 ) as r (holder, text, required, sort_order)
 join public.plan pl on pl.holder_type = r.holder::public.holder_type
 join public.service s on s.id = pl.service_id and s.slug = 'firma-electronica';
@@ -149,7 +151,8 @@ cross join (values
   ('¿En qué formato la recibo?', 'Como archivo .p12, listo para instalar en tu computadora o cargar en tu sistema de facturación.', 2),
   ('¿En qué horario atienden?', 'Todos los días, incluidos feriados, de 07:00 a 20:00. Si escribes fuera de ese horario, atendemos tu solicitud desde las 07:00 del día siguiente.', 3),
   ('¿Qué plan me conviene?', 'Si la usas para facturar todo el año, el de 1 año o más. Los de 7 y 30 días sirven para un trámite puntual.', 4),
-  ('¿Me ayudan a instalarla?', 'Sí, si lo necesitas. Te ayudamos a instalarla en el sistema donde facturas o firmas.', 5)
+  ('¿Me ayudan a instalarla?', 'Sí, si lo necesitas. Te ayudamos a instalarla en el sistema donde facturas o firmas.', 5),
+  ('¿Quién emite la firma?', 'Una entidad de certificación acreditada por ARCOTEL, la autoridad que regula las firmas electrónicas en Ecuador. Siete8 es distribuidor autorizado: recibimos tu solicitud, revisamos que tus requisitos estén completos y te acompañamos hasta que tengas tu firma instalada.', 6)
 ) as v (question, answer, sort_order)
 where s.slug = 'firma-electronica'
   and not exists (select 1 from public.service_faq q where q.service_id = s.id);
