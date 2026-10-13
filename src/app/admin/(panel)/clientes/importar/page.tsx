@@ -31,6 +31,10 @@ export default async function ImportClientsPage() {
           dd/mm/aaaa. Si dejas vacíos el precio, el costo o renueva_cada, se
           toman del plan; si dejas vacío hasta, se calcula con renueva_cada.
         </li>
+        <li>
+          La columna pagado es opcional: escribe sí si ya te pagaron ese período
+          y se registra el total en la fecha de venta.
+        </li>
         <li>Guárdala como CSV y súbela.</li>
       </ol>
       <p className="max-w-[68ch]">

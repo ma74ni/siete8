@@ -171,6 +171,54 @@ export type Database = {
           },
         ]
       }
+      client_payment: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          method: Database["public"]["Enums"]["payment_method"]
+          notes: string | null
+          paid_on: string
+          period_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          method?: Database["public"]["Enums"]["payment_method"]
+          notes?: string | null
+          paid_on?: string
+          period_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          method?: Database["public"]["Enums"]["payment_method"]
+          notes?: string | null
+          paid_on?: string
+          period_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_payment_period_id_fkey"
+            columns: ["period_id"]
+            isOneToOne: false
+            referencedRelation: "client_service_current"
+            referencedColumns: ["period_id"]
+          },
+          {
+            foreignKeyName: "client_payment_period_id_fkey"
+            columns: ["period_id"]
+            isOneToOne: false
+            referencedRelation: "client_service_period"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_service: {
         Row: {
           cancelled_at: string | null
@@ -255,6 +303,8 @@ export type Database = {
           starts_on: string
           updated_at: string
           vat_rate: number
+          write_off_reason: string | null
+          written_off_on: string | null
         }
         Insert: {
           client_service_id: string
@@ -268,6 +318,8 @@ export type Database = {
           starts_on: string
           updated_at?: string
           vat_rate: number
+          write_off_reason?: string | null
+          written_off_on?: string | null
         }
         Update: {
           client_service_id?: string
@@ -281,6 +333,8 @@ export type Database = {
           starts_on?: string
           updated_at?: string
           vat_rate?: number
+          write_off_reason?: string | null
+          written_off_on?: string | null
         }
         Relationships: [
           {
@@ -1111,6 +1165,7 @@ export type Database = {
       lead_source: "assistant" | "form" | "whatsapp"
       lead_status: "new" | "contacted" | "closed" | "lost"
       link_kind: "url" | "whatsapp" | "latest_post"
+      payment_method: "transfer" | "cash" | "card" | "other"
       post_status: "draft" | "published"
       project_status:
         | "in_development"
@@ -1255,6 +1310,7 @@ export const Constants = {
       lead_source: ["assistant", "form", "whatsapp"],
       lead_status: ["new", "contacted", "closed", "lost"],
       link_kind: ["url", "whatsapp", "latest_post"],
+      payment_method: ["transfer", "cash", "card", "other"],
       post_status: ["draft", "published"],
       project_status: [
         "in_development",

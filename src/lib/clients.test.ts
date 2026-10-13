@@ -252,6 +252,61 @@ describe("buildImport", () => {
     ]);
   });
 
+  it("records the total as paid when pagado says so", () => {
+    const result = buildImport(
+      [
+        header,
+        row({
+          nombre: "Ana",
+          servicio: "hosting",
+          plan: "básico",
+          desde: "01/10/2026",
+          pagado: "Sí",
+        }),
+        row({
+          nombre: "Luis",
+          servicio: "hosting",
+          plan: "básico",
+          desde: "01/10/2026",
+          pagado: "tal vez",
+        }),
+      ],
+      catalog,
+      new Set(),
+      "2026-10-12",
+    );
+    expect(result.errors).toEqual([
+      "Fila 3: pagado «tal vez» debe ser sí o no.",
+    ]);
+    const ok = buildImport(
+      [
+        header,
+        row({
+          nombre: "Ana",
+          servicio: "hosting",
+          plan: "básico",
+          desde: "01/10/2026",
+          pagado: "si",
+        }),
+      ],
+      catalog,
+      new Set(),
+      "2026-10-12",
+    );
+    expect(ok.clients[0]?.services[0]?.period.paid_amount).toBe(57.5);
+  });
+
+  it("imports files made before the pagado column existed", () => {
+    const old = CSV_COLUMNS.filter((column) => column !== "pagado");
+    const result = buildImport(
+      [[...old], old.map((column) => (column === "nombre" ? "Ana" : ""))],
+      catalog,
+      new Set(),
+      "2026-10-12",
+    );
+    expect(result.errors).toEqual([]);
+  });
+
   it("rejects a file without the template columns", () => {
     expect(
       buildImport([["nombre"]], catalog, new Set(), "2026-10-12").errors[0],

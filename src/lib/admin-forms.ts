@@ -413,6 +413,26 @@ export const periodForm = z
   .object({ id: z.uuid(), ...periodFields })
   .refine(datesInOrder, { path: ["ends_on"] });
 
+// Client payments (E11-02) ------------------------------------------------------
+
+export const paymentForm = z.object({
+  period_id: z.uuid(),
+  paid_on: day,
+  /** What the client paid, VAT included. */
+  amount: money.pipe(z.number().positive()),
+  method: z.enum(["transfer", "cash", "card", "other"]),
+  notes: optionalText(1000),
+});
+
+export const periodIdForm = z.object({ period_id: z.uuid() });
+
+export const writeOffForm = z.object({
+  id: z.uuid(),
+  reason: requiredText(300),
+});
+
+export const markPaidBeforeForm = z.object({ before: day });
+
 /** Search and filter of the clients list, from the address. */
 export const clientFilters = z.object({
   q: z.string().trim().max(100).optional().catch(undefined),
