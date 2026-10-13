@@ -124,6 +124,181 @@ export type Database = {
           },
         ]
       }
+      client: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          kind: Database["public"]["Enums"]["client_kind"]
+          lead_id: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          tax_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["client_kind"]
+          lead_id?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          tax_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["client_kind"]
+          lead_id?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          tax_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: true
+            referencedRelation: "lead"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_service: {
+        Row: {
+          cancelled_at: string | null
+          client_id: string
+          created_at: string
+          detail: string | null
+          id: string
+          notes: string | null
+          plan_id: string | null
+          renews_every_unit: Database["public"]["Enums"]["duration_unit"] | null
+          renews_every_value: number | null
+          service_id: string
+          status: Database["public"]["Enums"]["client_service_status"]
+          updated_at: string
+        }
+        Insert: {
+          cancelled_at?: string | null
+          client_id: string
+          created_at?: string
+          detail?: string | null
+          id?: string
+          notes?: string | null
+          plan_id?: string | null
+          renews_every_unit?:
+            | Database["public"]["Enums"]["duration_unit"]
+            | null
+          renews_every_value?: number | null
+          service_id: string
+          status?: Database["public"]["Enums"]["client_service_status"]
+          updated_at?: string
+        }
+        Update: {
+          cancelled_at?: string | null
+          client_id?: string
+          created_at?: string
+          detail?: string | null
+          id?: string
+          notes?: string | null
+          plan_id?: string | null
+          renews_every_unit?:
+            | Database["public"]["Enums"]["duration_unit"]
+            | null
+          renews_every_value?: number | null
+          service_id?: string
+          status?: Database["public"]["Enums"]["client_service_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_service_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "client"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_service_plan_of_service"
+            columns: ["plan_id", "service_id"]
+            isOneToOne: false
+            referencedRelation: "plan"
+            referencedColumns: ["id", "service_id"]
+          },
+          {
+            foreignKeyName: "client_service_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_service_period: {
+        Row: {
+          client_service_id: string
+          cost_without_vat: number
+          created_at: string
+          ends_on: string | null
+          id: string
+          notes: string | null
+          price_without_vat: number
+          sold_on: string
+          starts_on: string
+          updated_at: string
+          vat_rate: number
+        }
+        Insert: {
+          client_service_id: string
+          cost_without_vat?: number
+          created_at?: string
+          ends_on?: string | null
+          id?: string
+          notes?: string | null
+          price_without_vat: number
+          sold_on?: string
+          starts_on: string
+          updated_at?: string
+          vat_rate: number
+        }
+        Update: {
+          client_service_id?: string
+          cost_without_vat?: number
+          created_at?: string
+          ends_on?: string | null
+          id?: string
+          notes?: string | null
+          price_without_vat?: number
+          sold_on?: string
+          starts_on?: string
+          updated_at?: string
+          vat_rate?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_service_period_client_service_id_fkey"
+            columns: ["client_service_id"]
+            isOneToOne: false
+            referencedRelation: "client_service"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_service_period_client_service_id_fkey"
+            columns: ["client_service_id"]
+            isOneToOne: false
+            referencedRelation: "client_service_current"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead: {
         Row: {
           consent_at: string
@@ -320,6 +495,35 @@ export type Database = {
             columns: ["service_id"]
             isOneToOne: false
             referencedRelation: "service"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plan_cost: {
+        Row: {
+          cost_without_vat: number
+          created_at: string
+          plan_id: string
+          updated_at: string
+        }
+        Insert: {
+          cost_without_vat: number
+          created_at?: string
+          plan_id: string
+          updated_at?: string
+        }
+        Update: {
+          cost_without_vat?: number
+          created_at?: string
+          plan_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plan_cost_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: true
+            referencedRelation: "plan"
             referencedColumns: ["id"]
           },
         ]
@@ -848,14 +1052,59 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      client_service_current: {
+        Row: {
+          cancelled_at: string | null
+          client_id: string | null
+          cost_without_vat: number | null
+          detail: string | null
+          expires_on: string | null
+          id: string | null
+          period_id: string | null
+          plan_id: string | null
+          price_without_vat: number | null
+          renews_every_unit: Database["public"]["Enums"]["duration_unit"] | null
+          renews_every_value: number | null
+          service_id: string | null
+          sold_on: string | null
+          starts_on: string | null
+          status: Database["public"]["Enums"]["client_service_status"] | null
+          vat_rate: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_service_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "client"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_service_plan_of_service"
+            columns: ["plan_id", "service_id"]
+            isOneToOne: false
+            referencedRelation: "plan"
+            referencedColumns: ["id", "service_id"]
+          },
+          {
+            foreignKeyName: "client_service_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       chat_cost_since: { Args: { since: string }; Returns: number }
+      import_clients: { Args: { payload: Json }; Returns: Json }
       is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       app_role: "admin"
+      client_kind: "person" | "company"
+      client_service_status: "active" | "cancelled"
       duration_unit: "day" | "month" | "year"
       holder_type: "natural" | "legal_entity" | "not_applicable"
       image_device: "desktop" | "mobile"
@@ -998,6 +1247,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin"],
+      client_kind: ["person", "company"],
+      client_service_status: ["active", "cancelled"],
       duration_unit: ["day", "month", "year"],
       holder_type: ["natural", "legal_entity", "not_applicable"],
       image_device: ["desktop", "mobile"],

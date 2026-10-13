@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  clientForm,
+  clientServiceForm,
   faqForm,
   holderNoteForm,
   imageFile,
@@ -125,7 +127,14 @@ describe("planForm", () => {
       visible: false,
       recommended: true,
       sort_order: 3,
+      cost_without_vat: null,
     });
+  });
+
+  it("reads the cost with a decimal comma", () => {
+    expect(
+      planForm.parse({ ...plan, cost_without_vat: "12,50" }).cost_without_vat,
+    ).toBe(12.5);
   });
 
   it("rejects an empty name, an unknown holder type or VAT over 100 %", () => {
@@ -238,5 +247,73 @@ describe("linkButtonForm", () => {
       linkButtonForm.safeParse({ ...base, kind: "url", url: "https://x.com" })
         .success,
     ).toBe(true);
+  });
+});
+
+describe("clientForm", () => {
+  it("normalizes the RUC, the phone and empty fields", () => {
+    expect(
+      clientForm.parse({
+        kind: "company",
+        name: " Heladería ",
+        tax_id: "990000000001",
+        phone: "099 123-4567",
+        email: "",
+        notes: "",
+      }),
+    ).toEqual({
+      kind: "company",
+      name: "Heladería",
+      tax_id: "0990000000001",
+      phone: "0991234567",
+      email: null,
+      notes: null,
+    });
+  });
+
+  it("asks a company for a 13-digit RUC", () => {
+    const result = clientForm.safeParse({
+      kind: "company",
+      name: "Heladería",
+      tax_id: "1700000001",
+    });
+    expect(result.success).toBe(false);
+    expect(result.error?.issues[0]?.path).toEqual(["tax_id"]);
+  });
+});
+
+describe("clientServiceForm", () => {
+  const service = {
+    service_id: serviceId,
+    sold_on: "2026-10-01",
+    starts_on: "2026-10-01",
+    price_without_vat: "20",
+    vat_rate: "15",
+  };
+
+  it("treats a missing unit as a one-off payment and no cost as zero", () => {
+    expect(
+      clientServiceForm.parse({ ...service, renews_every_value: "3" }),
+    ).toMatchObject({
+      plan_id: null,
+      renews_every_value: null,
+      renews_every_unit: null,
+      ends_on: null,
+      cost_without_vat: 0,
+    });
+  });
+
+  it("renews every 1 unit when only the unit is chosen", () => {
+    expect(
+      clientServiceForm.parse({ ...service, renews_every_unit: "month" }),
+    ).toMatchObject({ renews_every_value: 1, renews_every_unit: "month" });
+  });
+
+  it("rejects a period that ends before it starts", () => {
+    const result = clientServiceForm.safeParse({
+      ...service,
+      ends_on: "2026-09-01",
+    });
+    expect(result.error?.issues[0]?.path).toEqual(["ends_on"]);
   });
 });
