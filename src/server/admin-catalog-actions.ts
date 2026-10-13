@@ -48,7 +48,7 @@ export async function savePlan(
   await requireAdmin();
   const parsed = parse(planForm, formData);
   if (!parsed.success) return INVALID;
-  const { id, ...fields } = parsed.data;
+  const { id, cost_without_vat, ...fields } = parsed.data;
 
   const supabase = await createSessionClient();
   // Only one recommended plan per holder type (database index): marking this
@@ -64,10 +64,23 @@ export async function savePlan(
     const { error: unmarkError } = await others;
     if (unmarkError) return failed("guardar el plan");
   }
-  const { error } = id
-    ? await supabase.from("plan").update(fields).eq("id", id)
-    : await supabase.from("plan").insert(fields);
+  const { data: saved, error } = id
+    ? await supabase
+        .from("plan")
+        .update(fields)
+        .eq("id", id)
+        .select("id")
+        .single()
+    : await supabase.from("plan").insert(fields).select("id").single();
   if (error) return failed("guardar el plan");
+  // The cost lives apart from the public plan (E11-01): empty removes it.
+  const { error: costError } =
+    cost_without_vat === null
+      ? await supabase.from("plan_cost").delete().eq("plan_id", saved.id)
+      : await supabase
+          .from("plan_cost")
+          .upsert({ plan_id: saved.id, cost_without_vat });
+  if (costError) return failed("guardar el plan");
   refreshSite();
   return {
     status: "success",
