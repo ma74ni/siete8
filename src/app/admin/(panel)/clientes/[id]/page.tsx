@@ -7,6 +7,7 @@ import {
   ClientServiceFields,
   RenewalInputs,
 } from "@/components/admin/client-service-fields";
+import { ConfirmForm } from "@/components/admin/confirm-form";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { Section, SelectField } from "@/components/admin/fields";
 import { PriceField } from "@/components/admin/price-field";
@@ -17,13 +18,15 @@ import {
   type CatalogService,
   CLIENT_KIND_LABELS,
   expiry,
+  formatDay,
   formatDecimal,
   formatSignedCents,
   profitCents,
   todayInQuito,
 } from "@/lib/clients";
 import { cx } from "@/lib/cx";
-import { formatPriceWithVat } from "@/lib/price";
+import { PAYMENT_METHOD_LABELS, type PaymentMethod } from "@/lib/payments";
+import { formatCents, formatPriceWithVat } from "@/lib/price";
 import {
   type ClientForAdmin,
   getClientCatalog,
@@ -31,12 +34,17 @@ import {
 } from "@/server/admin-clients";
 import {
   addClientService,
+  addPayment,
   cancelClientService,
+  clearWriteOff,
+  deletePayment,
+  markPaidToday,
   deleteClient,
   reactivateClientService,
   savePeriod,
   updateClient,
   updateClientService,
+  writeOffPeriod,
 } from "@/server/admin-clients-actions";
 
 // Texts from docs/COPY.md §13.
@@ -151,13 +159,18 @@ function ServicesTable({
       <table className="w-full min-w-[44rem] border-collapse text-left">
         <thead>
           <tr className="border-b border-border">
-            {["Servicio", "Detalle", "Precio con IVA", "Vence", "Estado"].map(
-              (column) => (
-                <th key={column} scope="col" className="py-3 pr-4 font-medium">
-                  {column}
-                </th>
-              ),
-            )}
+            {[
+              "Servicio",
+              "Detalle",
+              "Precio con IVA",
+              "Vence",
+              "Pago",
+              "Estado",
+            ].map((column) => (
+              <th key={column} scope="col" className="py-3 pr-4 font-medium">
+                {column}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
@@ -190,6 +203,14 @@ function ServicesTable({
                   )}
                 >
                   {due.label}
+                </td>
+                <td
+                  className={cx(
+                    "py-3 pr-4",
+                    current?.balance.status === "partial" && "font-medium",
+                  )}
+                >
+                  {current?.balance.label ?? "—"}
                 </td>
                 <td className="py-3">
                   {cancelled && service.cancelled_at
@@ -277,7 +298,10 @@ function ServiceEditor({
         <div className="flex flex-col gap-4">
           <h3 className="text-h4">Historial</h3>
           {service.client_service_period.map((period) => (
-            <PeriodEditor key={period.id} period={period} />
+            <div key={period.id} className="flex flex-col gap-4">
+              <PeriodEditor period={period} />
+              <PeriodPayments period={period} />
+            </div>
           ))}
         </div>
 
@@ -304,11 +328,7 @@ function ServiceEditor({
   );
 }
 
-function PeriodEditor({
-  period,
-}: {
-  period: ClientService["client_service_period"][number];
-}) {
+function PeriodEditor({ period }: { period: Period }) {
   const key = period.id;
   return (
     <ActionForm
@@ -370,5 +390,139 @@ function PeriodEditor({
         </p>
       </div>
     </ActionForm>
+  );
+}
+
+type Period = ClientService["client_service_period"][number];
+
+/** Payments of one period, "Pagado hoy", partial payments and "no pagará" (E11-02). */
+function PeriodPayments({ period }: { period: Period }) {
+  const { balance } = period;
+  const key = period.id;
+  const open = balance.status === "pending" || balance.status === "partial";
+
+  return (
+    <div className="flex flex-col gap-4 rounded-control bg-surface p-4">
+      <p className="font-medium">
+        Total con IVA: {formatCents(balance.totalCents)}. {balance.label}
+        {balance.status === "written_off" &&
+          period.written_off_on &&
+          ` desde el ${formatDay(period.written_off_on)}: ${period.write_off_reason}`}
+      </p>
+
+      {period.client_payment.length === 0 ? (
+        <p>Todavía no hay pagos.</p>
+      ) : (
+        <ul className="flex flex-col gap-2">
+          {period.client_payment.map((payment) => (
+            <li key={payment.id} className="flex flex-col gap-2">
+              <span className="tabular-nums">
+                {formatDay(payment.paid_on)}:{" "}
+                {formatCents(Math.round(payment.amount * 100))},{" "}
+                {PAYMENT_METHOD_LABELS[payment.method]}
+                {payment.notes && `. ${payment.notes}`}
+              </span>
+              <DeleteButton
+                action={deletePayment}
+                id={payment.id}
+                label="Borrar pago"
+                question={`¿Borrar el pago de ${formatCents(Math.round(payment.amount * 100))} del ${formatDay(payment.paid_on)}?`}
+              />
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {open && (
+        <ActionForm action={markPaidToday} submitLabel="Pagado hoy">
+          <input type="hidden" name="period_id" value={period.id} />
+        </ActionForm>
+      )}
+
+      {open && (
+        <details>
+          <summary className="cursor-pointer font-medium">
+            Registrar abono
+          </summary>
+          <ActionForm
+            action={addPayment}
+            submitLabel="Registrar pago"
+            variant="secondary"
+            className="mt-4"
+            resetKey={String(period.client_payment.length)}
+          >
+            <input type="hidden" name="period_id" value={period.id} />
+            <div className="grid gap-4 md:grid-cols-3">
+              <FormField
+                label="Fecha"
+                name="paid_on"
+                id={`paid-on-${key}`}
+                type="date"
+                required
+                defaultValue={todayInQuito()}
+              />
+              <FormField
+                label="Monto con IVA"
+                name="amount"
+                id={`amount-${key}`}
+                inputMode="decimal"
+                required
+                defaultValue={formatDecimal(balance.balanceCents / 100)}
+              />
+              <SelectField
+                label="Forma de pago"
+                id={`method-${key}`}
+                name="method"
+                defaultValue="transfer"
+              >
+                {(Object.keys(PAYMENT_METHOD_LABELS) as PaymentMethod[]).map(
+                  (method) => (
+                    <option key={method} value={method}>
+                      {PAYMENT_METHOD_LABELS[method]}
+                    </option>
+                  ),
+                )}
+              </SelectField>
+            </div>
+            <FormField
+              label="Notas"
+              name="notes"
+              id={`payment-notes-${key}`}
+              maxLength={1000}
+            />
+          </ActionForm>
+        </details>
+      )}
+
+      {open && (
+        <ConfirmForm
+          action={writeOffPeriod}
+          label="Marcar como no pagará"
+          question="¿Marcar este período como no pagará? Sale de por cobrar y cuenta como pérdida."
+          confirmLabel="Sí, marcar"
+          cancelLabel="No"
+        >
+          <input type="hidden" name="id" value={period.id} />
+          <FormField
+            label="Motivo"
+            name="reason"
+            id={`reason-${key}`}
+            required
+            maxLength={300}
+            hint="Por ejemplo: cerró el negocio, no responde."
+          />
+        </ConfirmForm>
+      )}
+
+      {period.written_off_on && (
+        <ActionForm
+          action={clearWriteOff}
+          submitLabel={'Quitar "no pagará"'}
+          variant="secondary"
+        >
+          <input type="hidden" name="id" value={period.id} />
+        </ActionForm>
+      )}
+    </div>
   );
 }

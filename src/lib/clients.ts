@@ -1,5 +1,5 @@
 import type { Database } from "@/lib/database.types";
-import { formatCents } from "@/lib/price";
+import { formatCents, priceWithVatCents } from "@/lib/price";
 
 /**
  * Pure helpers of the clients module (E11-01, SRS 3.9): renewal periods,
@@ -234,9 +234,13 @@ export const CSV_COLUMNS = [
   "precio_sin_iva",
   "iva",
   "costo_sin_iva",
+  "pagado",
 ] as const;
 
 type Column = (typeof CSV_COLUMNS)[number];
+
+/** Added in E11-02: files made with the first template still import. */
+const OPTIONAL_COLUMNS: readonly Column[] = ["pagado"];
 
 /** Lowercase without accents or extra spaces, to match names typed by hand. */
 export function normalizeName(text: string): string {
@@ -309,6 +313,8 @@ export type ImportPeriod = {
   price_without_vat: number;
   vat_rate: number;
   cost_without_vat: number;
+  /** Total with VAT when the import says it is already paid. */
+  paid_amount?: number;
 };
 
 export type ImportService = {
@@ -350,6 +356,7 @@ const MAX_IMPORT_ROWS = 2000;
  * the same client (same RUC or cédula, or same name without one) are grouped,
  * and the first one gives the client's data. Prices, costs and renewal left
  * empty come from the plan; "hasta" left empty is computed from the renewal.
+ * "pagado" (sí) records one payment for the total on the sale day.
  */
 export function buildImport(
   rows: string[][],
@@ -361,7 +368,9 @@ export function buildImport(
   const empty = { clients: [], newClients: 0, existingClients: 0, services: 0 };
   const [header, ...body] = rows;
   const columns = (header ?? []).map((cell) => normalizeName(cell));
-  const missing = CSV_COLUMNS.filter((column) => !columns.includes(column));
+  const missing = CSV_COLUMNS.filter(
+    (column) => !OPTIONAL_COLUMNS.includes(column) && !columns.includes(column),
+  );
   if (!header || missing.length > 0) {
     return {
       ...empty,
@@ -537,6 +546,12 @@ function parseServiceCells(
     }
   }
 
+  const paidText = normalizeName(cell("pagado"));
+  const paid = ["si", "x", "1", "pagado"].includes(paidText);
+  if (!paid && !["", "no", "0"].includes(paidText)) {
+    problems.push(`pagado «${cell("pagado")}» debe ser sí o no`);
+  }
+
   if (!startsOn || price === null) return null;
   return {
     service_id: service.id,
@@ -551,6 +566,9 @@ function parseServiceCells(
       price_without_vat: price,
       vat_rate: vatRate,
       cost_without_vat: cost,
+      ...(paid && {
+        paid_amount: priceWithVatCents(price, vatRate) / 100,
+      }),
     },
   };
 }
