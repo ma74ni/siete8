@@ -458,6 +458,65 @@ export type Database = {
           },
         ]
       }
+      license_assignment: {
+        Row: {
+          client_service_id: string | null
+          created_at: string
+          email: string | null
+          id: string
+          notes: string | null
+          purchase_id: string
+          updated_at: string
+        }
+        Insert: {
+          client_service_id?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          notes?: string | null
+          purchase_id: string
+          updated_at?: string
+        }
+        Update: {
+          client_service_id?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          notes?: string | null
+          purchase_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "license_assignment_client_service_id_fkey"
+            columns: ["client_service_id"]
+            isOneToOne: false
+            referencedRelation: "client_service"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "license_assignment_client_service_id_fkey"
+            columns: ["client_service_id"]
+            isOneToOne: false
+            referencedRelation: "client_service_current"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "license_assignment_purchase_id_fkey"
+            columns: ["purchase_id"]
+            isOneToOne: false
+            referencedRelation: "purchase"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "license_assignment_purchase_id_fkey"
+            columns: ["purchase_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_current"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       link_button: {
         Row: {
           created_at: string
@@ -844,6 +903,207 @@ export type Database = {
           },
         ]
       }
+      provider: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          notes: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          notes?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      purchase: {
+        Row: {
+          auto_renew: boolean
+          cancelled_at: string | null
+          client_service_id: string | null
+          concept: string
+          created_at: string
+          id: string
+          notes: string | null
+          provider_id: string
+          quantity: number
+          renews_every_unit: Database["public"]["Enums"]["duration_unit"] | null
+          renews_every_value: number | null
+          status: Database["public"]["Enums"]["client_service_status"]
+          unit_cost: number
+          updated_at: string
+        }
+        Insert: {
+          auto_renew?: boolean
+          cancelled_at?: string | null
+          client_service_id?: string | null
+          concept: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          provider_id: string
+          quantity?: number
+          renews_every_unit?:
+            | Database["public"]["Enums"]["duration_unit"]
+            | null
+          renews_every_value?: number | null
+          status?: Database["public"]["Enums"]["client_service_status"]
+          unit_cost: number
+          updated_at?: string
+        }
+        Update: {
+          auto_renew?: boolean
+          cancelled_at?: string | null
+          client_service_id?: string | null
+          concept?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          provider_id?: string
+          quantity?: number
+          renews_every_unit?:
+            | Database["public"]["Enums"]["duration_unit"]
+            | null
+          renews_every_value?: number | null
+          status?: Database["public"]["Enums"]["client_service_status"]
+          unit_cost?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_client_service_id_fkey"
+            columns: ["client_service_id"]
+            isOneToOne: false
+            referencedRelation: "client_service"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_client_service_id_fkey"
+            columns: ["client_service_id"]
+            isOneToOne: false
+            referencedRelation: "client_service_current"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_payment: {
+        Row: {
+          amount: number
+          covers_from: string
+          covers_to: string | null
+          created_at: string
+          id: string
+          isd_amount: number
+          notes: string | null
+          paid_on: string
+          purchase_id: string
+          quantity: number
+          updated_at: string
+          vat_amount: number
+        }
+        Insert: {
+          amount: number
+          covers_from: string
+          covers_to?: string | null
+          created_at?: string
+          id?: string
+          isd_amount?: number
+          notes?: string | null
+          paid_on?: string
+          purchase_id: string
+          quantity?: number
+          updated_at?: string
+          vat_amount?: number
+        }
+        Update: {
+          amount?: number
+          covers_from?: string
+          covers_to?: string | null
+          created_at?: string
+          id?: string
+          isd_amount?: number
+          notes?: string | null
+          paid_on?: string
+          purchase_id?: string
+          quantity?: number
+          updated_at?: string
+          vat_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_payment_purchase_id_fkey"
+            columns: ["purchase_id"]
+            isOneToOne: false
+            referencedRelation: "purchase"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_payment_purchase_id_fkey"
+            columns: ["purchase_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_current"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_service: {
+        Row: {
+          purchase_id: string
+          service_id: string
+        }
+        Insert: {
+          purchase_id: string
+          service_id: string
+        }
+        Update: {
+          purchase_id?: string
+          service_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_service_purchase_id_fkey"
+            columns: ["purchase_id"]
+            isOneToOne: false
+            referencedRelation: "purchase"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_service_purchase_id_fkey"
+            columns: ["purchase_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_current"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_service_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       requirement: {
         Row: {
           created_at: string
@@ -1149,9 +1409,55 @@ export type Database = {
           },
         ]
       }
+      purchase_current: {
+        Row: {
+          amount: number | null
+          auto_renew: boolean | null
+          cancelled_at: string | null
+          client_service_id: string | null
+          concept: string | null
+          covers_from: string | null
+          expires_on: string | null
+          id: string | null
+          isd_amount: number | null
+          paid_on: string | null
+          payment_id: string | null
+          provider_id: string | null
+          quantity: number | null
+          renews_every_unit: Database["public"]["Enums"]["duration_unit"] | null
+          renews_every_value: number | null
+          status: Database["public"]["Enums"]["client_service_status"] | null
+          unit_cost: number | null
+          vat_amount: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_client_service_id_fkey"
+            columns: ["client_service_id"]
+            isOneToOne: false
+            referencedRelation: "client_service"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_client_service_id_fkey"
+            columns: ["client_service_id"]
+            isOneToOne: false
+            referencedRelation: "client_service_current"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       chat_cost_since: { Args: { since: string }; Returns: number }
+      create_purchase: { Args: { payload: Json }; Returns: string }
       import_clients: { Args: { payload: Json }; Returns: Json }
       is_admin: { Args: never; Returns: boolean }
     }

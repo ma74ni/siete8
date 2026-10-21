@@ -53,6 +53,11 @@ export default async function PanelLayout({ children }: LayoutProps<"/admin">) {
                 </Link>
               </li>
               <li>
+                <Link href="/admin/compras" className={navItem}>
+                  Compras
+                </Link>
+              </li>
+              <li>
                 <Link href="/admin/asistente" className={navItem}>
                   Asistente
                 </Link>

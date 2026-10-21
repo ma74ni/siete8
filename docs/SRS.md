@@ -219,7 +219,7 @@ Conceptos:
 
 - **Servicio del cliente**: un servicio del catálogo que el cliente tiene contratado (su hosting, su firma, su facturador, su POS como desarrollo a medida), con un detalle libre (dominio, número de buzones) y cada cuánto se renueva (por ejemplo, 1 mes, 1 año, 2 años) o si es de pago único.
 - **Período**: cada venta o renovación de un servicio del cliente. Guarda sus fechas, el precio sin IVA con su tasa y el costo directo. El vencimiento del servicio es el fin de su último período. Cambiar un precio o un costo no altera los períodos anteriores.
-- **Costo directo**: lo que cuesta atender a ese cliente en ese período (la firma al distribuidor, el dominio en Namecheap, su licencia de Microsoft 365). Se precarga del costo del plan o de la compra ligada y se puede corregir.
+- **Costo directo**: lo que cuesta atender a ese cliente en ese período (la firma al distribuidor, el dominio en Namecheap, sus licencias de Microsoft 365). En las compras al exterior incluye el IVA y el ISD pagados aquí. Se precarga del costo del plan o de la compra ligada y se puede corregir.
 - **Compra**: una suscripción con un proveedor que hay que pagar y renovar. Es **de un cliente** (su dominio) o **compartida** (DreamHost para hosting y correo; la suscripción de Microsoft 365 con todas las licencias; la infraestructura del facturador). Una compartida se carga a uno o varios servicios del catálogo, o a "general".
 - **Ganancia**: precio sin IVA − costo directo. El IVA no es ingreso. Las compras compartidas se restan en la ganancia por servicio, no por cliente.
 
@@ -238,7 +238,7 @@ Conceptos:
 | RF-CRM-11 | Listado de por cobrar: períodos con saldo, con antigüedad | M |
 | RF-CRM-12 | Por vencer: servicios de clientes vencidos o que vencen en los próximos 30 días | M |
 | RF-CRM-13 | Renovar un servicio del cliente con un clic: crea el período siguiente según el ciclo, con el precio y el costo del anterior, editables | M |
-| RF-CRM-14 | Proveedores y compras: concepto, proveedor, cliente o servicios a los que se carga, ciclo, próxima renovación, renovación automática, cantidad y costo por unidad (licencias), pagos al proveedor | M |
+| RF-CRM-14 | Proveedores y compras: concepto, proveedor, cliente o servicios a los que se carga, ciclo, renovación automática, cantidad y costo por unidad. Cada pago al proveedor guarda lo que cobra la plataforma y el IVA e ISD pagados aquí, y el período que cubre; la compra vence al final del último período pagado. Las licencias de una compra compartida se asignan a un correo, a un servicio de cliente o a los dos | M |
 | RF-CRM-15 | Por pagar: compras vencidas o que vencen en los próximos 30 días, junto a las de los clientes | M |
 | RF-CRM-16 | Alerta cruzada: compra ligada a un cliente que no ha pagado o canceló; licencias compartidas con clientes que cancelaron, para reducirlas antes de renovar | M |
 | RF-CRM-17 | Correo semanal al administrador (lunes 08:00, hora de Quito) con lo que vence en 30 días por cobrar y por pagar, y las alertas cruzadas. No se envía si no hay nada | M |
@@ -465,7 +465,8 @@ erDiagram
     PURCHASE ||--o{ PURCHASE_PAYMENT : paga
     PURCHASE }o--o{ SERVICE : carga
     CLIENT_SERVICE |o--o{ PURCHASE : requiere
-    PURCHASE |o--o{ CLIENT_SERVICE_PERIOD : licencia
+    PURCHASE ||--o{ LICENSE_ASSIGNMENT : asigna
+    CLIENT_SERVICE |o--o{ LICENSE_ASSIGNMENT : usa
     LEAD ||--o{ PROFORMA : recibe
 ```
 
@@ -487,12 +488,13 @@ erDiagram
 | plan\_cost | plan\_id, cost\_without\_vat (solo admin) |
 | client | id, kind (persona, empresa), name, tax\_id, phone, email, notes, lead\_id |
 | client\_service | id, client\_id, service\_id, plan\_id, detail, renews\_every\_value, renews\_every\_unit (como la duración del plan; vacío: pago único), status (activo, cancelado), cancelled\_at, notes |
-| client\_service\_period | id, client\_service\_id, sold\_on, starts\_on, ends\_on, price\_without\_vat, vat\_rate, cost\_without\_vat, purchase\_id (licencia de una compra compartida), written\_off\_at, write\_off\_reason |
-| client\_payment | id, period\_id, paid\_on, amount (con IVA), method, notes |
+| client\_service\_period | id, client\_service\_id, sold\_on, starts\_on, ends\_on, price\_without\_vat, vat\_rate, cost\_without\_vat, written\_off\_on, write\_off\_reason |
+| client\_payment | id, period\_id, paid\_on, amount (con IVA), method (transferencia, efectivo, tarjeta, otro), notes |
 | provider | id, name, website, notes |
-| purchase | id, provider\_id, concept, client\_service\_id (si es de un cliente), renews\_every\_value, renews\_every\_unit, renews\_on, auto\_renew, quantity, unit\_cost, status, notes |
+| purchase | id, provider\_id, concept, client\_service\_id (si es de un cliente), renews\_every\_value, renews\_every\_unit, auto\_renew, quantity, unit\_cost (lo que cobra la plataforma por unidad), status, cancelled\_at, notes |
 | purchase\_service | purchase\_id, service\_id (servicios a los que se carga una compra compartida) |
-| purchase\_payment | id, purchase\_id, paid\_on, covers\_from, covers\_to, amount, quantity |
+| purchase\_payment | id, purchase\_id, paid\_on, covers\_from, covers\_to, quantity, amount (plataforma), vat\_amount e isd\_amount (impuestos pagados en Ecuador) |
+| license\_assignment | id, purchase\_id, client\_service\_id, email (un correo, un servicio de cliente o los dos) |
 | proforma | id, lead\_id, service\_id, plan\_id, price\_without\_vat, vat\_rate, sent\_on, status (enviada, aceptada, rechazada) |
 
 El precio se guarda sin IVA junto con la tasa; el sitio muestra el total con IVA calculado. Las tablas del CRM (desde `plan_cost`) son solo de admin; el vencimiento, el saldo y el estado de pago se calculan, no se guardan.
