@@ -433,6 +433,80 @@ export const writeOffForm = z.object({
 
 export const markPaidBeforeForm = z.object({ before: day });
 
+// Purchases (E11-03) ---------------------------------------------------------------
+
+const quantity = z.coerce.number().int().min(1).max(10_000);
+
+/** Money left empty counts as zero (taxes that do not apply). */
+const moneyOrZero = z
+  .string()
+  .optional()
+  .transform((value) => value?.trim() || "0")
+  .pipe(money);
+
+export const purchaseForm = z
+  .object({
+    id: z.uuid().optional(),
+    /** An existing provider, or "new" with `provider_name`. */
+    provider_id: z.union([z.uuid(), z.literal("new")]),
+    provider_name: optionalText(120),
+    concept: requiredText(200),
+    charge_to: z.enum(["client", "services"]),
+    client_service_id: optionalUuid,
+    /** Read with `formData.getAll`: one value per checked service. */
+    service_ids: z.array(z.uuid()).max(30),
+    ...renewalFields,
+    auto_renew: checkbox,
+    quantity,
+    unit_cost: money,
+    notes: optionalText(4000),
+  })
+  .transform(withRenewal)
+  .refine((form) => form.provider_id !== "new" || form.provider_name !== null, {
+    path: ["provider_name"],
+  })
+  .refine(
+    (form) => form.charge_to !== "client" || form.client_service_id !== null,
+    { path: ["client_service_id"] },
+  )
+  // Charged to one client or to services, never both.
+  .transform(({ charge_to, ...form }) =>
+    charge_to === "client"
+      ? { ...form, service_ids: [] }
+      : { ...form, client_service_id: null },
+  );
+
+/** A payment to a provider; names do not clash with the purchase's fields. */
+export const purchasePaymentForm = z
+  .object({
+    purchase_id: z.uuid().optional(),
+    paid_on: day,
+    covers_from: day,
+    /** Empty: it does not expire. */
+    covers_to: optionalDay,
+    paid_quantity: quantity,
+    amount: money,
+    vat_amount: moneyOrZero,
+    isd_amount: moneyOrZero,
+    payment_notes: optionalText(1000),
+  })
+  .refine(
+    (payment) =>
+      payment.covers_to === null || payment.covers_to > payment.covers_from,
+    { path: ["covers_to"] },
+  );
+
+export const licenseForm = z
+  .object({
+    purchase_id: z.uuid(),
+    email: optionalText(200).pipe(z.string().regex(EMAIL).nullable()),
+    client_service_id: optionalUuid,
+  })
+  .refine(
+    (license) => license.email !== null || license.client_service_id !== null,
+    { path: ["email"] },
+  );
+
 /** Search and filter of the clients list, from the address. */
 export const clientFilters = z.object({
   q: z.string().trim().max(100).optional().catch(undefined),

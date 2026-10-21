@@ -27,11 +27,16 @@ import {
 import { cx } from "@/lib/cx";
 import { PAYMENT_METHOD_LABELS, type PaymentMethod } from "@/lib/payments";
 import { formatCents, formatPriceWithVat } from "@/lib/price";
+import { serviceLicensesCostCents } from "@/lib/purchases";
 import {
   type ClientForAdmin,
   getClientCatalog,
   getClientForAdmin,
 } from "@/server/admin-clients";
+import {
+  type ClientServicePurchases,
+  getPurchasesForClientServices,
+} from "@/server/admin-purchases";
 import {
   addClientService,
   addPayment,
@@ -63,6 +68,9 @@ export default async function ClientPage({
   ]);
   if (!client) notFound();
   const today = todayInQuito();
+  const purchases = await getPurchasesForClientServices(
+    client.client_service.map((service) => service.id),
+  );
 
   return (
     <div className="flex max-w-[72rem] flex-col gap-10">
@@ -98,6 +106,7 @@ export default async function ClientPage({
             service={service}
             clientName={client.name}
             catalog={catalog}
+            purchases={purchases.get(service.id)}
           />
         ))}
         <details className="rounded-control border border-border p-5">
@@ -230,15 +239,23 @@ function ServiceEditor({
   service,
   clientName,
   catalog,
+  purchases,
 }: {
   service: ClientService;
   clientName: string;
   catalog: CatalogService[];
+  purchases?: ClientServicePurchases;
 }) {
   const plans =
     catalog.find((candidate) => candidate.id === service.service_id)?.plans ??
     [];
   const key = service.id;
+  const licensesCost = purchases
+    ? serviceLicensesCostCents(purchases.licenses, {
+        value: service.renews_every_value,
+        unit: service.renews_every_unit,
+      })
+    : null;
 
   return (
     <details
@@ -250,6 +267,7 @@ function ServiceEditor({
         {service.status === "cancelled" && " (cancelado)"}
       </summary>
       <div className="mt-6 flex flex-col gap-8">
+        {purchases && <ServicePurchases purchases={purchases} />}
         <ActionForm
           action={updateClientService}
           submitLabel="Guardar servicio"
@@ -297,9 +315,12 @@ function ServiceEditor({
 
         <div className="flex flex-col gap-4">
           <h3 className="text-h4">Historial</h3>
-          {service.client_service_period.map((period) => (
+          {service.client_service_period.map((period, index) => (
             <div key={period.id} className="flex flex-col gap-4">
-              <PeriodEditor period={period} />
+              <PeriodEditor
+                period={period}
+                licensesCostCents={index === 0 ? licensesCost : null}
+              />
               <PeriodPayments period={period} />
             </div>
           ))}
@@ -328,8 +349,22 @@ function ServiceEditor({
   );
 }
 
-function PeriodEditor({ period }: { period: Period }) {
+/**
+ * One period of the history. The current one, while it has no cost, comes with
+ * the cost of the service's licenses prefilled (E11-03): saving confirms it.
+ */
+function PeriodEditor({
+  period,
+  licensesCostCents,
+}: {
+  period: Period;
+  licensesCostCents: number | null;
+}) {
   const key = period.id;
+  const prefill =
+    period.cost_without_vat === 0 && licensesCostCents !== null
+      ? licensesCostCents / 100
+      : null;
   return (
     <ActionForm
       action={savePeriod}
@@ -378,7 +413,8 @@ function PeriodEditor({ period }: { period: Period }) {
           id={`cost-${key}`}
           inputMode="decimal"
           className="w-32"
-          defaultValue={formatDecimal(period.cost_without_vat)}
+          defaultValue={formatDecimal(prefill ?? period.cost_without_vat)}
+          hint={prefill !== null ? "Costo de sus licencias." : undefined}
         />
         <p className="flex min-h-12 flex-col justify-center">
           <span className="text-small">Ganancia</span>
@@ -522,6 +558,50 @@ function PeriodPayments({ period }: { period: Period }) {
         >
           <input type="hidden" name="id" value={period.id} />
         </ActionForm>
+      )}
+    </div>
+  );
+}
+
+/** What this service needs from providers (E11-03): its purchases and licenses. */
+function ServicePurchases({
+  purchases,
+}: {
+  purchases: ClientServicePurchases;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      {purchases.purchases.map((purchase) => (
+        <p key={purchase.id}>
+          Compras:{" "}
+          <Link href={`/admin/compras/${purchase.id}`}>{purchase.concept}</Link>{" "}
+          en {purchase.provider}
+          {purchase.cancelled
+            ? " (cancelada)"
+            : purchase.expires_on
+              ? `, vence el ${formatDay(purchase.expires_on)}`
+              : ""}
+          .
+        </p>
+      ))}
+      {purchases.licenses.map((license) => (
+        <p key={license.purchaseId}>
+          Licencias: {license.count} de{" "}
+          <Link href={`/admin/compras/${license.purchaseId}`}>
+            {license.concept}
+          </Link>
+          {license.emails.length > 0 && ` (${license.emails.join(", ")})`}
+          {license.unitCostCents !== null &&
+            `, ${formatCents(license.unitCostCents * license.count)}${
+              license.cycle ? ` por ${license.cycle}` : ""
+            } con impuestos`}
+          .
+        </p>
+      ))}
+      {purchases.licenses.length > 0 && (
+        <p className="text-small">
+          Se precarga como costo del período si está vacío.
+        </p>
       )}
     </div>
   );
