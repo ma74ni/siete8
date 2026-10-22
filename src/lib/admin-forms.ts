@@ -1,5 +1,14 @@
 import { z } from "zod";
 
+import {
+  EMAIL,
+  isDay,
+  normalizePhone,
+  normalizeTaxId,
+  PHONE,
+  TAX_ID,
+} from "@/lib/clients";
+
 /**
  * Schemas of the panel forms (E4-02, E4-03). They parse `FormData` values
  * as sent by the browser: empty text means "no value", checkboxes are "on"
@@ -76,6 +85,12 @@ export const planForm = z.object({
   visible: checkbox,
   recommended: checkbox,
   sort_order: order,
+  /** What the plan costs Siete8 (E11-01); empty: no direct cost. */
+  cost_without_vat: z
+    .string()
+    .optional()
+    .transform((value) => value?.trim() || null)
+    .pipe(money.nullable()),
 });
 
 export const idForm = z.object({ id: z.uuid() });
@@ -281,6 +296,220 @@ export const leadAdminForm = z.object({
 export const leadFilters = z.object({
   estado: leadStatus.optional().catch(undefined),
   origen: leadSource.optional().catch(undefined),
+  servicio: z.uuid().optional().catch(undefined),
+});
+
+// Clients (E11-01) ----------------------------------------------------------------
+
+const optionalUuid = z
+  .string()
+  .optional()
+  .transform((value) => value || null)
+  .pipe(z.uuid().nullable());
+
+/** Value of an `<input type="date">`. */
+const day = z.string().refine(isDay);
+const optionalDay = z
+  .string()
+  .optional()
+  .transform((value) => value?.trim() || null)
+  .pipe(z.string().refine(isDay).nullable());
+
+export const clientForm = z
+  .object({
+    id: z.uuid().optional(),
+    kind: z.enum(["person", "company"]),
+    name: requiredText(200),
+    tax_id: z
+      .string()
+      .optional()
+      .transform((value) => (value?.trim() ? normalizeTaxId(value) : null))
+      .pipe(z.string().regex(TAX_ID).nullable()),
+    phone: z
+      .string()
+      .optional()
+      .transform((value) => (value?.trim() ? normalizePhone(value) : null))
+      .pipe(z.string().regex(PHONE).nullable()),
+    email: optionalText(200).pipe(z.string().regex(EMAIL).nullable()),
+    notes: optionalText(4000),
+  })
+  // Same rule as the database: a company has a 13-digit RUC.
+  .refine(
+    (client) =>
+      client.kind !== "company" ||
+      client.tax_id === null ||
+      client.tax_id.length === 13,
+    { path: ["tax_id"] },
+  );
+
+/** "Se renueva cada": a number and a unit; no unit means a one-off payment. */
+const renewalFields = {
+  renews_every_value: z
+    .string()
+    .optional()
+    .transform((value) => (value?.trim() ? Number(value) : null))
+    .pipe(z.number().int().min(1).max(999).nullable()),
+  renews_every_unit: z
+    .string()
+    .optional()
+    .transform((value) => value || null)
+    .pipe(z.enum(["day", "month", "year"]).nullable()),
+};
+
+function withRenewal<
+  T extends {
+    renews_every_value: number | null;
+    renews_every_unit: "day" | "month" | "year" | null;
+  },
+>(form: T): T {
+  return form.renews_every_unit === null
+    ? { ...form, renews_every_value: null }
+    : { ...form, renews_every_value: form.renews_every_value ?? 1 };
+}
+
+const periodFields = {
+  sold_on: day,
+  starts_on: day,
+  /** Empty: it does not expire. */
+  ends_on: optionalDay,
+  price_without_vat: money,
+  vat_rate: vatPercent,
+  cost_without_vat: z
+    .string()
+    .optional()
+    .transform((value) => value?.trim() || "0")
+    .pipe(money),
+};
+
+const datesInOrder = (period: { starts_on: string; ends_on: string | null }) =>
+  period.ends_on === null || period.ends_on > period.starts_on;
+
+/** A service of a client with its first period (new client or "Agregar servicio"). */
+export const clientServiceForm = z
+  .object({
+    client_id: z.uuid().optional(),
+    service_id: z.uuid(),
+    plan_id: optionalUuid,
+    detail: optionalText(200),
+    /** Not `notes`: the new client form also has the client's notes. */
+    service_notes: optionalText(4000),
+    ...renewalFields,
+    ...periodFields,
+  })
+  .transform(withRenewal)
+  .refine(datesInOrder, { path: ["ends_on"] });
+
+export const clientServiceUpdateForm = z
+  .object({
+    id: z.uuid(),
+    plan_id: optionalUuid,
+    detail: optionalText(200),
+    notes: optionalText(4000),
+    ...renewalFields,
+  })
+  .transform(withRenewal);
+
+export const periodForm = z
+  .object({ id: z.uuid(), ...periodFields })
+  .refine(datesInOrder, { path: ["ends_on"] });
+
+// Client payments (E11-02) ------------------------------------------------------
+
+export const paymentForm = z.object({
+  period_id: z.uuid(),
+  paid_on: day,
+  /** What the client paid, VAT included. */
+  amount: money.pipe(z.number().positive()),
+  method: z.enum(["transfer", "cash", "card", "other"]),
+  notes: optionalText(1000),
+});
+
+export const periodIdForm = z.object({ period_id: z.uuid() });
+
+export const writeOffForm = z.object({
+  id: z.uuid(),
+  reason: requiredText(300),
+});
+
+export const markPaidBeforeForm = z.object({ before: day });
+
+// Purchases (E11-03) ---------------------------------------------------------------
+
+const quantity = z.coerce.number().int().min(1).max(10_000);
+
+/** Money left empty counts as zero (taxes that do not apply). */
+const moneyOrZero = z
+  .string()
+  .optional()
+  .transform((value) => value?.trim() || "0")
+  .pipe(money);
+
+export const purchaseForm = z
+  .object({
+    id: z.uuid().optional(),
+    /** An existing provider, or "new" with `provider_name`. */
+    provider_id: z.union([z.uuid(), z.literal("new")]),
+    provider_name: optionalText(120),
+    concept: requiredText(200),
+    charge_to: z.enum(["client", "services"]),
+    client_service_id: optionalUuid,
+    /** Read with `formData.getAll`: one value per checked service. */
+    service_ids: z.array(z.uuid()).max(30),
+    ...renewalFields,
+    auto_renew: checkbox,
+    quantity,
+    unit_cost: money,
+    notes: optionalText(4000),
+  })
+  .transform(withRenewal)
+  .refine((form) => form.provider_id !== "new" || form.provider_name !== null, {
+    path: ["provider_name"],
+  })
+  .refine(
+    (form) => form.charge_to !== "client" || form.client_service_id !== null,
+    { path: ["client_service_id"] },
+  )
+  // Charged to one client or to services, never both.
+  .transform(({ charge_to, ...form }) =>
+    charge_to === "client"
+      ? { ...form, service_ids: [] }
+      : { ...form, client_service_id: null },
+  );
+
+/** A payment to a provider; names do not clash with the purchase's fields. */
+export const purchasePaymentForm = z
+  .object({
+    purchase_id: z.uuid().optional(),
+    paid_on: day,
+    covers_from: day,
+    /** Empty: it does not expire. */
+    covers_to: optionalDay,
+    paid_quantity: quantity,
+    amount: money,
+    vat_amount: moneyOrZero,
+    isd_amount: moneyOrZero,
+    payment_notes: optionalText(1000),
+  })
+  .refine(
+    (payment) =>
+      payment.covers_to === null || payment.covers_to > payment.covers_from,
+    { path: ["covers_to"] },
+  );
+
+export const licenseForm = z
+  .object({
+    purchase_id: z.uuid(),
+    email: optionalText(200).pipe(z.string().regex(EMAIL).nullable()),
+    client_service_id: optionalUuid,
+  })
+  .refine(
+    (license) => license.email !== null || license.client_service_id !== null,
+    { path: ["email"] },
+  );
+
+/** Search and filter of the clients list, from the address. */
+export const clientFilters = z.object({
+  q: z.string().trim().max(100).optional().catch(undefined),
   servicio: z.uuid().optional().catch(undefined),
 });
 

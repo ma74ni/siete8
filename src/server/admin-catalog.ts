@@ -39,6 +39,7 @@ export async function getServiceForAdmin(id: string) {
            seo_title, seo_description, related_service_id, cross_sell_text, cross_sell_cta,
            category(name),
            plan(id, name, detail, holder_type, price_without_vat, vat_rate, visible, recommended, sort_order, updated_at,
+                plan_cost(cost_without_vat, updated_at),
                 requirement(text, required, sort_order)),
            service_step(id, body, sort_order, updated_at),
            service_faq(id, question, answer, sort_order, updated_at),

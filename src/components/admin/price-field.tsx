@@ -14,10 +14,13 @@ export function PriceField({
   idPrefix,
   price,
   vatRate,
+  previewLabel = "En el sitio",
 }: {
   idPrefix: string;
   price: number;
   vatRate: number;
+  /** "Con IVA" where the total is not what the site shows (clients). */
+  previewLabel?: string;
 }) {
   const [priceText, setPriceText] = useState(
     price.toFixed(2).replace(".", ","),
@@ -67,7 +70,7 @@ export function PriceField({
         />
       </div>
       <p className="flex min-h-12 flex-col justify-center" aria-live="polite">
-        <span className="text-small">En el sitio</span>
+        <span className="text-small">{previewLabel}</span>
         <span className="font-medium tabular-nums">{preview}</span>
       </p>
     </div>

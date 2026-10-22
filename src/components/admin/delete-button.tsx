@@ -14,6 +14,8 @@ export function DeleteButton({
   id,
   label,
   question,
+  confirmLabel = "Sí, borrar",
+  cancelLabel = "Cancelar",
 }: {
   action: (state: FormState, formData: FormData) => Promise<FormState>;
   id: string;
@@ -21,6 +23,9 @@ export function DeleteButton({
   label: string;
   /** e.g. "¿Borrar el plan 1 año? Esto no se puede deshacer." */
   question: string;
+  /** Also for other confirmed actions, e.g. "Sí, cancelar" / "No". */
+  confirmLabel?: string;
+  cancelLabel?: string;
 }) {
   const [asking, setAsking] = useState(false);
   const [state, formAction, pending] = useActionState(action, IDLE);
@@ -48,10 +53,10 @@ export function DeleteButton({
         {question}
       </p>
       <Button type="submit" disabled={pending}>
-        Sí, borrar
+        {confirmLabel}
       </Button>
       <Button variant="secondary" onClick={() => setAsking(false)}>
-        Cancelar
+        {cancelLabel}
       </Button>
     </form>
   );

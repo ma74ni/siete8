@@ -50,7 +50,7 @@ Sitio público con contenido administrable, un asistente conversacional y un pan
 | --- | --- | --- |
 | Persona natural | Firma electrónica rápida, a veces con RUC para facturar | Alta |
 | Pyme / emprendedor | Web, dominio, correo corporativo, facturador, firma de representante legal | Alta |
-| Administrador (Siete8) | Publicar servicios, precios y artículos; revisar leads | Alta |
+| Administrador (Siete8) | Publicar servicios, precios y artículos; revisar leads; llevar clientes, renovaciones, compras y ganancias | Alta |
 | Empresa grande | Desarrollo a medida, hosting administrado | Media, sin contenido específico en MVP |
 
 ### 2.3 Funciones principales
@@ -60,6 +60,7 @@ Sitio público con contenido administrable, un asistente conversacional y un pan
 - Blog para SEO y como destino de publicaciones en redes sociales.
 - Asistente con IA que responde dudas, recoge datos básicos y deriva a WhatsApp.
 - Panel de administración para servicios, planes, artículos, leads y configuración.
+- Gestión interna de clientes: servicios contratados, vencimientos, cobros, compras a proveedores y ganancias (3.9).
 
 ### 2.4 Restricciones
 
@@ -207,8 +208,52 @@ Campos relacionados: `published` (se muestra o no), `show_client_name` (nombre d
 | --- | --- | --- |
 | RF-FUT-01 | Pagos en línea por plan | C |
 | RF-FUT-02 | Área de clientes con servicios contratados y vencimientos | C |
-| RF-FUT-03 | Recordatorios automáticos de renovación (hosting, dominio, firma) | C |
+| RF-FUT-03 | Recordatorios automáticos de renovación (hosting, dominio, firma). Para el administrador pasa a RF-CRM-12; aquí queda solo el aviso al cliente | C |
 | RF-FUT-04 | Carga segura de documentos para firma, con cifrado y borrado automático | W |
+
+### 3.9 Clientes, compras y ganancias (CRM)
+
+Gestión interna en el panel: qué tiene cada cliente, cuándo vence, si pagó, qué se le debe a cada proveedor y cuánto se gana. Solo la ve el administrador; nada de esto aparece en el sitio. Tiene que ser tan sencillo como llenar una hoja de cálculo: una página por cliente, valores precargados y acciones de un clic para lo diario.
+
+Conceptos:
+
+- **Servicio del cliente**: un servicio del catálogo que el cliente tiene contratado (su hosting, su firma, su facturador, su POS como desarrollo a medida), con un detalle libre (dominio, número de buzones) y cada cuánto se renueva (por ejemplo, 1 mes, 1 año, 2 años) o si es de pago único.
+- **Período**: cada venta o renovación de un servicio del cliente. Guarda sus fechas, el precio sin IVA con su tasa y el costo directo. El vencimiento del servicio es el fin de su último período. Cambiar un precio o un costo no altera los períodos anteriores.
+- **Costo directo**: lo que cuesta atender a ese cliente en ese período (la firma al distribuidor, el dominio en Namecheap, sus licencias de Microsoft 365). En las compras al exterior incluye el IVA y el ISD pagados aquí. Se precarga del costo del plan o de la compra ligada y se puede corregir.
+- **Compra**: una suscripción con un proveedor que hay que pagar y renovar. Es **de un cliente** (su dominio) o **compartida** (DreamHost para hosting y correo; la suscripción de Microsoft 365 con todas las licencias; la infraestructura del facturador). Una compartida se carga a uno o varios servicios del catálogo, o a "general".
+- **Ganancia**: precio sin IVA − costo directo. El IVA no es ingreso. Las compras compartidas se restan en la ganancia por servicio, no por cliente.
+
+| ID | Requisito | Prioridad |
+| --- | --- | --- |
+| RF-CRM-01 | CRUD de clientes: tipo (persona o empresa), nombre, RUC o cédula (solo el número, 10 o 13 dígitos), celular, correo y notas. Búsqueda por nombre, RUC o correo y filtro por servicio | M |
+| RF-CRM-02 | Ficha del cliente en una sola página: sus datos y una tabla con sus servicios (servicio, detalle, precio, vencimiento, estado de pago) | M |
+| RF-CRM-03 | Servicios del cliente ligados al catálogo, incluidos los servicios ocultos y los productos propios. El plan es opcional; el precio se escribe en cada período | M |
+| RF-CRM-04 | Crear un cliente con su primer servicio en un solo formulario; al elegir el plan se precargan precio, costo y vencimiento | M |
+| RF-CRM-05 | Costo sin IVA por plan, editable en el panel junto al plan y guardado aparte del plan (el plan es de lectura pública; el costo, no) | M |
+| RF-CRM-06 | Cancelar un servicio del cliente sin borrar su historial | M |
+| RF-CRM-07 | Importar clientes, servicios y su período vigente desde un CSV con plantilla; vista previa con los errores por fila; nada se guarda hasta confirmar | M |
+| RF-CRM-08 | Exportar a CSV los listados de clientes, por cobrar, compras y ganancias | S |
+| RF-CRM-09 | Pagos por período (fecha, monto, forma de pago, notas), con abonos parciales; acción "Pagado hoy" por el total. Estado calculado: pendiente, parcial, pagado | M |
+| RF-CRM-10 | Marcar un período como "no pagará", con motivo: sale de por cobrar y cuenta como pérdida | M |
+| RF-CRM-11 | Listado de por cobrar: períodos con saldo, con antigüedad | M |
+| RF-CRM-12 | Por vencer: servicios de clientes vencidos o que vencen en los próximos 30 días | M |
+| RF-CRM-13 | Renovar un servicio del cliente con un clic: crea el período siguiente según el ciclo, con el precio y el costo del anterior, editables | M |
+| RF-CRM-14 | Proveedores y compras: concepto, proveedor, cliente o servicios a los que se carga, ciclo, renovación automática, cantidad y costo por unidad. Cada pago al proveedor guarda lo que cobra la plataforma y el IVA e ISD pagados aquí, y el período que cubre; la compra vence al final del último período pagado. Las licencias de una compra compartida se asignan a un correo, a un servicio de cliente o a los dos | M |
+| RF-CRM-15 | Por pagar: compras vencidas o que vencen en los próximos 30 días, junto a las de los clientes | M |
+| RF-CRM-16 | Alerta cruzada: compra ligada a un cliente que no ha pagado o canceló; licencias compartidas con clientes que cancelaron, para reducirlas antes de renovar | M |
+| RF-CRM-17 | Correo semanal al administrador (lunes 08:00, hora de Quito) con lo que vence en 30 días por cobrar y por pagar, y las alertas cruzadas. No se envía si no hay nada | M |
+| RF-CRM-18 | Estados del lead: nuevo, contactado, proforma enviada, ganado, perdido (con motivo). Reemplaza los estados de RF-ADM-06 | S |
+| RF-CRM-19 | Proforma ligada al lead: servicio, plan, precio ofrecido, fecha de envío y estado (enviada, aceptada, rechazada). Aceptarla marca el lead como ganado y crea el cliente con su servicio y primer período | S |
+| RF-CRM-20 | Crear un cliente desde un lead: copia nombre, celular y correo y queda enlazado | S |
+| RF-CRM-21 | Ganancias por mes y por año, en dos vistas: devengado (por fecha de venta; compras compartidas repartidas por mes en el período que cubren) y caja (por fecha de cobro y de pago) | M |
+| RF-CRM-22 | Ganancias por servicio (las compras compartidas se restan al servicio o grupo de servicios al que se cargan), por cliente (solo costo directo) y licencias sin asignar de una compra compartida | M |
+
+Restricciones:
+
+- Solo admin lee y escribe estas tablas (RLS); `anon` no tiene acceso. Los costos nunca se exponen en el sitio, en el asistente ni en una tabla de lectura pública.
+- El nombre del emisor de las firmas solo puede estar en los datos (proveedor), nunca en el repositorio; las pruebas y la semilla usan proveedores y montos ficticios.
+- No se guardan documentos de identidad: solo el número de RUC o cédula, como texto (RNF-20).
+- Los montos se calculan en centavos enteros con funciones compartidas, como los precios del sitio.
 
 ## 4. Requisitos no funcionales
 
@@ -409,6 +454,20 @@ erDiagram
     LEAD ||--o| CHAT_SESSION : origina
     CHAT_SESSION ||--o{ CHAT_MESSAGE : contiene
     PROFILE ||--o{ POST : escribe
+    PLAN ||--o| PLAN_COST : cuesta
+    LEAD ||--o| CLIENT : origina
+    CLIENT ||--o{ CLIENT_SERVICE : contrata
+    SERVICE ||--o{ CLIENT_SERVICE : es
+    PLAN |o--o{ CLIENT_SERVICE : sigue
+    CLIENT_SERVICE ||--o{ CLIENT_SERVICE_PERIOD : renueva
+    CLIENT_SERVICE_PERIOD ||--o{ CLIENT_PAYMENT : cobra
+    PROVIDER ||--o{ PURCHASE : vende
+    PURCHASE ||--o{ PURCHASE_PAYMENT : paga
+    PURCHASE }o--o{ SERVICE : carga
+    CLIENT_SERVICE |o--o{ PURCHASE : requiere
+    PURCHASE ||--o{ LICENSE_ASSIGNMENT : asigna
+    CLIENT_SERVICE |o--o{ LICENSE_ASSIGNMENT : usa
+    LEAD ||--o{ PROFORMA : recibe
 ```
 
 | Entidad | Campos clave |
@@ -426,8 +485,19 @@ erDiagram
 | project | id, title, slug, client\_name, show\_client\_name, sector, year, summary, challenge\_md, solution\_md, results\_md, tech\_stack\[\], cover\_url, live\_url, status (en desarrollo, activo, interno, reemplazado, archivado), link\_checked\_at, link\_ok, featured, published, order |
 | project\_image | id, project\_id, url, alt, device (escritorio, móvil), order |
 | project\_service | project\_id, service\_id |
+| plan\_cost | plan\_id, cost\_without\_vat (solo admin) |
+| client | id, kind (persona, empresa), name, tax\_id, phone, email, notes, lead\_id |
+| client\_service | id, client\_id, service\_id, plan\_id, detail, renews\_every\_value, renews\_every\_unit (como la duración del plan; vacío: pago único), status (activo, cancelado), cancelled\_at, notes |
+| client\_service\_period | id, client\_service\_id, sold\_on, starts\_on, ends\_on, price\_without\_vat, vat\_rate, cost\_without\_vat, written\_off\_on, write\_off\_reason |
+| client\_payment | id, period\_id, paid\_on, amount (con IVA), method (transferencia, efectivo, tarjeta, otro), notes |
+| provider | id, name, website, notes |
+| purchase | id, provider\_id, concept, client\_service\_id (si es de un cliente), renews\_every\_value, renews\_every\_unit, auto\_renew, quantity, unit\_cost (lo que cobra la plataforma por unidad), status, cancelled\_at, notes |
+| purchase\_service | purchase\_id, service\_id (servicios a los que se carga una compra compartida) |
+| purchase\_payment | id, purchase\_id, paid\_on, covers\_from, covers\_to, quantity, amount (plataforma), vat\_amount e isd\_amount (impuestos pagados en Ecuador) |
+| license\_assignment | id, purchase\_id, client\_service\_id, email (un correo, un servicio de cliente o los dos) |
+| proforma | id, lead\_id, service\_id, plan\_id, price\_without\_vat, vat\_rate, sent\_on, status (enviada, aceptada, rechazada) |
 
-El precio se guarda sin IVA junto con la tasa; el sitio muestra el total con IVA calculado.
+El precio se guarda sin IVA junto con la tasa; el sitio muestra el total con IVA calculado. Las tablas del CRM (desde `plan_cost`) son solo de admin; el vencimiento, el saldo y el estado de pago se calculan, no se guardan.
 
 ## 7. Fases y alcance del MVP
 

@@ -207,3 +207,18 @@ Se detalla en tareas cuando el hito B esté en producción. Por ahora, alcance a
 | E10 Asistente con IA | Ruta `/api/chat` con streaming y la API de Anthropic, contexto limitado al catálogo publicado, herramienta de creación de lead, handoff a WhatsApp, límites por sesión e IP, activación desde el panel, registro de conversaciones | RF-AST-01..09; RNF-15, 16, 28 | Catálogo completo cargado y copy de todos los servicios visibles aprobado |
 
 Criterio de salida de la fase 1.1: 20 conversaciones reales revisadas sin respuestas inventadas y cotizaciones con precios coherentes con las propuestas formales.
+
+## 9. E11 Clientes, compras y ganancias
+
+Gestión interna en el panel (SRS 3.9). Tan sencilla como una hoja de cálculo: una página por cliente, valores precargados, acciones de un clic y exportación a CSV en cada listado. Solo admin; los costos nunca llegan al sitio.
+
+| ID | Tarea | Depende de | Criterios de aceptación | SRS |
+| --- | --- | --- | --- | --- |
+| E11-01 | Clientes, sus servicios y períodos (precio y costo directo), costo por plan, ficha del cliente e importación desde CSV | E4-01 | Se crea un cliente con su primer servicio en un formulario, con precio, costo y vencimiento precargados del plan; la importación muestra los errores por fila y no guarda nada hasta confirmar; `anon` no lee ninguna tabla nueva ni `plan_cost` | RF-CRM-01..08 |
+| E11-02 | Pagos de clientes, abonos, "Pagado hoy", "no pagará" y listado de por cobrar | E11-01 | El estado del período (pendiente, parcial, pagado) se calcula de sus pagos; un período "no pagará" sale de por cobrar | RF-CRM-09..11 |
+| E11-03 | Proveedores y compras: de un cliente o compartidas, cargadas a servicios, licencias con cantidad y costo por unidad, pagos al proveedor | E11-01 | Una licencia asignada a un cliente precarga su costo desde la compra; una compra de un cliente aparece en su ficha | RF-CRM-14 |
+| E11-04 | Por vencer y por pagar, Renovar con un clic, alertas cruzadas y correo semanal (función programada de Netlify con Resend) | E11-02, E11-03 | Renovar crea el período siguiente según el ciclo; una compra ligada a un cliente que no pagó sale marcada; el correo no se envía si no hay nada | RF-CRM-12, 13, 15..17 |
+| E11-05 | Estados nuevos del lead con motivo de pérdida, proformas, y crear cliente desde un lead o al aceptar una proforma | E11-01 | Aceptar una proforma marca el lead como ganado y crea el cliente con su servicio y primer período; el historial de estados del lead se conserva | RF-CRM-18..20 |
+| E11-06 | Ganancias: devengado y caja, por mes y año, por servicio, por cliente y licencias sin asignar | E11-02, E11-03 | La ganancia es sin IVA; una compra compartida anual se reparte por mes en la vista devengada y sale entera en caja; los cálculos van en centavos con pruebas | RF-CRM-21, 22 |
+
+Se ejecutan en orden. E11-01 va primero porque permite registrar ya a los clientes actuales y no perder renovaciones.

@@ -9,6 +9,7 @@ import { MarkdownEditor } from "@/components/admin/markdown-editor";
 import { PriceField } from "@/components/admin/price-field";
 import { FormField } from "@/components/sitio/form-field";
 import { isUuid } from "@/lib/admin-forms";
+import { formatDecimal } from "@/lib/clients";
 import {
   HOLDER_LABELS,
   holderTypes,
@@ -214,6 +215,19 @@ function PlanEditor({
           idPrefix={`plan-${key}`}
           price={plan?.price_without_vat ?? 0}
           vatRate={plan?.vat_rate ?? 0.15}
+        />
+        <FormField
+          label="Costo sin IVA"
+          name="cost_without_vat"
+          id={`cost-${key}`}
+          inputMode="decimal"
+          className="max-w-[32rem]"
+          defaultValue={
+            plan?.plan_cost
+              ? formatDecimal(plan.plan_cost.cost_without_vat)
+              : ""
+          }
+          hint="Lo que te cuesta a ti, por ejemplo la firma al distribuidor. Solo lo ves en el panel y se precarga al registrar una venta. Vacío: sin costo directo."
         />
         <div className="flex flex-wrap gap-x-6">
           <CheckboxField
