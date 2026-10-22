@@ -221,6 +221,7 @@ Una sola familia en dos anchos, en eco del logotipo ancho de SIETE8: **Archivo**
 - Construido con shadcn/ui, tematizado con los tokens de este archivo.
 - Densidad media, tipografía Archivo `wdth` 100 en todo el panel, sin el ancho expandido.
 - Sin motivo de barras, salvo el logo en la barra lateral.
+- La barra lateral marca la sección actual con fondo `surface` y un borde izquierdo `accent` de 4 px (`aria-current="page"`); el contorno de foco (`focus`) se mantiene aparte.
 
 ## 13. Tokens para Tailwind (CSS variables)
 
