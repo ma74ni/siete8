@@ -50,19 +50,22 @@ export default async function ClientsPage({
           defaultValue={filters.q ?? ""}
           hint="Nombre, RUC, cédula o correo."
         />
-        <SelectField
-          label="Servicio"
-          id="filtro-servicio"
-          name="servicio"
-          defaultValue={filters.servicio ?? ""}
-        >
-          <option value="">Todos</option>
-          {services.map((service) => (
-            <option key={service.id} value={service.id}>
-              {service.name}
-            </option>
-          ))}
-        </SelectField>
+        {/* Lined up with the search box, which has a hint below. */}
+        <div className="md:mb-7">
+          <SelectField
+            label="Servicio"
+            id="filtro-servicio"
+            name="servicio"
+            defaultValue={filters.servicio ?? ""}
+          >
+            <option value="">Todos</option>
+            {services.map((service) => (
+              <option key={service.id} value={service.id}>
+                {service.name}
+              </option>
+            ))}
+          </SelectField>
+        </div>
         <Button type="submit" variant="secondary" className="md:mb-7">
           Buscar
         </Button>

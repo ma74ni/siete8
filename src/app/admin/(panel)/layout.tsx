@@ -1,13 +1,14 @@
 import Link from "next/link";
 
+import { NavLink } from "@/components/admin/nav-link";
 import { Logo } from "@/components/sitio/logo";
 import { requireAdmin } from "@/server/auth";
 import { signOut } from "@/server/auth-actions";
 
-// Texts from docs/COPY.md §13.
+// Texts from docs/COPY.md §13. The section being viewed is marked (DESIGN §12).
 
 const navItem =
-  "flex min-h-11 items-center rounded-control px-3 font-medium text-fg no-underline hover:bg-surface";
+  "flex min-h-11 items-center rounded-control border-l-4 border-transparent px-3 font-medium text-fg no-underline hover:bg-surface aria-[current=page]:border-accent aria-[current=page]:bg-surface";
 
 /** Panel frame (E4-01): side bar on desktop, top bar on phones. */
 export default async function PanelLayout({ children }: LayoutProps<"/admin">) {
@@ -23,54 +24,54 @@ export default async function PanelLayout({ children }: LayoutProps<"/admin">) {
           <nav aria-label="Panel">
             <ul className="flex flex-wrap gap-1 lg:flex-col">
               <li>
-                <Link href="/admin" className={navItem}>
+                <NavLink href="/admin" className={navItem}>
                   Servicios
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link href="/admin/proyectos" className={navItem}>
+                <NavLink href="/admin/proyectos" className={navItem}>
                   Proyectos
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link href="/admin/blog" className={navItem}>
+                <NavLink href="/admin/blog" className={navItem}>
                   Blog
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link href="/admin/leads" className={navItem}>
+                <NavLink href="/admin/leads" className={navItem}>
                   Leads
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link href="/admin/clientes" className={navItem}>
+                <NavLink href="/admin/clientes" className={navItem}>
                   Clientes
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link href="/admin/por-cobrar" className={navItem}>
+                <NavLink href="/admin/por-cobrar" className={navItem}>
                   Por cobrar
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link href="/admin/compras" className={navItem}>
+                <NavLink href="/admin/compras" className={navItem}>
                   Compras
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link href="/admin/asistente" className={navItem}>
+                <NavLink href="/admin/asistente" className={navItem}>
                   Asistente
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link href="/admin/enlaces" className={navItem}>
+                <NavLink href="/admin/enlaces" className={navItem}>
                   Enlaces
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link href="/admin/configuracion" className={navItem}>
+                <NavLink href="/admin/configuracion" className={navItem}>
                   Configuración
-                </Link>
+                </NavLink>
               </li>
               <li>
                 <Link href="/" className={navItem}>
