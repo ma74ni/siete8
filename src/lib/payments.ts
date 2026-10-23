@@ -1,5 +1,5 @@
 import type { Database } from "@/lib/database.types";
-import { formatCents, priceWithVatCents } from "@/lib/price";
+import { formatCents, priceWithVatCents } from "./price";
 
 /**
  * What a client owes for a period (E11-02, RF-CRM-09..11). Payments are

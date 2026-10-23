@@ -1,5 +1,5 @@
 import type { Database } from "@/lib/database.types";
-import { formatCents, priceWithVatCents } from "@/lib/price";
+import { formatCents, priceWithVatCents } from "./price";
 
 /**
  * Pure helpers of the clients module (E11-01, SRS 3.9): renewal periods,

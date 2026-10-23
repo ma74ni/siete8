@@ -123,7 +123,7 @@ export async function getClientForAdmin(id: string) {
        client_service(id, service_id, plan_id, detail, renews_every_value, renews_every_unit,
          status, cancelled_at, notes, created_at, updated_at, service(name), plan(name),
          client_service_period(id, sold_on, starts_on, ends_on, price_without_vat, vat_rate,
-           cost_without_vat, written_off_on, write_off_reason, updated_at,
+           cost_without_vat, written_off_on, write_off_reason, created_at, updated_at,
            client_payment(id, paid_on, amount, method, notes, created_at)))`,
     )
     .eq("id", id)
@@ -142,9 +142,14 @@ export async function getClientForAdmin(id: string) {
       )
       .map((cs) => ({
         ...cs,
-        // Latest first; the first one is the current period.
+        // Latest first; the first one is the current period, with the same
+        // tie-break as client_service_current and "Por vencer".
         client_service_period: [...cs.client_service_period]
-          .sort((a, b) => b.starts_on.localeCompare(a.starts_on))
+          .sort(
+            (a, b) =>
+              b.starts_on.localeCompare(a.starts_on) ||
+              b.created_at.localeCompare(a.created_at),
+          )
           .map((period) => ({
             ...period,
             client_payment: [...period.client_payment].sort(
