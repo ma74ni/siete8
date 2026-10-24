@@ -2,6 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { CheckboxField } from "@/components/admin/checkbox-field";
+import { DataTable } from "@/components/admin/data-table";
+import { Disclosure } from "@/components/admin/disclosure";
+import { EmptyState } from "@/components/admin/empty-state";
+import { SelectField } from "@/components/admin/fields";
+import { PageHeader } from "@/components/admin/page-header";
+import { StatusText } from "@/components/admin/status-text";
+import { Input, Label, Radio } from "@/components/form/controls";
 import { Button } from "@/components/sitio/button";
 import { Faq } from "@/components/sitio/faq";
 import { FormField } from "@/components/sitio/form-field";
@@ -108,6 +116,32 @@ function Section({
     </section>
   );
 }
+
+/** Made-up rows for the panel table (SRS 3.9: never real clients). */
+const sampleDue = [
+  {
+    id: "1",
+    client: "Ferretería Andes",
+    service: "Hosting, andes.test",
+    expiry: "Venció el 1 de octubre de 2026",
+    expired: true,
+    payment: "Debe $20,69",
+    price: "$20,69",
+    renews: true,
+  },
+  {
+    id: "2",
+    client: "Heladería Polar",
+    service: "Firma electrónica",
+    expiry: "Vence el 5 de noviembre de 2026",
+    expired: false,
+    payment: "Pagado",
+    price: "$13,80",
+    renews: false,
+  },
+];
+
+const noRows: typeof sampleDue = [];
 
 export default function DevUiPage() {
   if (serverEnv.CONTEXT === "production") notFound();
@@ -237,6 +271,137 @@ export default function DevUiPage() {
             multiline
           />
         </form>
+      </Section>
+
+      {/* E13-01: the form atoms (src/components/form/controls.tsx) and the
+          fields built from them, in each state. Texts from COPY §13. */}
+      <Section title="Controles de formulario">
+        <form className="flex max-w-[34rem] flex-col gap-6">
+          <SelectField
+            label="Servicio"
+            id="ui-select"
+            name="service"
+            defaultValue=""
+            hint="Incluye los servicios ocultos."
+          >
+            <option value="">Ninguno</option>
+            <option value="firma">Firma electrónica</option>
+          </SelectField>
+          <SelectField
+            label="Cliente y servicio"
+            id="ui-select-error"
+            name="client_service"
+            defaultValue=""
+            error="Elige el cliente y servicio."
+          >
+            <option value="">Elige uno</option>
+          </SelectField>
+          <div className="flex flex-wrap items-end gap-4">
+            <div className="flex w-32 flex-col gap-1.5">
+              <Label htmlFor="ui-numeric">Precio sin IVA</Label>
+              <Input id="ui-numeric" defaultValue="17,99" numeric />
+            </div>
+            <div className="flex w-24 flex-col gap-1.5">
+              <Label htmlFor="ui-disabled">Cantidad</Label>
+              <Input id="ui-disabled" type="number" disabled numeric />
+            </div>
+          </div>
+          <CheckboxField
+            label="La persona aceptó que la contactemos."
+            name="consent"
+            id="ui-checkbox"
+          />
+          <fieldset className="flex flex-col gap-1.5">
+            <legend className="mb-1.5 font-medium">Se carga a</legend>
+            {[
+              ["client", "Un cliente"],
+              ["services", "Servicios del catálogo"],
+            ].map(([value, label]) => (
+              <label
+                key={value}
+                htmlFor={`ui-radio-${value}`}
+                className="flex min-h-11 items-center gap-3"
+              >
+                <Radio
+                  id={`ui-radio-${value}`}
+                  name="charge_to"
+                  value={value}
+                  defaultChecked={value === "client"}
+                />
+                <span>{label}</span>
+              </label>
+            ))}
+          </fieldset>
+        </form>
+      </Section>
+
+      {/* E13-02: panel organisms (DESIGN §12.1). Made-up rows; texts from
+          COPY §13. */}
+      <Section title="Componentes del panel" surface>
+        <div className="flex flex-col gap-10">
+          <PageHeader
+            title="Clientes"
+            intro="Lo que tiene contratado cada cliente y cuándo vence."
+            back={{ href: "/admin/clientes", label: "Volver a clientes" }}
+            actions={
+              <>
+                <Button href="/admin/clientes/nuevo">Nuevo cliente</Button>
+                <Button href="/admin/clientes/importar" variant="secondary">
+                  Importar desde CSV
+                </Button>
+              </>
+            }
+          />
+          <DataTable
+            rows={sampleDue}
+            columns={[
+              { header: "Cliente", cell: (row) => row.client, rowHeader: true },
+              { header: "Servicio", cell: (row) => row.service },
+              {
+                header: "Vence",
+                cell: (row) => (
+                  <StatusText tone={row.expired ? "alert" : "default"}>
+                    {row.expiry}
+                  </StatusText>
+                ),
+              },
+              { header: "Pago", cell: (row) => row.payment },
+              {
+                header: "Precio con IVA",
+                cell: (row) => row.price,
+                numeric: true,
+              },
+            ]}
+            rowKey={(row) => row.id}
+            label="Tus clientes"
+            empty="Ningún servicio de tus clientes vence en los próximos 30 días."
+            details={(row) =>
+              row.renews ? (
+                <Disclosure summary="Renovar" variant="action">
+                  <p>Fecha de venta, Desde, Hasta, Precio y Costo.</p>
+                </Disclosure>
+              ) : null
+            }
+          />
+          <DataTable
+            rows={noRows}
+            columns={[{ header: "Cliente", cell: (row) => row.client }]}
+            rowKey={(row) => row.id}
+            label="Por cobrar"
+            empty="Nadie te debe nada."
+          />
+          <EmptyState
+            action={<Button href="/admin/clientes/nuevo">Nuevo cliente</Button>}
+          >
+            Todavía no hay clientes.
+          </EmptyState>
+          <Disclosure summary="Agregar servicio">
+            <p>El formulario del servicio va aquí.</p>
+          </Disclosure>
+          <Disclosure summary="Registrar abono" variant="inline">
+            <p>Fecha, Monto con IVA, Forma de pago y Notas.</p>
+          </Disclosure>
+        </div>
       </Section>
     </div>
   );

@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { ReactNode } from "react";
 
 import { ActionForm } from "@/components/admin/action-form";
 import { CheckboxField } from "@/components/admin/checkbox-field";
 import { DeleteButton } from "@/components/admin/delete-button";
+import { Section, SelectField } from "@/components/admin/fields";
 import { MarkdownEditor } from "@/components/admin/markdown-editor";
 import { PriceField } from "@/components/admin/price-field";
 import { FormField } from "@/components/sitio/form-field";
@@ -34,53 +34,11 @@ import {
 
 // Texts from docs/COPY.md §13.
 
-const select =
-  "min-h-12 w-full rounded-control border border-field-border bg-bg px-3 text-fg";
-
 const HOLDER_OPTIONS: { value: HolderType; label: string }[] = [
   { value: "not_applicable", label: "No aplica" },
   { value: "natural", label: HOLDER_LABELS.natural },
   { value: "legal_entity", label: HOLDER_LABELS.legal_entity },
 ];
-
-function Section({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <section className="flex flex-col gap-6 border-t border-border pt-8">
-      <h2 className="text-h3">{title}</h2>
-      {children}
-    </section>
-  );
-}
-
-function SelectField({
-  label,
-  id,
-  name,
-  defaultValue,
-  children,
-}: {
-  label: string;
-  id: string;
-  name: string;
-  defaultValue: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="font-medium">
-        {label}
-      </label>
-      <select
-        id={id}
-        name={name}
-        defaultValue={defaultValue}
-        className={select}
-      >
-        {children}
-      </select>
-    </div>
-  );
-}
 
 /** Edit one service: its plans and its page texts (E4-02, E4-03). */
 export default async function EditServicePage({

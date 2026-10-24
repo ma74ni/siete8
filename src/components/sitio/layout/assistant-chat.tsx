@@ -11,6 +11,7 @@ import {
   useState,
 } from "react";
 
+import { controlClass } from "@/components/form/controls";
 import { Button, buttonClasses } from "@/components/sitio/button";
 import { Markdown } from "@/components/sitio/markdown";
 import { WhatsAppIcon } from "@/components/sitio/layout/whatsapp-icon";
@@ -417,7 +418,10 @@ export function AssistantChat({
                     onChange={(event) => setDraft(event.target.value)}
                     onKeyDown={onEnter}
                     placeholder="Escribe tu pregunta"
-                    className="min-h-12 flex-1 resize-none rounded-control border border-field-border bg-bg px-3 py-2 text-fg"
+                    // One-line composer: the base control look, not a tall textarea.
+                    className={controlClass({
+                      className: "flex-1 resize-none py-2",
+                    })}
                   />
                   <button
                     type="submit"

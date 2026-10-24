@@ -247,6 +247,7 @@ Conceptos:
 | RF-CRM-20 | Crear un cliente desde un lead: copia nombre, celular y correo y queda enlazado | S |
 | RF-CRM-21 | Ganancias por mes y por año, en dos vistas: devengado (por fecha de venta; compras compartidas repartidas por mes en el período que cubren) y caja (por fecha de cobro y de pago) | M |
 | RF-CRM-22 | Ganancias por servicio (las compras compartidas se restan al servicio o grupo de servicios al que se cargan), por cliente (solo costo directo) y licencias sin asignar de una compra compartida | M |
+| RF-CRM-23 | Registrar un lead a mano en el panel, para quien escribe por WhatsApp: nombre, celular, correo, servicio, plan y notas, con origen WhatsApp. El administrador confirma que la persona aceptó ser contactada, lo que guarda `consent_at` | M |
 
 Restricciones:
 

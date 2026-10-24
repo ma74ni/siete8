@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Fragment, useActionState, useEffect, useRef, useState } from "react";
 
+import { Checkbox, Label, Select } from "@/components/form/controls";
 import { Button } from "@/components/sitio/button";
 import { FormField } from "@/components/sitio/form-field";
 import { loadTurnstile } from "@/components/sitio/turnstile";
@@ -137,10 +138,8 @@ export function ContactForm({
             error={invalid("email")}
           />
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="field-service" className="font-medium">
-              Servicio (opcional)
-            </label>
-            <select
+            <Label htmlFor="field-service">Servicio (opcional)</Label>
+            <Select
               // Remounts when the preset arrives; after an error it keeps
               // what was chosen.
               key={preset}
@@ -148,7 +147,6 @@ export function ContactForm({
               name="service"
               defaultValue={typed.service ?? preset}
               onChange={(event) => (chosen.current = event.target.value)}
-              className="min-h-12 w-full rounded-control border border-field-border bg-bg px-3 text-fg"
             >
               <option value="">Todavía no sé</option>
               {services.map((option) => (
@@ -156,7 +154,7 @@ export function ContactForm({
                   {option.name}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
         </div>
         <FormField
@@ -189,13 +187,12 @@ export function ContactForm({
           invalid("consent") && "font-medium text-accent",
         )}
       >
-        <input
+        <Checkbox
           id="field-consent"
           name="consent"
-          type="checkbox"
           required
           aria-invalid={invalid("consent") ? true : undefined}
-          className="mt-1 size-5 shrink-0 accent-action"
+          className="mt-1 shrink-0"
         />
         <span>
           Acepto que Siete8 use mis datos para responder mi solicitud, según la{" "}

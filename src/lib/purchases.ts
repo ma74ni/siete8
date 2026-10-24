@@ -1,13 +1,12 @@
 import type { DurationUnit } from "@/lib/clients";
 import { renewalText } from "./clients";
+import { toCents } from "./price";
 
 /**
  * Pure helpers of the purchases (E11-03, RF-CRM-14). A payment to a provider
  * is what the platform charged plus the VAT and ISD paid here; that total is
  * the real cost. Texts from docs/COPY.md §13.
  */
-
-const toCents = (amount: number) => Math.round(amount * 100);
 
 export type PurchasePaymentAmounts = {
   amount: number;

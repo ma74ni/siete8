@@ -1,5 +1,7 @@
 import type { ComponentProps } from "react";
 
+import { Checkbox } from "@/components/form/controls";
+
 /** Labeled checkbox with a 44 px touch target (RNF-12). */
 export function CheckboxField({
   label,
@@ -12,13 +14,7 @@ export function CheckboxField({
 >) {
   return (
     <label htmlFor={id} className="flex min-h-11 items-center gap-3">
-      <input
-        {...rest}
-        id={id}
-        name={name}
-        type="checkbox"
-        className="size-5 accent-action"
-      />
+      <Checkbox {...rest} id={id} name={name} />
       <span>{label}</span>
     </label>
   );

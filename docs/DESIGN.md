@@ -184,9 +184,23 @@ Una sola familia en dos anchos, en eco del logotipo ancho de SIETE8: **Archivo**
 | Tabla de planes | Filas con divisor `line`, precio alineado a la derecha en cifras tabulares, fila recomendada con borde izquierdo de 3 px `carmin` |
 | Grilla de planes | En la página de cada servicio. Tarjetas con borde `line` y radio 4 px: nombre, precio en cifras tabulares con "incluye IVA" debajo, y botón "Solicitar". Una columna en pantallas angostas y tantas columnas de 12 rem como quepan en las anchas. La tarjeta recomendada lleva borde izquierdo de 3 px `carmin` |
 | Tarjeta de proyecto | Captura en proporción 16:10 sin sombra, título, tipo de proyecto y estado. La etiqueta de estado va en texto, no en píldora de color |
-| Formularios | Campo alto 48 px, borde `line`, foco con anillo de 2 px `carmin` y separación de 2 px |
+| Formularios | Campo alto 48 px, borde `field-border`, foco con anillo de 2 px `carmin` y separación de 2 px. Detalle en §7.1 |
 | Radios | 4 px en controles, 0 en imágenes y pisos. Sin radios grandes |
 | Sombras | Ninguna en el sitio público; la jerarquía se hace con color de piso y bordes. En el panel, solo en menús desplegables y diálogos |
+
+### 7.1 Componentes de formulario
+
+El sitio y el panel usan los mismos controles, en `src/components/form/controls.tsx`. Es el único lugar con el estilo de un control: ninguna página ni componente escribe el suyo.
+
+| Pieza | Uso |
+| --- | --- |
+| `Input`, `Textarea`, `Select` | Control nativo con el estilo común: alto 48 px (el área de texto, 128 px), borde `field-border`, fondo `bg`, texto `fg`. Con error (`aria-invalid`), borde `accent`; deshabilitado, al 60 % de opacidad. `numeric` usa cifras tabulares, para precios y cantidades |
+| `Checkbox`, `Radio` | Casilla y opción de 20 px en el color `action`, siempre dentro de una etiqueta de al menos 44 px de alto |
+| `Label`, `Hint`, `FieldError` | Etiqueta en peso 500; ayuda en `text-small`; error en `text-small`, peso 500 y color `accent`. La ayuda y el error se enlazan al control con `aria-describedby` |
+| `FormField`, `SelectField`, `CheckboxField` | El campo completo (etiqueta, control, ayuda y error) para el caso común. Se usan antes que los átomos sueltos |
+| `ActionForm` | Formulario del panel con su botón y su mensaje. Si la acción responde con un error, los campos conservan lo escrito |
+
+La muestra de cada pieza, en todos sus estados, está en `/dev/ui`.
 
 ## 8. Movimiento
 
@@ -218,10 +232,24 @@ Una sola familia en dos anchos, en eco del logotipo ancho de SIETE8: **Archivo**
 
 ## 12. Panel de administración
 
-- Construido con shadcn/ui, tematizado con los tokens de este archivo.
+- Construido con los componentes propios del sitio y de §7.1, con los tokens de este archivo. No usa shadcn/ui.
 - Densidad media, tipografía Archivo `wdth` 100 en todo el panel, sin el ancho expandido.
 - Sin motivo de barras, salvo el logo en la barra lateral.
 - La barra lateral marca la sección actual con fondo `surface` y un borde izquierdo `accent` de 4 px (`aria-current="page"`); el contorno de foco (`focus`) se mantiene aparte.
+
+### 12.1 Componentes del panel
+
+En `src/components/admin/`. Las pantallas del panel se arman con estas piezas y con las de §7.1; no escriben su propio encabezado, tabla ni desplegable.
+
+| Pieza | Uso |
+| --- | --- |
+| `PageHeader` | El inicio de cada página: enlace para volver (opcional), el título como único `h1`, la introducción en un párrafo (puede llevar enlaces) y las acciones principales ("Nuevo cliente"). Las acciones van siempre debajo del título, en cualquier ancho |
+| `DataTable` | Listados en tabla, definidos por columnas. La columna que identifica la fila (cliente, proveedor) es su encabezado de fila. Las columnas `numeric` usan cifras tabulares; las `emphasis`, peso 500; las de botones van con relleno `compact` y su título solo para lectores de pantalla. En pantallas angostas se desplaza de lado (ancho mínimo de 44 rem por defecto) y la zona que se desplaza recibe el foco del teclado y lleva un nombre. Sin filas muestra el estado vacío. Una fila de detalle opcional, del ancho visible, para acciones que necesitan espacio, como Renovar |
+| `Disclosure` | Contenido que se abre al pedirlo, con `<details>` nativo y una flecha que gira al abrir. `panel`: caja con borde `line` y título, para formularios de la página ("Agregar servicio"); su contenido va con 24 px entre bloques. `action`: el resumen es un botón secundario, para acciones en una fila ("Renovar"). `inline`: solo el título en peso 500, para un extra dentro de otro bloque ("Registrar abono") |
+| `EmptyState` | Lo que dice una lista vacía ("Todavía no hay clientes."), con una acción opcional |
+| `StatusText` | Un estado en texto, nunca en una píldora de color. Tono `alert` (peso 500, `accent`) para lo que requiere atención: "Venció el …", "Debe $…" |
+
+La muestra de cada pieza está en `/dev/ui`.
 
 ## 13. Tokens para Tailwind (CSS variables)
 
