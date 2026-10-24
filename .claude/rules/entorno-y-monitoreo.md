@@ -23,6 +23,7 @@ Se validan con Zod al arrancar: `next.config.ts` importa `src/env/schema.ts`, as
 - Cada tarea que integra un servicio agrega sus variables al esquema y a `.env.example`. No se declaran antes de usarse.
 - En Netlify, si `NEXT_PUBLIC_SITE_URL` no está definida, se usa la URL del despliegue (`URL` en producción, `DEPLOY_PRIME_URL` en vistas previas).
 - `netlify/functions/keep-alive.mts` hace una lectura pública diaria para que Supabase no pause el proyecto gratuito (E7-04). Su registro está en Netlify, en Logs > Functions.
+- `netlify/functions/weekly-digest.mts` envía los lunes a las 08:00 de Quito (13:00 UTC) el correo de lo que vence en 30 días y las alertas cruzadas (E11-04). La lógica está en `@/lib/weekly-digest` y `@/lib/renewals` (con pruebas, solo imports relativos de valores) y lee con la clave secreta por REST. Usa `SUPABASE_SECRET_KEY`, `RESEND_API_KEY` y `ADMIN_NOTIFICATION_EMAIL`; sin Resend no envía nada. Si no hay vencimientos ni alertas, tampoco.
 
 | Variable                                                             | Tipo                                  | Se agrega en                                                                                            |
 | -------------------------------------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------- |

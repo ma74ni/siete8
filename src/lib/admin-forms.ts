@@ -413,6 +413,11 @@ export const periodForm = z
   .object({ id: z.uuid(), ...periodFields })
   .refine(datesInOrder, { path: ["ends_on"] });
 
+/** "Renovar" (E11-04): the next period of a client service, which always ends. */
+export const renewForm = z
+  .object({ client_service_id: z.uuid(), ...periodFields, ends_on: day })
+  .refine(datesInOrder, { path: ["ends_on"] });
+
 // Client payments (E11-02) ------------------------------------------------------
 
 export const paymentForm = z.object({

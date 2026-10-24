@@ -17,10 +17,12 @@ import {
   paymentForm,
   periodForm,
   periodIdForm,
+  renewForm,
   writeOffForm,
 } from "@/lib/admin-forms";
 import {
   buildImport,
+  formatDay,
   type ImportClient,
   type ImportService,
   type ImportState,
@@ -65,6 +67,7 @@ function invalid(error: z.ZodError): FormState {
 function refreshClients() {
   revalidatePath("/admin/clientes", "layout");
   revalidatePath("/admin/por-cobrar");
+  revalidatePath("/admin/por-vencer");
 }
 
 function toImportService(
@@ -255,6 +258,51 @@ export async function savePeriod(
   if (error) return failed("guardar el período");
   refreshClients();
   return { status: "success", message: "Período guardado." };
+}
+
+/**
+ * "Renovar" (E11-04, RF-CRM-13): adds the next period, prefilled in the form
+ * with the previous price and cost. One-off and cancelled services do not
+ * renew; the panel hides the button for them, and this checks it again.
+ */
+export async function renewClientService(
+  _state: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  await requireAdmin();
+  const parsed = parse(renewForm, formData);
+  if (!parsed.success) return invalid(parsed.error);
+
+  const supabase = await createSessionClient();
+  const { data: service, error } = await supabase
+    .from("client_service")
+    .select("status, renews_every_unit")
+    .eq("id", parsed.data.client_service_id)
+    .maybeSingle();
+  if (error) return failed("renovar el servicio");
+  if (!service) return INVALID;
+  if (!service.renews_every_unit) {
+    return {
+      status: "error",
+      message: "Este servicio es de pago único: no se renueva.",
+    };
+  }
+  if (service.status === "cancelled") {
+    return {
+      status: "error",
+      message: "Este servicio está cancelado: reactívalo para renovarlo.",
+    };
+  }
+
+  const { error: insertError } = await supabase
+    .from("client_service_period")
+    .insert(parsed.data);
+  if (insertError) return failed("renovar el servicio");
+  refreshClients();
+  return {
+    status: "success",
+    message: `Servicio renovado hasta el ${formatDay(parsed.data.ends_on)}.`,
+  };
 }
 
 async function setServiceStatus(

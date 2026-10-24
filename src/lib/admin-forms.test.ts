@@ -10,6 +10,7 @@ import {
   money,
   planForm,
   projectForm,
+  renewForm,
   requirementsForm,
   serviceForm,
   slugify,
@@ -314,6 +315,40 @@ describe("clientServiceForm", () => {
       ...service,
       ends_on: "2026-09-01",
     });
+    expect(result.error?.issues[0]?.path).toEqual(["ends_on"]);
+  });
+});
+
+describe("renewForm", () => {
+  const renewal = {
+    client_service_id: serviceId,
+    sold_on: "2026-10-23",
+    starts_on: "2026-11-05",
+    ends_on: "2027-11-05",
+    price_without_vat: "17,99",
+    vat_rate: "15",
+    cost_without_vat: "8",
+  };
+
+  it("parses the prefilled next period", () => {
+    expect(renewForm.parse(renewal)).toEqual({
+      client_service_id: serviceId,
+      sold_on: "2026-10-23",
+      starts_on: "2026-11-05",
+      ends_on: "2027-11-05",
+      price_without_vat: 17.99,
+      vat_rate: 0.15,
+      cost_without_vat: 8,
+    });
+  });
+
+  it("needs an end date: a renewal always expires", () => {
+    const result = renewForm.safeParse({ ...renewal, ends_on: "" });
+    expect(result.error?.issues[0]?.path).toEqual(["ends_on"]);
+  });
+
+  it("rejects an end before the start", () => {
+    const result = renewForm.safeParse({ ...renewal, ends_on: "2026-11-01" });
     expect(result.error?.issues[0]?.path).toEqual(["ends_on"]);
   });
 });
