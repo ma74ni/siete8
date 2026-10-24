@@ -3,7 +3,12 @@ import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { CheckboxField } from "@/components/admin/checkbox-field";
+import { DataTable } from "@/components/admin/data-table";
+import { Disclosure } from "@/components/admin/disclosure";
+import { EmptyState } from "@/components/admin/empty-state";
 import { SelectField } from "@/components/admin/fields";
+import { PageHeader } from "@/components/admin/page-header";
+import { StatusText } from "@/components/admin/status-text";
 import { Input, Label, Radio } from "@/components/form/controls";
 import { Button } from "@/components/sitio/button";
 import { Faq } from "@/components/sitio/faq";
@@ -111,6 +116,32 @@ function Section({
     </section>
   );
 }
+
+/** Made-up rows for the panel table (SRS 3.9: never real clients). */
+const sampleDue = [
+  {
+    id: "1",
+    client: "Ferretería Andes",
+    service: "Hosting, andes.test",
+    expiry: "Venció el 1 de octubre de 2026",
+    expired: true,
+    payment: "Debe $20,69",
+    price: "$20,69",
+    renews: true,
+  },
+  {
+    id: "2",
+    client: "Heladería Polar",
+    service: "Firma electrónica",
+    expiry: "Vence el 5 de noviembre de 2026",
+    expired: false,
+    payment: "Pagado",
+    price: "$13,80",
+    renews: false,
+  },
+];
+
+const noRows: typeof sampleDue = [];
 
 export default function DevUiPage() {
   if (serverEnv.CONTEXT === "production") notFound();
@@ -302,6 +333,75 @@ export default function DevUiPage() {
             ))}
           </fieldset>
         </form>
+      </Section>
+
+      {/* E13-02: panel organisms (DESIGN §12.1). Made-up rows; texts from
+          COPY §13. */}
+      <Section title="Componentes del panel" surface>
+        <div className="flex flex-col gap-10">
+          <PageHeader
+            title="Clientes"
+            intro="Lo que tiene contratado cada cliente y cuándo vence."
+            back={{ href: "/admin/clientes", label: "Volver a clientes" }}
+            actions={
+              <>
+                <Button href="/admin/clientes/nuevo">Nuevo cliente</Button>
+                <Button href="/admin/clientes/importar" variant="secondary">
+                  Importar desde CSV
+                </Button>
+              </>
+            }
+          />
+          <DataTable
+            rows={sampleDue}
+            columns={[
+              { header: "Cliente", cell: (row) => row.client, rowHeader: true },
+              { header: "Servicio", cell: (row) => row.service },
+              {
+                header: "Vence",
+                cell: (row) => (
+                  <StatusText tone={row.expired ? "alert" : "default"}>
+                    {row.expiry}
+                  </StatusText>
+                ),
+              },
+              { header: "Pago", cell: (row) => row.payment },
+              {
+                header: "Precio con IVA",
+                cell: (row) => row.price,
+                numeric: true,
+              },
+            ]}
+            rowKey={(row) => row.id}
+            label="Tus clientes"
+            empty="Ningún servicio de tus clientes vence en los próximos 30 días."
+            details={(row) =>
+              row.renews ? (
+                <Disclosure summary="Renovar" variant="action">
+                  <p>Fecha de venta, Desde, Hasta, Precio y Costo.</p>
+                </Disclosure>
+              ) : null
+            }
+          />
+          <DataTable
+            rows={noRows}
+            columns={[{ header: "Cliente", cell: (row) => row.client }]}
+            rowKey={(row) => row.id}
+            label="Por cobrar"
+            empty="Nadie te debe nada."
+          />
+          <EmptyState
+            action={<Button href="/admin/clientes/nuevo">Nuevo cliente</Button>}
+          >
+            Todavía no hay clientes.
+          </EmptyState>
+          <Disclosure summary="Agregar servicio">
+            <p>El formulario del servicio va aquí.</p>
+          </Disclosure>
+          <Disclosure summary="Registrar abono" variant="inline">
+            <p>Fecha, Monto con IVA, Forma de pago y Notas.</p>
+          </Disclosure>
+        </div>
       </Section>
     </div>
   );
