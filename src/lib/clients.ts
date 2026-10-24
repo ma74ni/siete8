@@ -75,6 +75,28 @@ export function addPeriod(
   return target.toISOString().slice(0, 10);
 }
 
+/** "Se renueva cada" as typed in a form; an empty unit is a one-off payment. */
+export type RenewalInput = { value: string; unit: DurationUnit | "" };
+
+/** A plan's duration as "Se renueva cada"; no plan or no duration: one-off. */
+export function planRenewal(
+  plan:
+    | { duration_value: number | null; duration_unit: DurationUnit | null }
+    | undefined,
+): RenewalInput {
+  return plan?.duration_value && plan.duration_unit
+    ? { value: String(plan.duration_value), unit: plan.duration_unit }
+    : { value: "", unit: "" };
+}
+
+/** "Hasta": one renewal after `start`, or empty when it does not renew. */
+export function endsAfter(start: string, renewal: RenewalInput): string {
+  const value = Number(renewal.value);
+  return start && renewal.unit && value >= 1
+    ? addPeriod(start, value, renewal.unit)
+    : "";
+}
+
 /** "12 de octubre de 2026". */
 export function formatDay(day: string): string {
   return new Intl.DateTimeFormat("es-EC", {
