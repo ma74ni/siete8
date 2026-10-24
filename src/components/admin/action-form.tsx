@@ -1,10 +1,17 @@
 "use client";
 
-import { Fragment, type ReactNode, useActionState } from "react";
+import {
+  Fragment,
+  type ReactNode,
+  useActionState,
+  useEffect,
+  useRef,
+} from "react";
 
 import { Button } from "@/components/sitio/button";
 import { type FormState, IDLE } from "@/lib/admin-forms";
 import { cx } from "@/lib/cx";
+import { isChoice, restoredField } from "@/lib/form-restore";
 
 type ActionFormProps = {
   action: (state: FormState, formData: FormData) => Promise<FormState>;
@@ -25,6 +32,8 @@ type ActionFormProps = {
 /**
  * Panel form backed by a Server Action (E4-01). The result shows next to the
  * button with the same verb as the action ("Guardar" → "Plan guardado.").
+ * After an error the fields keep what was typed (E13-01): React clears them
+ * when the action finishes, so they are filled back from what was sent.
  */
 export function ActionForm({
   action,
@@ -35,10 +44,47 @@ export function ActionForm({
   resetKey,
   children,
 }: ActionFormProps) {
-  const [state, formAction, pending] = useActionState(action, IDLE);
+  const form = useRef<HTMLFormElement>(null);
+  const sent = useRef<FormData | null>(null);
+  const [state, formAction, pending] = useActionState(
+    (previous: FormState, formData: FormData) => {
+      sent.current = formData;
+      return action(previous, formData);
+    },
+    IDLE,
+  );
+
+  useEffect(() => {
+    if (state.status !== "error" || !form.current || !sent.current) return;
+    // Fields sharing a name (rows of a list) each get their own value back.
+    const seen = new Map<string, number>();
+    for (const field of Array.from(form.current.elements)) {
+      if (
+        !(field instanceof HTMLInputElement) &&
+        !(field instanceof HTMLTextAreaElement) &&
+        !(field instanceof HTMLSelectElement)
+      ) {
+        continue;
+      }
+      const position = seen.get(field.name) ?? 0;
+      if (!field.disabled && !isChoice(field)) {
+        seen.set(field.name, position + 1);
+      }
+      const restored = restoredField(field, sent.current, position);
+      if (restored && "checked" in restored) {
+        if (field instanceof HTMLInputElement) field.checked = restored.checked;
+      } else if (restored) {
+        field.value = restored.value;
+      }
+    }
+  }, [state]);
 
   return (
-    <form action={formAction} className={cx("flex flex-col gap-4", className)}>
+    <form
+      ref={form}
+      action={formAction}
+      className={cx("flex flex-col gap-4", className)}
+    >
       <Fragment key={resetKey}>{children}</Fragment>
       <div className="flex flex-wrap items-center gap-4">
         <Button type="submit" variant={variant} disabled={pending}>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { Input, Label } from "@/components/form/controls";
 import { money } from "@/lib/admin-forms";
 import { formatPriceWithVat } from "@/lib/price";
 
@@ -36,37 +37,30 @@ export function PriceField({
       ? formatPriceWithVat(parsedPrice.data, vat / 100)
       : "—";
 
-  const control =
-    "min-h-12 w-full rounded-control border border-field-border bg-bg px-3 text-fg tabular-nums";
-
   return (
     <div className="flex flex-wrap items-end gap-4">
       <div className="flex w-32 flex-col gap-1.5">
-        <label htmlFor={`${idPrefix}-price`} className="font-medium">
-          Precio sin IVA
-        </label>
-        <input
+        <Label htmlFor={`${idPrefix}-price`}>Precio sin IVA</Label>
+        <Input
           id={`${idPrefix}-price`}
           name="price_without_vat"
           inputMode="decimal"
           required
+          numeric
           value={priceText}
           onChange={(event) => setPriceText(event.target.value)}
-          className={control}
         />
       </div>
       <div className="flex w-20 flex-col gap-1.5">
-        <label htmlFor={`${idPrefix}-vat`} className="font-medium">
-          IVA %
-        </label>
-        <input
+        <Label htmlFor={`${idPrefix}-vat`}>IVA %</Label>
+        <Input
           id={`${idPrefix}-vat`}
           name="vat_rate"
           inputMode="decimal"
           required
+          numeric
           value={vatText}
           onChange={(event) => setVatText(event.target.value)}
-          className={control}
         />
       </div>
       <p className="flex min-h-12 flex-col justify-center" aria-live="polite">

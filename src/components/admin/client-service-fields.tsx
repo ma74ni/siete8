@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 
+import { SelectField } from "@/components/admin/fields";
 import { PriceField } from "@/components/admin/price-field";
+import { Input, Select } from "@/components/form/controls";
 import { FormField } from "@/components/sitio/form-field";
 import {
   type CatalogService,
@@ -16,9 +18,6 @@ import {
 } from "@/lib/clients";
 
 // Texts from docs/COPY.md §13 (Clientes: Servicio del cliente).
-
-const control =
-  "min-h-12 w-full rounded-control border border-field-border bg-bg px-3 text-fg";
 
 /** "Se renueva cada": a number and a unit, or a one-off payment. */
 export function RenewalInputs({
@@ -38,13 +37,14 @@ export function RenewalInputs({
         <label htmlFor={`${idPrefix}-renew-value`} className="sr-only">
           Cantidad
         </label>
-        <input
+        <Input
           id={`${idPrefix}-renew-value`}
           name="renews_every_value"
           type="number"
           min={1}
           max={999}
-          className={`${control} w-24 tabular-nums`}
+          numeric
+          className="w-24"
           disabled={renewal.unit === ""}
           {...(controlled
             ? {
@@ -57,10 +57,9 @@ export function RenewalInputs({
         <label htmlFor={`${idPrefix}-renew-unit`} className="sr-only">
           Unidad
         </label>
-        <select
+        <Select
           id={`${idPrefix}-renew-unit`}
           name="renews_every_unit"
-          className={control}
           {...(controlled
             ? {
                 value: renewal.unit,
@@ -78,7 +77,7 @@ export function RenewalInputs({
             </option>
           ))}
           <option value="">Pago único</option>
-        </select>
+        </Select>
       </div>
     </fieldset>
   );
@@ -112,55 +111,37 @@ export function ServicePlanSelects({
   const service = catalog.find((candidate) => candidate.id === serviceId);
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor={`${idPrefix}-service`} className="font-medium">
-          Servicio
-        </label>
-        <select
-          id={`${idPrefix}-service`}
-          name="service_id"
-          className={control}
-          value={serviceId}
-          onChange={(event) => onServiceChange(event.target.value)}
-          aria-describedby={`${idPrefix}-service-hint`}
+      <SelectField
+        label="Servicio"
+        id={`${idPrefix}-service`}
+        name="service_id"
+        value={serviceId}
+        onChange={(event) => onServiceChange(event.target.value)}
+        hint="Incluye los servicios ocultos."
+      >
+        {optional && <option value="">Ninguno</option>}
+        {catalog.map((candidate) => (
+          <option key={candidate.id} value={candidate.id}>
+            {candidate.name}
+          </option>
+        ))}
+      </SelectField>
+      {service && (
+        <SelectField
+          label="Plan"
+          id={`${idPrefix}-plan`}
+          name="plan_id"
+          value={planId}
+          onChange={(event) => onPlanChange(event.target.value)}
+          hint={planHint}
         >
-          {optional && <option value="">Ninguno</option>}
-          {catalog.map((candidate) => (
+          <option value="">Ninguno</option>
+          {service.plans.map((candidate) => (
             <option key={candidate.id} value={candidate.id}>
               {candidate.name}
             </option>
           ))}
-        </select>
-        <p id={`${idPrefix}-service-hint`} className="text-small">
-          Incluye los servicios ocultos.
-        </p>
-      </div>
-      {service && (
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor={`${idPrefix}-plan`} className="font-medium">
-            Plan
-          </label>
-          <select
-            id={`${idPrefix}-plan`}
-            name="plan_id"
-            className={control}
-            value={planId}
-            onChange={(event) => onPlanChange(event.target.value)}
-            aria-describedby={planHint ? `${idPrefix}-plan-hint` : undefined}
-          >
-            <option value="">Ninguno</option>
-            {service.plans.map((candidate) => (
-              <option key={candidate.id} value={candidate.id}>
-                {candidate.name}
-              </option>
-            ))}
-          </select>
-          {planHint && (
-            <p id={`${idPrefix}-plan-hint`} className="text-small">
-              {planHint}
-            </p>
-          )}
-        </div>
+        </SelectField>
       )}
     </div>
   );
