@@ -30,6 +30,9 @@ export default async function LeadsPage({
           antigua.
         </p>
       </div>
+      <Button href="/admin/leads/nuevo" className="self-start">
+        Nuevo lead
+      </Button>
 
       {/* A plain GET form: the filters live in the address. */}
       <form className="grid items-end gap-4 md:grid-cols-4">

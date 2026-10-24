@@ -1,6 +1,8 @@
 # Supabase
 .branches
 .temp
+# Queries saved in Studio's SQL editor.
+snippets
 
 # dotenvx
 .env.keys

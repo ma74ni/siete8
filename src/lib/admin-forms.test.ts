@@ -10,6 +10,7 @@ import {
   money,
   planForm,
   leadAdminForm,
+  newLeadForm,
   proformaForm,
   projectForm,
   renewForm,
@@ -347,6 +348,65 @@ describe("leadAdminForm", () => {
       leadAdminForm.parse({ ...lead, status: "proposal_sent" }).status,
     ).toBe("proposal_sent");
     expect(leadAdminForm.safeParse({ ...lead, status: "closed" }).success).toBe(
+      false,
+    );
+  });
+});
+
+describe("newLeadForm", () => {
+  const lead = {
+    name: " Ana Prueba ",
+    phone: "099 123-4567",
+    email: "",
+    consent: "on",
+  };
+
+  it("normalizes the phone and leaves the optional fields empty", () => {
+    expect(newLeadForm.parse(lead)).toEqual({
+      name: "Ana Prueba",
+      phone: "0991234567",
+      email: null,
+      service_id: null,
+      plan_id: null,
+      message: null,
+      notes: null,
+      consent: "on",
+    });
+  });
+
+  it("needs the phone or the email", () => {
+    const result = newLeadForm.safeParse({ ...lead, phone: "" });
+    expect(result.error?.issues[0]?.path).toEqual(["contact"]);
+    expect(
+      newLeadForm.safeParse({ ...lead, phone: "", email: "ana@prueba.test" })
+        .success,
+    ).toBe(true);
+  });
+
+  it("needs the consent confirmed", () => {
+    const result = newLeadForm.safeParse({ ...lead, consent: undefined });
+    expect(result.error?.issues[0]?.path).toEqual(["consent"]);
+  });
+
+  it("reports a badly written phone as the phone, not as missing", () => {
+    const result = newLeadForm.safeParse({ ...lead, phone: "12345" });
+    expect(result.error?.issues.map((issue) => issue.path)).toEqual([
+      ["phone"],
+    ]);
+  });
+
+  it("accepts a plan together with its service", () => {
+    expect(
+      newLeadForm.parse({ ...lead, service_id: serviceId, plan_id: serviceId }),
+    ).toMatchObject({ service_id: serviceId, plan_id: serviceId });
+  });
+
+  it("rejects a plan without a service and an invalid email", () => {
+    expect(
+      newLeadForm.safeParse({ ...lead, plan_id: serviceId }).error?.issues[0]
+        ?.path,
+    ).toEqual(["plan_id"]);
+    expect(newLeadForm.safeParse({ ...lead, email: "ana@" }).success).toBe(
       false,
     );
   });
