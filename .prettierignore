@@ -5,3 +5,4 @@ docs/
 CLAUDE.md
 AGENTS.md
 src/lib/database.types.ts
+supabase/.temp/

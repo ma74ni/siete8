@@ -105,7 +105,7 @@ export function ServicePlanSelects({
   planId: string;
   onServiceChange: (id: string) => void;
   onPlanChange: (id: string) => void;
-  planHint: string;
+  planHint?: string;
   /** Offers "Ninguno" as service. */
   optional?: boolean;
 }) {
@@ -146,7 +146,7 @@ export function ServicePlanSelects({
             className={control}
             value={planId}
             onChange={(event) => onPlanChange(event.target.value)}
-            aria-describedby={`${idPrefix}-plan-hint`}
+            aria-describedby={planHint ? `${idPrefix}-plan-hint` : undefined}
           >
             <option value="">Ninguno</option>
             {service.plans.map((candidate) => (
@@ -155,9 +155,11 @@ export function ServicePlanSelects({
               </option>
             ))}
           </select>
-          <p id={`${idPrefix}-plan-hint`} className="text-small">
-            {planHint}
-          </p>
+          {planHint && (
+            <p id={`${idPrefix}-plan-hint`} className="text-small">
+              {planHint}
+            </p>
+          )}
         </div>
       )}
     </div>

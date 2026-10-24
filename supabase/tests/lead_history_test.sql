@@ -54,6 +54,22 @@ select throws_ok(
   $$delete from public.lead_status_event$$,
   '42501', null, 'admin: cannot rewrite the history'
 );
+
+-- E11-07: a lead entered by hand from the panel, for someone on WhatsApp.
+select lives_ok(
+  $$insert into public.lead (id, name, phone, source, consent_at)
+    values ('00000000-0000-0000-0000-0000000ad0a2', 'Luis', '0997654321', 'whatsapp', now())$$,
+  'admin: creates a WhatsApp lead with its own session'
+);
+select is(
+  (select array_agg(status::text) from public.lead_status_event
+   where lead_id = '00000000-0000-0000-0000-0000000ad0a2'),
+  array['new'], 'admin: a WhatsApp lead starts its history as new'
+);
+select throws_ok(
+  $$insert into public.lead (name, phone, source) values ('Sin consentimiento', '0990000000', 'whatsapp')$$,
+  '23502', null, 'admin: a lead needs consent_at'
+);
 reset role;
 
 select * from finish();

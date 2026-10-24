@@ -330,6 +330,17 @@ const optionalDay = z
   .transform((value) => value?.trim() || null)
   .pipe(z.string().refine(isDay).nullable());
 
+/** A phone written any way ("099 123-4567"), kept as digits; empty: none. */
+const optionalPhone = z
+  .string()
+  .optional()
+  .transform((value) => (value?.trim() ? normalizePhone(value) : null))
+  .pipe(z.string().regex(PHONE).nullable());
+
+const optionalEmail = optionalText(200).pipe(
+  z.string().regex(EMAIL).nullable(),
+);
+
 export const clientForm = z
   .object({
     id: z.uuid().optional(),
@@ -340,12 +351,8 @@ export const clientForm = z
       .optional()
       .transform((value) => (value?.trim() ? normalizeTaxId(value) : null))
       .pipe(z.string().regex(TAX_ID).nullable()),
-    phone: z
-      .string()
-      .optional()
-      .transform((value) => (value?.trim() ? normalizePhone(value) : null))
-      .pipe(z.string().regex(PHONE).nullable()),
-    email: optionalText(200).pipe(z.string().regex(EMAIL).nullable()),
+    phone: optionalPhone,
+    email: optionalEmail,
     notes: optionalText(4000),
   })
   // Same rule as the database: a company has a 13-digit RUC.
@@ -449,6 +456,32 @@ export const proformaForm = z.object({
  */
 export const acceptProformaForm = z.object({ proforma_id: z.uuid() });
 
+// Manual leads (E11-07) -------------------------------------------------------------
+
+/**
+ * "Nuevo lead" (RF-CRM-23): someone who wrote on WhatsApp. Same contact rules
+ * as a client; the admin confirms the person agreed to be contacted (LOPDP,
+ * RNF-19), which is what the database's `consent_at` records.
+ */
+export const newLeadForm = z
+  .object({
+    name: requiredText(120),
+    phone: optionalPhone,
+    email: optionalEmail,
+    service_id: optionalUuid,
+    plan_id: optionalUuid,
+    message: optionalText(2000),
+    notes: optionalText(4000),
+    consent: z.literal("on"),
+  })
+  // Its own path: an invalid phone reports "phone", a missing one "contact".
+  .refine((lead) => lead.phone !== null || lead.email !== null, {
+    path: ["contact"],
+  })
+  .refine((lead) => lead.plan_id === null || lead.service_id !== null, {
+    path: ["plan_id"],
+  });
+
 /** "Renovar" (E11-04): the next period of a client service, which always ends. */
 export const renewForm = z
   .object({ client_service_id: z.uuid(), ...periodFields, ends_on: day })
@@ -540,7 +573,7 @@ export const purchasePaymentForm = z
 export const licenseForm = z
   .object({
     purchase_id: z.uuid(),
-    email: optionalText(200).pipe(z.string().regex(EMAIL).nullable()),
+    email: optionalEmail,
     client_service_id: optionalUuid,
   })
   .refine(
