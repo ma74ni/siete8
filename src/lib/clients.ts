@@ -133,6 +133,14 @@ export function expiry(expiresOn: string | null, today: string): Expiry {
       };
 }
 
+/**
+ * Whether a due date is shown as an alert: it already expired and the service
+ * or purchase was not cancelled.
+ */
+export function needsAttention(due: Expiry, status: string | null): boolean {
+  return status !== "cancelled" && due.state === "expired";
+}
+
 /** "1 año", "6 meses", or "Pago único" when it does not renew. */
 export function renewalText(
   value: number | null,

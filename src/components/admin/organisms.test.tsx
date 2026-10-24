@@ -158,9 +158,7 @@ describe("Disclosure", () => {
         {body}
       </Disclosure>,
     );
-    expect(markup).toContain(
-      '<details id="nuevo" class="group rounded-control',
-    );
+    expect(markup).toContain('<details id="nuevo" class="rounded-control');
     expect(markup).toContain(">Agregar servicio<svg");
   });
 
@@ -184,16 +182,23 @@ describe("Disclosure", () => {
     expect(markup).toContain("font-medium");
   });
 
-  it("shows a chevron that turns when open, hidden from screen readers", () => {
-    for (const variant of ["panel", "action", "inline"] as const) {
-      const markup = html(
-        <Disclosure summary="Abrir" variant={variant}>
+  it("shows a chevron that turns only with its own disclosure", () => {
+    // A "Renovar" (action) inside an open service (panel) must stay closed:
+    // each chevron follows the <details> whose summary holds it.
+    const markup = html(
+      <Disclosure summary="Servicio" defaultOpen>
+        <Disclosure summary="Renovar" variant="action">
           {body}
-        </Disclosure>,
-      );
-      expect(markup).toContain('aria-hidden="true"');
-      expect(markup).toContain("group-open:rotate-180");
-    }
+        </Disclosure>
+        <Disclosure summary="Detalle">{body}</Disclosure>
+      </Disclosure>,
+    );
+    expect(markup.match(/aria-hidden="true"/g)).toHaveLength(3);
+    // React escapes the class: `[[open]>summary>&]:rotate-180`.
+    expect(
+      markup.match(/\[\[open\]&gt;summary&gt;&amp;\]:rotate-180/g),
+    ).toHaveLength(3);
+    expect(markup).not.toMatch(/(^|[\s"])group-open[:/]/);
   });
 
   it("can start open", () => {

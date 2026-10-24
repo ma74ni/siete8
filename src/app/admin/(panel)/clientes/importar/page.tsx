@@ -1,6 +1,6 @@
-import Link from "next/link";
-
 import { ClientImportForm } from "@/components/admin/client-import-form";
+import { Disclosure } from "@/components/admin/disclosure";
+import { PageHeader } from "@/components/admin/page-header";
 import { getClientCatalog } from "@/server/admin-clients";
 import { importClientsCsv } from "@/server/admin-clients-actions";
 
@@ -12,12 +12,10 @@ export default async function ImportClientsPage() {
 
   return (
     <div className="flex max-w-[64rem] flex-col gap-8">
-      <div className="flex flex-col gap-2">
-        <Link href="/admin/clientes" className="text-small">
-          Volver a clientes
-        </Link>
-        <h1 className="text-h2">Importar clientes</h1>
-      </div>
+      <PageHeader
+        title="Importar clientes"
+        back={{ href: "/admin/clientes", label: "Volver a clientes" }}
+      />
       <ol className="flex max-w-[68ch] list-decimal flex-col gap-2 pl-5">
         <li>
           <a href="/admin/clientes/plantilla" download>
@@ -40,11 +38,11 @@ export default async function ImportClientsPage() {
       <p className="max-w-[68ch]">
         Si un RUC o cédula ya existe, sus servicios se agregan a ese cliente.
       </p>
-      <details>
-        <summary className="cursor-pointer font-medium">
-          Servicios que puedes escribir en la columna servicio
-        </summary>
-        <ul className="mt-3 flex list-disc flex-col gap-1 pl-5">
+      <Disclosure
+        summary="Servicios que puedes escribir en la columna servicio"
+        variant="inline"
+      >
+        <ul className="flex list-disc flex-col gap-1 pl-5">
           {catalog.map((service) => (
             <li key={service.id}>
               {service.name}
@@ -53,7 +51,7 @@ export default async function ImportClientsPage() {
             </li>
           ))}
         </ul>
-      </details>
+      </Disclosure>
       <ClientImportForm action={importClientsCsv} />
     </div>
   );
