@@ -1,4 +1,5 @@
 import { ActionForm } from "@/components/admin/action-form";
+import { Disclosure } from "@/components/admin/disclosure";
 import { PriceField } from "@/components/admin/price-field";
 import { FormField } from "@/components/sitio/form-field";
 import { formatDecimal } from "@/lib/clients";
@@ -21,14 +22,10 @@ export function RenewForm({
 }) {
   const key = `renew-${serviceId}`;
   return (
-    <details>
-      <summary className="inline-flex min-h-11 cursor-pointer items-center font-medium">
-        Renovar
-      </summary>
+    <Disclosure summary="Renovar" variant="action">
       <ActionForm
         action={renewClientService}
         submitLabel="Renovar servicio"
-        className="mt-4"
         // A new period moves the next one forward: the fields follow it.
         resetKey={next.starts_on}
       >
@@ -76,6 +73,6 @@ export function RenewForm({
           />
         </div>
       </ActionForm>
-    </details>
+    </Disclosure>
   );
 }

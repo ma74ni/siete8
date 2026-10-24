@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 import { ActionForm } from "@/components/admin/action-form";
 import { Conversation } from "@/components/admin/conversation";
 import { DeleteButton } from "@/components/admin/delete-button";
-import { SelectField } from "@/components/admin/fields";
+import { Disclosure } from "@/components/admin/disclosure";
+import { EmptyState } from "@/components/admin/empty-state";
+import { Section, SelectField } from "@/components/admin/fields";
+import { PageHeader } from "@/components/admin/page-header";
 import { ProformaFields } from "@/components/admin/proforma-fields";
 import { Button } from "@/components/sitio/button";
 import { FormField } from "@/components/sitio/form-field";
@@ -55,12 +58,10 @@ export default async function LeadPage({
 
   return (
     <div className="flex max-w-[64rem] flex-col gap-10">
-      <div className="flex flex-col gap-2">
-        <Link href="/admin/leads" className="text-small">
-          Volver a leads
-        </Link>
-        <h1 className="text-h2">{lead.name ?? lead.phone ?? lead.email}</h1>
-      </div>
+      <PageHeader
+        title={lead.name ?? lead.phone ?? lead.email ?? ""}
+        back={{ href: "/admin/leads", label: "Volver a leads" }}
+      />
 
       <dl className="grid gap-x-10 gap-y-4 md:grid-cols-2">
         {lead.phone && (
@@ -196,13 +197,10 @@ function Proformas({
   today: string;
 }) {
   return (
-    <section className="flex flex-col gap-6 border-t border-border pt-8">
-      <div className="flex flex-col gap-2">
-        <h2 className="text-h3">Proformas</h2>
-        <p>Lo que le cotizaste a este lead.</p>
-      </div>
+    <Section title="Proformas">
+      <p>Lo que le cotizaste a este lead.</p>
       {lead.proforma.length === 0 ? (
-        <p>Todavía no le enviaste proformas.</p>
+        <EmptyState>Todavía no le enviaste proformas.</EmptyState>
       ) : (
         <ul className="flex flex-col border-t border-border">
           {lead.proforma.map((proforma) => (
@@ -255,12 +253,10 @@ function Proformas({
         </ul>
       )}
 
-      <details className="rounded-control border border-border p-5">
-        <summary className="cursor-pointer font-medium">Nueva proforma</summary>
+      <Disclosure summary="Nueva proforma">
         <ActionForm
           action={createProforma}
           submitLabel="Registrar proforma"
-          className="mt-6"
           resetKey={String(lead.proforma.length)}
         >
           <input type="hidden" name="lead_id" value={lead.id} />
@@ -278,7 +274,7 @@ function Proformas({
             Si el lead está en Nuevo o Contactado, pasa a Proforma enviada.
           </p>
         </ActionForm>
-      </details>
-    </section>
+      </Disclosure>
+    </Section>
   );
 }
