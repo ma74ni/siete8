@@ -9,6 +9,8 @@ import {
   linkButtonForm,
   money,
   planForm,
+  leadAdminForm,
+  proformaForm,
   projectForm,
   renewForm,
   requirementsForm,
@@ -316,6 +318,73 @@ describe("clientServiceForm", () => {
       ends_on: "2026-09-01",
     });
     expect(result.error?.issues[0]?.path).toEqual(["ends_on"]);
+  });
+});
+
+describe("leadAdminForm", () => {
+  const lead = { id: serviceId, notes: "" };
+
+  it("needs a reason when the lead is lost", () => {
+    const result = leadAdminForm.safeParse({ ...lead, status: "lost" });
+    expect(result.error?.issues[0]?.path).toEqual(["lost_reason"]);
+    expect(
+      leadAdminForm.parse({
+        ...lead,
+        status: "lost",
+        lost_reason: " Eligió otro proveedor. ",
+      }).lost_reason,
+    ).toBe("Eligió otro proveedor.");
+  });
+
+  it("drops the reason for any other status", () => {
+    expect(
+      leadAdminForm.parse({ ...lead, status: "won", lost_reason: "Precio." }),
+    ).toMatchObject({ status: "won", lost_reason: null });
+  });
+
+  it("accepts the new statuses and rejects the old 'closed'", () => {
+    expect(
+      leadAdminForm.parse({ ...lead, status: "proposal_sent" }).status,
+    ).toBe("proposal_sent");
+    expect(leadAdminForm.safeParse({ ...lead, status: "closed" }).success).toBe(
+      false,
+    );
+  });
+});
+
+describe("proformaForm", () => {
+  const proforma = {
+    lead_id: serviceId,
+    service_id: serviceId,
+    price_without_vat: "45,50",
+    vat_rate: "15",
+    sent_on: "2026-10-24",
+  };
+
+  it("parses the offered price without VAT and an optional plan", () => {
+    expect(proformaForm.parse(proforma)).toEqual({
+      ...proforma,
+      plan_id: null,
+      price_without_vat: 45.5,
+      vat_rate: 0.15,
+    });
+  });
+
+  it("rejects a price of zero: a forgotten price", () => {
+    const result = proformaForm.safeParse({
+      ...proforma,
+      price_without_vat: "0",
+    });
+    expect(result.error?.issues[0]?.path).toEqual(["price_without_vat"]);
+  });
+
+  it("needs a send date and a valid price", () => {
+    expect(proformaForm.safeParse({ ...proforma, sent_on: "" }).success).toBe(
+      false,
+    );
+    expect(
+      proformaForm.safeParse({ ...proforma, price_without_vat: "abc" }).success,
+    ).toBe(false);
   });
 });
 

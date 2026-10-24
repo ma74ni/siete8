@@ -41,9 +41,11 @@ export async function getLeadForAdmin(id: string) {
   const { data, error } = await supabase
     .from("lead")
     .select(
-      `id, name, phone, email, message, status, source, utm, notes, consent_at,
-       created_at, updated_at, service(name, slug), plan(name),
-       lead_status_event(status, created_at)`,
+      `id, name, phone, email, message, status, lost_reason, source, utm, notes,
+       consent_at, created_at, updated_at, service(name, slug),
+       plan(name), lead_status_event(status, created_at), client(id, name),
+       proforma(id, service_id, plan_id, price_without_vat, vat_rate, sent_on, status,
+         created_at, service(name), plan(name))`,
     )
     .eq("id", id)
     .maybeSingle();
@@ -54,5 +56,28 @@ export async function getLeadForAdmin(id: string) {
     lead_status_event: [...data.lead_status_event].sort((a, b) =>
       a.created_at.localeCompare(b.created_at),
     ),
+    // Latest first (E11-05).
+    proforma: [...data.proforma].sort(
+      (a, b) =>
+        b.sent_on.localeCompare(a.sent_on) ||
+        b.created_at.localeCompare(a.created_at),
+    ),
   };
+}
+
+export type LeadForAdmin = NonNullable<
+  Awaited<ReturnType<typeof getLeadForAdmin>>
+>;
+
+/** A lead's name, phone and email, to prefill "Nuevo cliente" (E11-05). */
+export async function getLeadContact(id: string) {
+  await requireAdmin();
+  const supabase = await createSessionClient();
+  const { data, error } = await supabase
+    .from("lead")
+    .select("id, name, phone, email, client(id, name)")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw new Error(`Could not load lead ${id}: ${error.message}`);
+  return data;
 }

@@ -5,20 +5,20 @@ import { useState } from "react";
 import { PriceField } from "@/components/admin/price-field";
 import { FormField } from "@/components/sitio/form-field";
 import {
-  addPeriod,
   type CatalogService,
   DEFAULT_VAT_RATE,
   type DurationUnit,
+  endsAfter,
   formatDecimal,
+  planRenewal,
   RENEWAL_UNIT_LABELS,
+  type RenewalInput as Renewal,
 } from "@/lib/clients";
 
 // Texts from docs/COPY.md §13 (Clientes: Servicio del cliente).
 
 const control =
   "min-h-12 w-full rounded-control border border-field-border bg-bg px-3 text-fg";
-
-type Renewal = { value: string; unit: DurationUnit | "" };
 
 /** "Se renueva cada": a number and a unit, or a one-off payment. */
 export function RenewalInputs({
@@ -85,6 +85,86 @@ export function RenewalInputs({
 }
 
 /**
+ * "Servicio" and "Plan" (E11-01, E11-05), controlled by the form that uses
+ * them. Changing the service clears the plan; the plan list shows once there
+ * is a service.
+ */
+export function ServicePlanSelects({
+  catalog,
+  idPrefix,
+  serviceId,
+  planId,
+  onServiceChange,
+  onPlanChange,
+  planHint,
+  optional = false,
+}: {
+  catalog: CatalogService[];
+  idPrefix: string;
+  serviceId: string;
+  planId: string;
+  onServiceChange: (id: string) => void;
+  onPlanChange: (id: string) => void;
+  planHint: string;
+  /** Offers "Ninguno" as service. */
+  optional?: boolean;
+}) {
+  const service = catalog.find((candidate) => candidate.id === serviceId);
+  return (
+    <div className="grid gap-4 md:grid-cols-2">
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor={`${idPrefix}-service`} className="font-medium">
+          Servicio
+        </label>
+        <select
+          id={`${idPrefix}-service`}
+          name="service_id"
+          className={control}
+          value={serviceId}
+          onChange={(event) => onServiceChange(event.target.value)}
+          aria-describedby={`${idPrefix}-service-hint`}
+        >
+          {optional && <option value="">Ninguno</option>}
+          {catalog.map((candidate) => (
+            <option key={candidate.id} value={candidate.id}>
+              {candidate.name}
+            </option>
+          ))}
+        </select>
+        <p id={`${idPrefix}-service-hint`} className="text-small">
+          Incluye los servicios ocultos.
+        </p>
+      </div>
+      {service && (
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor={`${idPrefix}-plan`} className="font-medium">
+            Plan
+          </label>
+          <select
+            id={`${idPrefix}-plan`}
+            name="plan_id"
+            className={control}
+            value={planId}
+            onChange={(event) => onPlanChange(event.target.value)}
+            aria-describedby={`${idPrefix}-plan-hint`}
+          >
+            <option value="">Ninguno</option>
+            {service.plans.map((candidate) => (
+              <option key={candidate.id} value={candidate.id}>
+                {candidate.name}
+              </option>
+            ))}
+          </select>
+          <p id={`${idPrefix}-plan-hint`} className="text-small">
+            {planHint}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
  * A service of a client with its first period (RF-CRM-03, 04). Choosing a
  * plan fills in price, VAT, cost and renewal; "Hasta" follows "Desde" and the
  * renewal until it is typed by hand. Everything can be changed.
@@ -94,99 +174,80 @@ export function ClientServiceFields({
   today,
   optional = false,
   idPrefix = "service",
+  preset,
 }: {
   catalog: CatalogService[];
   today: string;
   /** In "Nuevo cliente" the first service can be left for later. */
   optional?: boolean;
   idPrefix?: string;
+  /**
+   * What a proforma offered ("Aceptar proforma", E11-05): its service and
+   * plan come chosen, with the offered price instead of the plan's.
+   */
+  preset?: {
+    service_id: string;
+    plan_id: string | null;
+    price_without_vat: number;
+    vat_rate: number;
+  };
 }) {
-  const [serviceId, setServiceId] = useState(
-    optional ? "" : (catalog[0]?.id ?? ""),
+  const presetService = catalog.find(
+    (candidate) => candidate.id === preset?.service_id,
   );
-  const [planId, setPlanId] = useState("");
-  const [renewal, setRenewal] = useState<Renewal>({ value: "", unit: "" });
+  const presetPlan = presetService?.plans.find(
+    (candidate) => candidate.id === preset?.plan_id,
+  );
+  const presetRenewal = planRenewal(presetPlan);
+
+  const [serviceId, setServiceId] = useState(
+    presetService?.id ?? (optional ? "" : (catalog[0]?.id ?? "")),
+  );
+  const [planId, setPlanId] = useState(presetPlan?.id ?? "");
+  const [renewal, setRenewal] = useState<Renewal>(presetRenewal);
   const [startsOn, setStartsOn] = useState(today);
-  const [endsOn, setEndsOn] = useState("");
+  const [endsOn, setEndsOn] = useState(endsAfter(today, presetRenewal));
   const [endsTyped, setEndsTyped] = useState(false);
 
   const service = catalog.find((candidate) => candidate.id === serviceId);
   const plan = service?.plans.find((candidate) => candidate.id === planId);
+  // The offered price holds while the proforma's service and plan stay chosen.
+  const offered =
+    preset &&
+    serviceId === preset.service_id &&
+    planId === (presetPlan?.id ?? "")
+      ? preset
+      : null;
 
   const follow = (start: string, next: Renewal) => {
     if (endsTyped) return;
-    const value = Number(next.value);
-    setEndsOn(
-      start && next.unit && value >= 1
-        ? addPeriod(start, value, next.unit)
-        : "",
-    );
+    setEndsOn(endsAfter(start, next));
   };
 
   const choosePlan = (id: string) => {
     setPlanId(id);
-    const chosen = service?.plans.find((candidate) => candidate.id === id);
-    const next: Renewal =
-      chosen?.duration_value && chosen.duration_unit
-        ? { value: String(chosen.duration_value), unit: chosen.duration_unit }
-        : { value: "", unit: "" };
+    const next = planRenewal(
+      service?.plans.find((candidate) => candidate.id === id),
+    );
     setRenewal(next);
     follow(startsOn, next);
   };
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor={`${idPrefix}-service`} className="font-medium">
-            Servicio
-          </label>
-          <select
-            id={`${idPrefix}-service`}
-            name="service_id"
-            className={control}
-            value={serviceId}
-            onChange={(event) => {
-              setServiceId(event.target.value);
-              setPlanId("");
-            }}
-          >
-            {optional && <option value="">Ninguno</option>}
-            {catalog.map((candidate) => (
-              <option key={candidate.id} value={candidate.id}>
-                {candidate.name}
-              </option>
-            ))}
-          </select>
-          <p className="text-small">Incluye los servicios ocultos.</p>
-        </div>
-        {service && (
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor={`${idPrefix}-plan`} className="font-medium">
-              Plan
-            </label>
-            <select
-              id={`${idPrefix}-plan`}
-              name="plan_id"
-              className={control}
-              value={planId}
-              onChange={(event) => choosePlan(event.target.value)}
-              aria-describedby={`${idPrefix}-plan-hint`}
-            >
-              <option value="">Ninguno</option>
-              {service.plans.map((candidate) => (
-                <option key={candidate.id} value={candidate.id}>
-                  {candidate.name}
-                </option>
-              ))}
-            </select>
-            <p id={`${idPrefix}-plan-hint`} className="text-small">
-              Al elegirlo se llenan el precio, el costo y el vencimiento; puedes
-              cambiarlos.
-            </p>
-          </div>
-        )}
-      </div>
+      <ServicePlanSelects
+        catalog={catalog}
+        idPrefix={idPrefix}
+        serviceId={serviceId}
+        planId={planId}
+        onServiceChange={(id) => {
+          setServiceId(id);
+          setPlanId("");
+        }}
+        onPlanChange={choosePlan}
+        planHint="Al elegirlo se llenan el precio, el costo y el vencimiento; puedes cambiarlos."
+        optional={optional}
+      />
 
       {service && (
         <>
@@ -243,8 +304,8 @@ export function ClientServiceFields({
           <div key={planId} className="flex flex-wrap items-end gap-4">
             <PriceField
               idPrefix={idPrefix}
-              price={plan?.price_without_vat ?? 0}
-              vatRate={plan?.vat_rate ?? DEFAULT_VAT_RATE}
+              price={offered?.price_without_vat ?? plan?.price_without_vat ?? 0}
+              vatRate={offered?.vat_rate ?? plan?.vat_rate ?? DEFAULT_VAT_RATE}
               previewLabel="Con IVA"
             />
             <FormField

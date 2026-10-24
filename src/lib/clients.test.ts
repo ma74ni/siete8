@@ -5,6 +5,7 @@ import {
   buildImport,
   type CatalogService,
   CSV_COLUMNS,
+  endsAfter,
   expiry,
   formatSignedCents,
   normalizePhone,
@@ -13,11 +14,50 @@ import {
   parseDay,
   parseMoney,
   parseRenewal,
+  planRenewal,
   profitCents,
   renewalText,
   todayInQuito,
   toCsv,
 } from "@/lib/clients";
+
+describe("planRenewal", () => {
+  it("takes the plan's duration", () => {
+    expect(planRenewal({ duration_value: 2, duration_unit: "year" })).toEqual({
+      value: "2",
+      unit: "year",
+    });
+  });
+
+  it("is a one-off payment without a plan or without a duration", () => {
+    const oneOff = { value: "", unit: "" };
+    expect(planRenewal(undefined)).toEqual(oneOff);
+    expect(planRenewal({ duration_value: null, duration_unit: null })).toEqual(
+      oneOff,
+    );
+    expect(planRenewal({ duration_value: 1, duration_unit: null })).toEqual(
+      oneOff,
+    );
+  });
+});
+
+describe("endsAfter", () => {
+  it("is one renewal after the start", () => {
+    expect(endsAfter("2026-10-24", { value: "1", unit: "year" })).toBe(
+      "2027-10-24",
+    );
+    expect(endsAfter("2027-01-31", { value: "1", unit: "month" })).toBe(
+      "2027-02-28",
+    );
+  });
+
+  it("is empty for one-off payments, no start, or a value below 1", () => {
+    expect(endsAfter("2026-10-24", { value: "", unit: "" })).toBe("");
+    expect(endsAfter("", { value: "1", unit: "year" })).toBe("");
+    expect(endsAfter("2026-10-24", { value: "0", unit: "month" })).toBe("");
+    expect(endsAfter("2026-10-24", { value: "", unit: "month" })).toBe("");
+  });
+});
 
 describe("addPeriod", () => {
   it("adds days, months and years", () => {
