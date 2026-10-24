@@ -1,9 +1,9 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ActionForm } from "@/components/admin/action-form";
 import { ClientFields } from "@/components/admin/client-fields";
 import { ClientServiceFields } from "@/components/admin/client-service-fields";
+import { PageHeader } from "@/components/admin/page-header";
 import { isUuid } from "@/lib/admin-forms";
 import { todayInQuito } from "@/lib/clients";
 import { PROFORMA_STATUS_LABELS } from "@/lib/lead-status";
@@ -35,21 +35,17 @@ export default async function AcceptProformaPage({
 
   return (
     <div className="flex max-w-[64rem] flex-col gap-8">
-      <div className="flex flex-col gap-2">
-        <Link href={`/admin/leads/${lead.id}`} className="text-small">
-          Volver al lead
-        </Link>
-        <h1 className="text-h2">Aceptar proforma</h1>
-        <p>
-          {[
-            proforma.service?.name,
-            proforma.plan?.name,
-            formatPriceWithVat(proforma.price_without_vat, proforma.vat_rate),
-          ]
-            .filter(Boolean)
-            .join(", ")}
-        </p>
-      </div>
+      <PageHeader
+        title="Aceptar proforma"
+        back={{ href: `/admin/leads/${lead.id}`, label: "Volver al lead" }}
+        intro={[
+          proforma.service?.name,
+          proforma.plan?.name,
+          formatPriceWithVat(proforma.price_without_vat, proforma.vat_rate),
+        ]
+          .filter(Boolean)
+          .join(", ")}
+      />
 
       {proforma.status !== "sent" ? (
         <p>
