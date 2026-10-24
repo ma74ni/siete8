@@ -4,15 +4,14 @@ import { useState } from "react";
 
 import { CheckboxField } from "@/components/admin/checkbox-field";
 import { RenewalInputs } from "@/components/admin/client-service-fields";
+import { SelectField } from "@/components/admin/fields";
+import { Radio } from "@/components/form/controls";
 import { FormField } from "@/components/sitio/form-field";
 import { type DurationUnit, formatDecimal, parseMoney } from "@/lib/clients";
 import { formatCents } from "@/lib/price";
 import { paymentTotalCents } from "@/lib/purchases";
 
 // Texts from docs/COPY.md §13 (Compras).
-
-const control =
-  "min-h-12 w-full rounded-control border border-field-border bg-bg px-3 text-fg";
 
 type Option = { id: string; name: string };
 
@@ -55,29 +54,21 @@ export function PurchaseFields({
   return (
     <div className="flex flex-col gap-4">
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="purchase-provider" className="font-medium">
-            Proveedor
-          </label>
-          <select
-            id="purchase-provider"
-            name="provider_id"
-            className={control}
-            value={providerId}
-            onChange={(event) => setProviderId(event.target.value)}
-            aria-describedby="purchase-provider-hint"
-          >
-            {providers.map((provider) => (
-              <option key={provider.id} value={provider.id}>
-                {provider.name}
-              </option>
-            ))}
-            <option value="new">Nuevo proveedor…</option>
-          </select>
-          <p id="purchase-provider-hint" className="text-small">
-            Elige uno o crea uno nuevo.
-          </p>
-        </div>
+        <SelectField
+          label="Proveedor"
+          id="purchase-provider"
+          name="provider_id"
+          value={providerId}
+          onChange={(event) => setProviderId(event.target.value)}
+          hint="Elige uno o crea uno nuevo."
+        >
+          {providers.map((provider) => (
+            <option key={provider.id} value={provider.id}>
+              {provider.name}
+            </option>
+          ))}
+          <option value="new">Nuevo proveedor…</option>
+        </SelectField>
         {providerId === "new" && (
           <FormField
             label="Nombre del proveedor nuevo"
@@ -108,38 +99,31 @@ export function PurchaseFields({
             ] as const
           ).map(([value, label]) => (
             <label key={value} className="flex min-h-11 items-center gap-3">
-              <input
-                type="radio"
+              <Radio
                 name="charge_to"
                 value={value}
                 checked={chargeTo === value}
                 onChange={() => setChargeTo(value)}
-                className="size-5 accent-action"
               />
               <span>{label}</span>
             </label>
           ))}
         </div>
         {chargeTo === "client" ? (
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="purchase-client-service" className="font-medium">
-              Cliente y servicio
-            </label>
-            <select
-              id="purchase-client-service"
-              name="client_service_id"
-              className={control}
-              defaultValue={purchase?.client_service_id ?? ""}
-              required
-            >
-              <option value="">Elige uno</option>
-              {clientServices.map((cs) => (
-                <option key={cs.id} value={cs.id}>
-                  {cs.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          <SelectField
+            label="Cliente y servicio"
+            id="purchase-client-service"
+            name="client_service_id"
+            defaultValue={purchase?.client_service_id ?? ""}
+            required
+          >
+            <option value="">Elige uno</option>
+            {clientServices.map((cs) => (
+              <option key={cs.id} value={cs.id}>
+                {cs.label}
+              </option>
+            ))}
+          </SelectField>
         ) : (
           <div className="flex flex-col gap-1.5">
             <p className="text-small">

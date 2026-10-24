@@ -29,7 +29,7 @@ Las rutas de esta tabla son relativas a la raíz del repo.
 ## Stack
 
 - Next.js 16 (App Router) con TypeScript estricto (`strict`, `noUncheckedIndexedAccess`), pnpm y Node 22. Next 16 cambia APIs respecto a versiones anteriores: consulta `node_modules/next/dist/docs/` antes de usar una API (ver `AGENTS.md`).
-- Tailwind CSS con los tokens de `docs/DESIGN.md` como variables CSS. Panel con shadcn/ui.
+- Tailwind CSS con los tokens de `docs/DESIGN.md` como variables CSS. El panel usa los componentes propios (DESIGN §7.1 y §12), no shadcn/ui.
 - Supabase: Postgres, Auth, Storage, con las claves nuevas (publishable y secret). Migraciones con Supabase CLI (devDependency, se usa con `pnpm exec supabase`) en `supabase/migrations`.
 - Zod para validar entradas y variables de entorno.
 - ESLint (config de Next) y Prettier (con orden de clases de Tailwind).
@@ -115,7 +115,7 @@ El detalle de cada área vive en `.claude/rules/` y se carga solo cuando se trab
 ```
 src/
   app/           Rutas (App Router). Sitio público en el grupo (sitio), panel en admin/, API en api/.
-  components/    ui/ (shadcn/ui), sitio/ (sitio público), admin/ (panel).
+  components/    form/ (controles de formulario, compartidos), sitio/ (sitio público), admin/ (panel).
   lib/           Utilidades puras sin acceso a datos: precios con IVA, formatos, slugs.
   server/        Código solo de servidor: acceso a datos, Server Actions, integraciones. Cada archivo importa "server-only".
   env/           Variables de entorno validadas.

@@ -1,7 +1,9 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 
 import { describe, expect, it } from "vitest";
+
+import { sourceFiles, srcDir } from "@/test-utils/source-files";
 
 /**
  * Guards the design tokens of globals.css (DESIGN.md §3): WCAG AA contrast of
@@ -9,7 +11,6 @@ import { describe, expect, it } from "vitest";
  * outside globals.css.
  */
 
-const srcDir = path.resolve(__dirname, "..");
 const cssFile = path.join(__dirname, "globals.css");
 const css = readFileSync(cssFile, "utf8");
 
@@ -104,21 +105,8 @@ describe("dark mode", () => {
   });
 });
 
-function sourceFiles(dir: string): string[] {
-  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) return sourceFiles(full);
-    const isSource = /\.(tsx?|css)$/.test(entry.name);
-    const isExcluded =
-      /\.test\.tsx?$/.test(entry.name) ||
-      full === cssFile ||
-      entry.name === "database.types.ts";
-    return isSource && !isExcluded ? [full] : [];
-  });
-}
-
 describe("source files", () => {
-  const files = sourceFiles(srcDir).map((file) => ({
+  const files = sourceFiles(srcDir, [cssFile]).map((file) => ({
     name: path.relative(srcDir, file),
     source: readFileSync(file, "utf8"),
   }));

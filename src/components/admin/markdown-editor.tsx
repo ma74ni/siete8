@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 
+import { Textarea } from "@/components/form/controls";
 import { Markdown } from "@/components/sitio/markdown";
 import { cx } from "@/lib/cx";
 
@@ -57,17 +58,14 @@ export function MarkdownEditor({
           ))}
         </div>
       </div>
-      <textarea
+      <Textarea
         id={id}
         name={name}
         value={value}
         onChange={(event) => setValue(event.target.value)}
         rows={24}
         aria-describedby={`${id}-hint`}
-        className={cx(
-          "w-full rounded-control border border-field-border bg-bg px-3 py-3 text-fg",
-          preview && "hidden",
-        )}
+        className={cx(preview && "hidden")}
       />
       {preview && (
         <div className="min-h-64 rounded-control border border-border p-5">

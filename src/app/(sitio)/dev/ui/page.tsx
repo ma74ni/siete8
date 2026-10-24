@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { CheckboxField } from "@/components/admin/checkbox-field";
+import { SelectField } from "@/components/admin/fields";
+import { Input, Label, Radio } from "@/components/form/controls";
 import { Button } from "@/components/sitio/button";
 import { Faq } from "@/components/sitio/faq";
 import { FormField } from "@/components/sitio/form-field";
@@ -236,6 +239,68 @@ export default function DevUiPage() {
             name="message"
             multiline
           />
+        </form>
+      </Section>
+
+      {/* E13-01: the form atoms (src/components/form/controls.tsx) and the
+          fields built from them, in each state. Texts from COPY §13. */}
+      <Section title="Controles de formulario">
+        <form className="flex max-w-[34rem] flex-col gap-6">
+          <SelectField
+            label="Servicio"
+            id="ui-select"
+            name="service"
+            defaultValue=""
+            hint="Incluye los servicios ocultos."
+          >
+            <option value="">Ninguno</option>
+            <option value="firma">Firma electrónica</option>
+          </SelectField>
+          <SelectField
+            label="Cliente y servicio"
+            id="ui-select-error"
+            name="client_service"
+            defaultValue=""
+            error="Elige el cliente y servicio."
+          >
+            <option value="">Elige uno</option>
+          </SelectField>
+          <div className="flex flex-wrap items-end gap-4">
+            <div className="flex w-32 flex-col gap-1.5">
+              <Label htmlFor="ui-numeric">Precio sin IVA</Label>
+              <Input id="ui-numeric" defaultValue="17,99" numeric />
+            </div>
+            <div className="flex w-24 flex-col gap-1.5">
+              <Label htmlFor="ui-disabled">Cantidad</Label>
+              <Input id="ui-disabled" type="number" disabled numeric />
+            </div>
+          </div>
+          <CheckboxField
+            label="La persona aceptó que la contactemos."
+            name="consent"
+            id="ui-checkbox"
+          />
+          <fieldset className="flex flex-col gap-1.5">
+            <legend className="mb-1.5 font-medium">Se carga a</legend>
+            {[
+              ["client", "Un cliente"],
+              ["services", "Servicios del catálogo"],
+            ].map(([value, label]) => (
+              <label
+                key={value}
+                htmlFor={`ui-radio-${value}`}
+                className="flex min-h-11 items-center gap-3"
+              >
+                <Radio
+                  id={`ui-radio-${value}`}
+                  name="charge_to"
+                  value={value}
+                  defaultChecked={value === "client"}
+                />
+                <span>{label}</span>
+              </label>
+            ))}
+          </fieldset>
         </form>
       </Section>
     </div>
