@@ -1,5 +1,5 @@
 import type { Database } from "@/lib/database.types";
-import { formatCents, priceWithVatCents } from "./price";
+import { formatCents, priceWithVatCents, toCents } from "./price";
 
 /**
  * What a client owes for a period (E11-02, RF-CRM-09..11). Payments are
@@ -27,8 +27,6 @@ export type PeriodBalance = {
   status: PaymentStatus;
   label: string;
 };
-
-const toCents = (amount: number) => Math.round(amount * 100);
 
 export function periodBalance(period: {
   price_without_vat: number;
