@@ -220,8 +220,9 @@ Gestión interna en el panel (SRS 3.9). Tan sencilla como una hoja de cálculo: 
 | E11-04 | Por vencer y por pagar, Renovar con un clic, alertas cruzadas y correo semanal (función programada de Netlify con Resend) | E11-02, E11-03 | Renovar crea el período siguiente según el ciclo; una compra ligada a un cliente que no pagó sale marcada; el correo no se envía si no hay nada | RF-CRM-12, 13, 15..17 |
 | E11-05 | Estados nuevos del lead con motivo de pérdida, proformas, y crear cliente desde un lead o al aceptar una proforma | E11-01 | Aceptar una proforma marca el lead como ganado y crea el cliente con su servicio y primer período; el historial de estados del lead se conserva | RF-CRM-18..20 |
 | E11-06 | Ganancias: devengado y caja, por mes y año, por servicio, por cliente y licencias sin asignar | E11-02, E11-03 | La ganancia es sin IVA; una compra compartida anual se reparte por mes en la vista devengada y sale entera en caja; los cálculos van en centavos con pruebas | RF-CRM-21, 22 |
+| E11-07 | Nuevo lead desde el panel, con origen WhatsApp: nombre, celular, correo, servicio, plan, notas y la confirmación de que la persona aceptó ser contactada | E11-05 | El lead se crea en Nuevo, con origen WhatsApp, y entra al mismo flujo de proformas y clientes; sin la confirmación de consentimiento no se guarda; el historial de estados empieza con Nuevo; sin migraciones | RF-CRM-23 |
 
-Se ejecutan en orden. E11-01 va primero porque permite registrar ya a los clientes actuales y no perder renovaciones.
+Se ejecutan en orden. E11-01 va primero porque permite registrar ya a los clientes actuales y no perder renovaciones. E11-07 puede hacerse antes que E11-06: WhatsApp es el canal principal de ventas y hoy esos contactos no entran a Leads.
 
 ## 10. E12 Panel desde Claude (MCP)
 
@@ -235,3 +236,17 @@ Registrar ventas, renovar y consultar vencimientos hablándole a Claude (escrito
 | E12-04 | Guía de uso: conectar el servidor en Claude, ejemplos de pedidos y límites | E12-02 | Una persona del equipo conecta el servidor y registra una venta siguiendo solo la guía | — |
 
 Se ejecuta después de E11-06. Antes de E12-01 hay que decidir la autenticación (los conectores remotos de Claude usan OAuth) y agregar los requisitos RF-MCP al SRS (sección 3.10).
+
+## 11. E13 Sistema de componentes
+
+`docs/DESIGN.md` y los tokens de `globals.css` ya son el sistema de diseño, y el sitio público usa sus componentes. El panel, en cambio, se armó pantalla por pantalla: el estilo de campo está copiado en 6 archivos, hay 5 `<select>` y 6 tablas escritos a mano y 9 desplegables con estilos distintos. Esta épica completa las capas (átomos, moléculas, organismos y plantillas) para el panel y el sitio, y hace que todo pase por ellas. Se hace por etapas: ninguna tarea reescribe todo el panel de una vez.
+
+| ID | Tarea | Depende de | Criterios de aceptación | SRS |
+| --- | --- | --- | --- | --- |
+| E13-01 | Átomos de formulario: `Input`, `Select` (controlado o no), `Textarea`, `Checkbox`, `Label` y `Hint`, con estados de error y deshabilitado. `FormField` y `SelectField` pasan a usarlos. Sección "Componentes del panel" en `docs/DESIGN.md` | — | La clase de los controles vive en un solo archivo; cada átomo aparece en `/dev/ui` con sus estados; contraste AA en modo claro y oscuro; navegable con teclado | RNF-12 |
+| E13-02 | Organismos del panel: `PageHeader` (volver, título, introducción y acciones), `DataTable` (columnas, cifras tabulares, desplazamiento horizontal y estado vacío), `Disclosure` (desplegable cuyo resumen es un botón secundario), `EmptyState` y `StatusText` | E13-01 | Cada uno en `/dev/ui`; revisados a 360 px y 1440 px, con teclado y foco visible; las pruebas cubren su lógica (por ejemplo, el estado vacío de `DataTable`) | RNF-12 |
+| E13-03 | Migrar las pantallas con problemas visibles: Renovar (Por vencer y ficha del cliente), Proformas, Por vencer y Por cobrar | E13-02 | Ninguna de esas pantallas tiene controles, tablas ni desplegables escritos a mano; mismo comportamiento que antes (pruebas existentes en verde) | — |
+| E13-04 | Migrar el resto del panel (clientes, compras, leads, servicios, blog, proyectos, enlaces, configuración y asistente) y el formulario de contacto del sitio | E13-03 | Igual que E13-03, en todas las pantallas; se hace en varias ramas, una por sección | — |
+| E13-05 | Guardas: una prueba que falla si aparece un `<select>`, un `<table>`, un `<summary>` o la clase de control fuera de `src/components/`; la regla en `CLAUDE.md` y en `.claude/rules/diseno.md` | E13-04 | La prueba falla con un `<select>` agregado a una página y pasa sin él; la regla dice qué componente usar para cada caso | — |
+
+Se ejecuta antes de E11-06 o en paralelo, por secciones, porque E11-06 agrega tablas nuevas que ya deberían usar `DataTable`.
