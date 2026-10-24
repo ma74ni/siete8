@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ActionForm } from "@/components/admin/action-form";
 import { ClientFields } from "@/components/admin/client-fields";
 import { ClientServiceFields } from "@/components/admin/client-service-fields";
+import { PageHeader } from "@/components/admin/page-header";
 import { isUuid } from "@/lib/admin-forms";
 import { todayInQuito } from "@/lib/clients";
 import { createClient } from "@/server/admin-clients-actions";
@@ -29,18 +30,15 @@ export default async function NewClientPage({
 
   return (
     <div className="flex max-w-[64rem] flex-col gap-8">
-      <div className="flex flex-col gap-2">
-        <Link href="/admin/clientes" className="text-small">
-          Volver a clientes
-        </Link>
-        <h1 className="text-h2">Nuevo cliente</h1>
-        {lead && !lead.client && (
-          <p>
-            Datos copiados del lead {lead.name ?? lead.phone ?? lead.email}; el
-            cliente queda enlazado a él.
-          </p>
-        )}
-      </div>
+      <PageHeader
+        title="Nuevo cliente"
+        back={{ href: "/admin/clientes", label: "Volver a clientes" }}
+        intro={
+          lead && !lead.client
+            ? `Datos copiados del lead ${lead.name ?? lead.phone ?? lead.email}; el cliente queda enlazado a él.`
+            : undefined
+        }
+      />
       {lead?.client ? (
         <p>
           Este lead ya tiene cliente:{" "}

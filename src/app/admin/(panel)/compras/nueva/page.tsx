@@ -1,6 +1,5 @@
-import Link from "next/link";
-
 import { ActionForm } from "@/components/admin/action-form";
+import { PageHeader } from "@/components/admin/page-header";
 import {
   PurchaseFields,
   PurchasePaymentFields,
@@ -18,12 +17,10 @@ export default async function NewPurchasePage() {
 
   return (
     <div className="flex max-w-[64rem] flex-col gap-8">
-      <div className="flex flex-col gap-2">
-        <Link href="/admin/compras" className="text-small">
-          Volver a compras
-        </Link>
-        <h1 className="text-h2">Nueva compra</h1>
-      </div>
+      <PageHeader
+        title="Nueva compra"
+        back={{ href: "/admin/compras", label: "Volver a compras" }}
+      />
       <ActionForm action={createPurchase} submitLabel="Crear compra">
         <PurchaseFields {...options} />
         <fieldset className="flex flex-col gap-4 border-t border-border pt-6">

@@ -1,9 +1,12 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ActionForm } from "@/components/admin/action-form";
+import { DataTable } from "@/components/admin/data-table";
 import { DeleteButton } from "@/components/admin/delete-button";
+import { Disclosure } from "@/components/admin/disclosure";
+import { EmptyState } from "@/components/admin/empty-state";
 import { Section, SelectField } from "@/components/admin/fields";
+import { PageHeader } from "@/components/admin/page-header";
 import {
   PurchaseFields,
   PurchasePaymentFields,
@@ -16,7 +19,7 @@ import {
   formatDecimal,
   todayInQuito,
 } from "@/lib/clients";
-import { formatCents } from "@/lib/price";
+import { formatCents, toCents } from "@/lib/price";
 import { licenseUseLabel, paymentTotalCents } from "@/lib/purchases";
 import {
   getPurchase,
@@ -36,8 +39,6 @@ import {
 
 // Texts from docs/COPY.md §13.
 
-const cents = (amount: number) => Math.round(amount * 100);
-
 /** One purchase: its payments, licenses and data (E11-03, RF-CRM-14). */
 export default async function PurchasePage({
   params,
@@ -52,21 +53,21 @@ export default async function PurchasePage({
 
   return (
     <div className="flex max-w-[72rem] flex-col gap-10">
-      <div className="flex flex-col gap-2">
-        <Link href="/admin/compras" className="text-small">
-          Volver a compras
-        </Link>
-        <h1 className="text-h2">{purchase.concept}</h1>
-        <p>
-          {purchase.provider?.name}
-          {purchase.status === "cancelled" && " (cancelada)"}
-        </p>
-        {purchase.auto_renew && purchase.status === "active" && (
-          <p className="font-medium">
-            Se renueva sola: cancélala a tiempo si ya no la necesitas.
-          </p>
-        )}
-      </div>
+      <PageHeader
+        title={purchase.concept}
+        back={{ href: "/admin/compras", label: "Volver a compras" }}
+        intro={
+          <>
+            {purchase.provider?.name}
+            {purchase.status === "cancelled" && " (cancelada)"}
+            {purchase.auto_renew && purchase.status === "active" && (
+              <span className="mt-2 block font-medium">
+                Se renueva sola: cancélala a tiempo si ya no la necesitas.
+              </span>
+            )}
+          </>
+        }
+      />
 
       <Section title="Pagos">
         <Payments purchase={purchase} />
@@ -130,67 +131,72 @@ export default async function PurchasePage({
 }
 
 function Payments({ purchase }: { purchase: PurchaseForAdmin }) {
-  if (purchase.purchase_payment.length === 0) {
-    return <p>Todavía no hay pagos.</p>;
-  }
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[52rem] border-collapse text-left">
-        <thead>
-          <tr className="border-b border-border">
-            {[
-              "Fecha",
-              "Cubre",
-              "Cantidad",
-              "Plataforma",
-              "IVA",
-              "ISD",
-              "Total",
-              "",
-            ].map((column, index) => (
-              <th key={index} scope="col" className="py-3 pr-4 font-medium">
-                {column}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {purchase.purchase_payment.map((payment) => {
+    <DataTable
+      rows={purchase.purchase_payment}
+      rowKey={(payment) => payment.id}
+      label="Pagos"
+      empty="Todavía no hay pagos."
+      minWidth="52rem"
+      columns={[
+        {
+          header: "Fecha",
+          rowHeader: true,
+          cell: (payment) => formatDay(payment.paid_on),
+        },
+        {
+          header: "Cubre",
+          cell: (payment) =>
+            `${formatDay(payment.covers_from)}${
+              payment.covers_to
+                ? ` al ${formatDay(payment.covers_to)}`
+                : ", sin vencimiento"
+            }`,
+        },
+        {
+          header: "Cantidad",
+          numeric: true,
+          cell: (payment) => payment.quantity,
+        },
+        {
+          header: "Plataforma",
+          numeric: true,
+          cell: (payment) => formatCents(toCents(payment.amount)),
+        },
+        {
+          header: "IVA",
+          numeric: true,
+          cell: (payment) => formatCents(toCents(payment.vat_amount)),
+        },
+        {
+          header: "ISD",
+          numeric: true,
+          cell: (payment) => formatCents(toCents(payment.isd_amount)),
+        },
+        {
+          header: "Total",
+          numeric: true,
+          emphasis: true,
+          cell: (payment) => formatCents(paymentTotalCents(payment)),
+        },
+        {
+          header: "Acción",
+          hideHeader: true,
+          compact: true,
+          cell: (payment) => {
             const total = formatCents(paymentTotalCents(payment));
             return (
-              <tr key={payment.id} className="border-b border-border align-top">
-                <td className="py-3 pr-4">{formatDay(payment.paid_on)}</td>
-                <td className="py-3 pr-4">
-                  {formatDay(payment.covers_from)}
-                  {payment.covers_to
-                    ? ` al ${formatDay(payment.covers_to)}`
-                    : ", sin vencimiento"}
-                </td>
-                <td className="py-3 pr-4 tabular-nums">{payment.quantity}</td>
-                <td className="py-3 pr-4 tabular-nums">
-                  {formatCents(cents(payment.amount))}
-                </td>
-                <td className="py-3 pr-4 tabular-nums">
-                  {formatCents(cents(payment.vat_amount))}
-                </td>
-                <td className="py-3 pr-4 tabular-nums">
-                  {formatCents(cents(payment.isd_amount))}
-                </td>
-                <td className="py-3 pr-4 font-medium tabular-nums">{total}</td>
-                <td className="py-1">
-                  <DeleteButton
-                    action={deletePurchasePayment}
-                    id={payment.id}
-                    label="Borrar pago"
-                    question={`¿Borrar el pago de ${total} del ${formatDay(payment.paid_on)}?`}
-                  />
-                </td>
-              </tr>
+              <DeleteButton
+                action={deletePurchasePayment}
+                id={payment.id}
+                label="Borrar pago"
+                question={`¿Borrar el pago de ${total} del ${formatDay(payment.paid_on)}?`}
+              />
             );
-          })}
-        </tbody>
-      </table>
-    </div>
+          },
+        },
+      ]}
+    />
   );
 }
 
@@ -204,12 +210,10 @@ function NextPayment({ purchase }: { purchase: PurchaseForAdmin }) {
       ? addPeriod(from, purchase.renews_every_value, purchase.renews_every_unit)
       : "";
   return (
-    <details className="rounded-control border border-border p-5">
-      <summary className="cursor-pointer font-medium">Registrar pago</summary>
+    <Disclosure summary="Registrar pago">
       <ActionForm
         action={addPurchasePayment}
         submitLabel="Registrar pago"
-        className="mt-6"
         resetKey={String(purchase.purchase_payment.length)}
       >
         <input type="hidden" name="purchase_id" value={purchase.id} />
@@ -221,12 +225,12 @@ function NextPayment({ purchase }: { purchase: PurchaseForAdmin }) {
             covers_to: to,
             quantity: purchase.quantity,
             amount: formatDecimal(
-              (cents(purchase.unit_cost) * purchase.quantity) / 100,
+              (toCents(purchase.unit_cost) * purchase.quantity) / 100,
             ),
           }}
         />
       </ActionForm>
-    </details>
+    </Disclosure>
   );
 }
 
@@ -241,7 +245,7 @@ function Licenses({
     <>
       <p className="font-medium">Licencias: {licenseUseLabel(purchase.use)}</p>
       {purchase.license_assignment.length === 0 ? (
-        <p>Todavía no asignas licencias.</p>
+        <EmptyState>Todavía no asignas licencias.</EmptyState>
       ) : (
         <ul className="flex flex-col border-t border-border">
           {purchase.license_assignment.map((license) => (
@@ -265,14 +269,10 @@ function Licenses({
           ))}
         </ul>
       )}
-      <details className="rounded-control border border-border p-5">
-        <summary className="cursor-pointer font-medium">
-          Asignar licencia
-        </summary>
+      <Disclosure summary="Asignar licencia">
         <ActionForm
           action={assignLicense}
           submitLabel="Asignar licencia"
-          className="mt-6"
           resetKey={String(purchase.license_assignment.length)}
         >
           <input type="hidden" name="purchase_id" value={purchase.id} />
@@ -299,7 +299,7 @@ function Licenses({
             </SelectField>
           </div>
         </ActionForm>
-      </details>
+      </Disclosure>
     </>
   );
 }

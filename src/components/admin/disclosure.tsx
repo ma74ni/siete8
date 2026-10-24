@@ -8,13 +8,17 @@ import { cx } from "@/lib/cx";
 
 export type DisclosureVariant = "panel" | "action" | "inline";
 
-/** The chevron that turns when it opens, as in the FAQ (DESIGN §8). */
+/**
+ * The chevron that turns when it opens, as in the FAQ (DESIGN §8). It turns
+ * only with the `<details>` whose summary holds it (`[open] > summary > svg`),
+ * so a "Renovar" inside an open service stays closed, however they nest.
+ */
 function Chevron() {
   return (
     <ChevronDown
       aria-hidden
       strokeWidth={1.5}
-      className="size-5 shrink-0 transition-transform duration-200 ease-out group-open:rotate-180"
+      className="size-5 shrink-0 transition-transform duration-200 ease-out [[open]>summary>&]:rotate-180"
     />
   );
 }
@@ -48,7 +52,7 @@ export function Disclosure({
 }) {
   if (variant === "action") {
     return (
-      <details id={id} open={defaultOpen} className="group">
+      <details id={id} open={defaultOpen}>
         <summary
           className={cx(buttonClasses("secondary"), "cursor-pointer", noMarker)}
         >
@@ -61,7 +65,7 @@ export function Disclosure({
   }
   if (variant === "inline") {
     return (
-      <details id={id} open={defaultOpen} className="group">
+      <details id={id} open={defaultOpen}>
         <summary
           className={cx(
             "inline-flex min-h-11 cursor-pointer items-center gap-2 font-medium",
@@ -79,7 +83,7 @@ export function Disclosure({
     <details
       id={id}
       open={defaultOpen}
-      className="group rounded-control border border-border p-5"
+      className="rounded-control border border-border p-5"
     >
       <summary
         className={cx(

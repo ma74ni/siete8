@@ -8,6 +8,7 @@ import {
   endsAfter,
   expiry,
   formatSignedCents,
+  needsAttention,
   normalizePhone,
   normalizeTaxId,
   parseCsv,
@@ -93,6 +94,22 @@ describe("expiry", () => {
       state: "none",
       label: "Sin vencimiento",
     });
+  });
+});
+
+describe("needsAttention", () => {
+  const today = "2026-10-12";
+
+  it("alerts an expired date unless it was cancelled", () => {
+    expect(needsAttention(expiry("2026-10-12", today), "active")).toBe(true);
+    expect(needsAttention(expiry("2026-10-01", today), "cancelled")).toBe(
+      false,
+    );
+  });
+
+  it("does not alert an upcoming or open-ended date", () => {
+    expect(needsAttention(expiry("2026-10-13", today), "active")).toBe(false);
+    expect(needsAttention(expiry(null, today), "active")).toBe(false);
   });
 });
 
