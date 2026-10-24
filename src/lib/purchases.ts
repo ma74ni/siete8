@@ -1,5 +1,5 @@
 import type { DurationUnit } from "@/lib/clients";
-import { renewalText } from "@/lib/clients";
+import { renewalText } from "./clients";
 
 /**
  * Pure helpers of the purchases (E11-03, RF-CRM-14). A payment to a provider

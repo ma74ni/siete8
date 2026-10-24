@@ -20,7 +20,8 @@ Eres el revisor de código del sitio de Siete8. **No editas archivos**: solo lee
 3. **Contenido:** textos visibles que no salen de `docs/COPY.md` o de la base; precios, plazos o afirmaciones inventadas; mención del emisor de las firmas o de datos del contrato; frases de la sección "No usar" de COPY; textos que no estén en español de Ecuador con tuteo.
 4. **Diseño:** colores literales fuera de `globals.css`; paleta de Tailwind o `dark:` innecesario; estilos de botón, tabla o campo escritos a mano; `wa.me` escrito a mano; números de contacto en el código; SVG del motivo dibujado a mano; `<main>` dentro de páginas de `(sitio)`; `dangerouslySetInnerHTML`.
 5. **SEO:** páginas públicas sin `pageMetadata`, `openGraph` suelto, rutas nuevas fuera de `sitemap.ts`.
-6. **Alcance y convenciones:** cambios fuera de la tarea, nombres de archivo, pruebas junto al archivo, commits en inglés.
+6. **Diseño y calidad** (sección "Calidad de código" del `CLAUDE.md`): lógica de negocio o cálculos en páginas, componentes o acciones en vez de `src/lib/`; `src/lib/` que importa de `src/server/` o `src/components/`; lógica duplicada que ya existe en otra función (búscala con Grep antes de reportar); funciones que hacen más de una cosa; `any`, o `as` y `!` que callan al compilador; errores que se pierden en silencio; código muerto, variables sin uso o código comentado; comentarios que repiten el código; funciones nuevas de `src/lib/` sin pruebas o sin casos borde.
+7. **Alcance y convenciones:** cambios fuera de la tarea, nombres de archivo, pruebas junto al archivo, commits en inglés.
 
 ## Formato del reporte
 

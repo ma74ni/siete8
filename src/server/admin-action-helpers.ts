@@ -13,6 +13,17 @@ export const INVALID: FormState = {
   message: "Revisa los campos marcados: hay datos que no son válidos.",
 };
 
+/** Accepting or rejecting a proforma that is no longer "sent" (E11-05). */
+export const PROFORMA_DECIDED: FormState = {
+  status: "error",
+  message: "Esta proforma ya fue aceptada o rechazada.",
+};
+
+/** Leads are not on the public site: only the panel pages change. */
+export function refreshLeads() {
+  revalidatePath("/admin/leads", "layout");
+}
+
 export function failed(what: string): FormState {
   return {
     status: "error",

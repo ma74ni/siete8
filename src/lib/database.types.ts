@@ -359,6 +359,7 @@ export type Database = {
           created_at: string
           email: string | null
           id: string
+          lost_reason: string | null
           message: string | null
           name: string | null
           notes: string | null
@@ -375,6 +376,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          lost_reason?: string | null
           message?: string | null
           name?: string | null
           notes?: string | null
@@ -391,6 +393,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          lost_reason?: string | null
           message?: string | null
           name?: string | null
           notes?: string | null
@@ -756,6 +759,67 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      proforma: {
+        Row: {
+          created_at: string
+          id: string
+          lead_id: string
+          plan_id: string | null
+          price_without_vat: number
+          sent_on: string
+          service_id: string
+          status: Database["public"]["Enums"]["proforma_status"]
+          updated_at: string
+          vat_rate: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lead_id: string
+          plan_id?: string | null
+          price_without_vat: number
+          sent_on: string
+          service_id: string
+          status?: Database["public"]["Enums"]["proforma_status"]
+          updated_at?: string
+          vat_rate: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lead_id?: string
+          plan_id?: string | null
+          price_without_vat?: number
+          sent_on?: string
+          service_id?: string
+          status?: Database["public"]["Enums"]["proforma_status"]
+          updated_at?: string
+          vat_rate?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proforma_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "lead"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "proforma_plan_of_service"
+            columns: ["plan_id", "service_id"]
+            isOneToOne: false
+            referencedRelation: "plan"
+            referencedColumns: ["id", "service_id"]
+          },
+          {
+            foreignKeyName: "proforma_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       project: {
         Row: {
@@ -1456,6 +1520,10 @@ export type Database = {
       }
     }
     Functions: {
+      accept_proforma: {
+        Args: { client: Json; p_proforma_id: string }
+        Returns: string
+      }
       chat_cost_since: { Args: { since: string }; Returns: number }
       create_purchase: { Args: { payload: Json }; Returns: string }
       import_clients: { Args: { payload: Json }; Returns: Json }
@@ -1469,10 +1537,11 @@ export type Database = {
       holder_type: "natural" | "legal_entity" | "not_applicable"
       image_device: "desktop" | "mobile"
       lead_source: "assistant" | "form" | "whatsapp"
-      lead_status: "new" | "contacted" | "closed" | "lost"
+      lead_status: "new" | "contacted" | "proposal_sent" | "won" | "lost"
       link_kind: "url" | "whatsapp" | "latest_post"
       payment_method: "transfer" | "cash" | "card" | "other"
       post_status: "draft" | "published"
+      proforma_status: "sent" | "accepted" | "rejected"
       project_status:
         | "in_development"
         | "active"
@@ -1614,10 +1683,11 @@ export const Constants = {
       holder_type: ["natural", "legal_entity", "not_applicable"],
       image_device: ["desktop", "mobile"],
       lead_source: ["assistant", "form", "whatsapp"],
-      lead_status: ["new", "contacted", "closed", "lost"],
+      lead_status: ["new", "contacted", "proposal_sent", "won", "lost"],
       link_kind: ["url", "whatsapp", "latest_post"],
       payment_method: ["transfer", "cash", "card", "other"],
       post_status: ["draft", "published"],
+      proforma_status: ["sent", "accepted", "rejected"],
       project_status: [
         "in_development",
         "active",

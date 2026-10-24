@@ -1,5 +1,5 @@
 import type { Database } from "@/lib/database.types";
-import { formatCents, priceWithVatCents } from "@/lib/price";
+import { formatCents, priceWithVatCents } from "./price";
 
 /**
  * Pure helpers of the clients module (E11-01, SRS 3.9): renewal periods,
@@ -73,6 +73,28 @@ export function addPeriod(
   ).getUTCDate();
   target.setUTCDate(Math.min(start.getUTCDate(), lastDay));
   return target.toISOString().slice(0, 10);
+}
+
+/** "Se renueva cada" as typed in a form; an empty unit is a one-off payment. */
+export type RenewalInput = { value: string; unit: DurationUnit | "" };
+
+/** A plan's duration as "Se renueva cada"; no plan or no duration: one-off. */
+export function planRenewal(
+  plan:
+    | { duration_value: number | null; duration_unit: DurationUnit | null }
+    | undefined,
+): RenewalInput {
+  return plan?.duration_value && plan.duration_unit
+    ? { value: String(plan.duration_value), unit: plan.duration_unit }
+    : { value: "", unit: "" };
+}
+
+/** "Hasta": one renewal after `start`, or empty when it does not renew. */
+export function endsAfter(start: string, renewal: RenewalInput): string {
+  const value = Number(renewal.value);
+  return start && renewal.unit && value >= 1
+    ? addPeriod(start, value, renewal.unit)
+    : "";
 }
 
 /** "12 de octubre de 2026". */

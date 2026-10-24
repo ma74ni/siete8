@@ -133,3 +133,37 @@ Las carpetas se crean cuando tienen su primer archivo, no antes. Alias único: `
 - Nombres de archivos en kebab-case (`plan-card.tsx`); componentes en PascalCase; funciones y variables en camelCase.
 - Pruebas junto al archivo que prueban: `price.ts` → `price.test.ts`.
 - Commits en inglés, en imperativo y con una línea de resumen corta.
+
+## Calidad de código
+
+Reglas concretas, no principios genéricos: el agente `code-reviewer` las revisa en cada tarea.
+
+**Cada capa hace lo suyo**
+- La lógica de negocio y los cálculos van en `src/lib/` como funciones puras, sin acceso a datos y con pruebas. `src/server/` lee, escribe y valida. Las páginas y componentes muestran y orquestan; no calculan precios, saldos, fechas ni estados.
+- Las dependencias van hacia adentro: `src/lib/` no importa de `src/server/` ni de `src/components/`.
+- Una Server Action sigue siempre el mismo orden: `requireAdmin()` (en el panel), validar con Zod, escribir, `revalidatePath` y devolver el mensaje de COPY.
+
+**Funciones y componentes**
+- Una función hace una cosa. Si su nombre o su descripción necesita "y", se divide.
+- Una página grande se divide en componentes con nombre dentro del mismo archivo (como la ficha del cliente) antes de crear archivos nuevos.
+- Nombres que dicen qué hacen, en inglés y sin abreviaturas (`expiresOn`, no `exp`).
+
+**Sin duplicar**
+- Antes de escribir una función, un componente o un esquema, busca uno parecido en `src/lib/`, `src/server/` y `src/components/`.
+- Si la misma lógica aparece dos veces, se extrae a una función compartida con prueba.
+
+**Tipos y errores**
+- Sin `any`. `as` y `!` solo cuando el tipo ya está garantizado (por ejemplo, `data!` después de comprobar `error`), nunca para callar al compilador.
+- Nada falla en silencio: una lectura que falla lanza un error; una acción devuelve el mensaje de error de COPY; un fallo que el visitante solo ve como aviso va a Sentry.
+
+**Limpieza**
+- Sin código muerto, sin variables sin uso y sin código comentado.
+- Los comentarios explican el porqué, no repiten el qué.
+- Cambios mínimos: no se refactoriza fuera del alcance de la tarea. Si algo lo merece, se avisa y se propone como tarea aparte.
+
+**Pruebas**
+- Toda función nueva de `src/lib/` tiene pruebas, con sus casos borde (vacío, nulo, límites de fechas, redondeo).
+- Un error corregido agrega la prueba que lo habría detectado.
+
+**Seguridad**
+- Además de las reglas de esta página y de `.claude/rules/`, una tarea que toca autenticación, permisos, RLS, secretos, variables de entorno o entradas del visitante pasa por el skill `security-review` antes del PR (lo indica el skill `verificar`).

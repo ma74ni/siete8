@@ -27,6 +27,7 @@ function refreshPurchases() {
   revalidatePath("/admin/compras", "layout");
   // Client pages show their purchases and licenses.
   revalidatePath("/admin/clientes", "layout");
+  revalidatePath("/admin/por-vencer");
 }
 
 /** The purchase form, with the checked services read as a list. */

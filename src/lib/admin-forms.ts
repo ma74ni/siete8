@@ -283,14 +283,29 @@ export const postCoverForm = z.object({ post_id: z.uuid() });
 
 // Leads (E4-07) -----------------------------------------------------------------
 
-export const leadStatus = z.enum(["new", "contacted", "closed", "lost"]);
+export const leadStatus = z.enum([
+  "new",
+  "contacted",
+  "proposal_sent",
+  "won",
+  "lost",
+]);
 export const leadSource = z.enum(["form", "whatsapp", "assistant"]);
 
-export const leadAdminForm = z.object({
-  id: z.uuid(),
-  status: leadStatus,
-  notes: optionalText(4000),
-});
+/** "Seguimiento": a lost lead says why (E11-05); other statuses drop the reason. */
+export const leadAdminForm = z
+  .object({
+    id: z.uuid(),
+    status: leadStatus,
+    lost_reason: optionalText(500),
+    notes: optionalText(4000),
+  })
+  .transform((lead) =>
+    lead.status === "lost" ? lead : { ...lead, lost_reason: null },
+  )
+  .refine((lead) => lead.status !== "lost" || lead.lost_reason !== null, {
+    path: ["lost_reason"],
+  });
 
 /** Filters of the leads list, from the address; unknown values are dropped. */
 export const leadFilters = z.object({
@@ -411,6 +426,32 @@ export const clientServiceUpdateForm = z
 
 export const periodForm = z
   .object({ id: z.uuid(), ...periodFields })
+  .refine(datesInOrder, { path: ["ends_on"] });
+
+/** The lead a new client comes from ("Crear cliente", E11-05). */
+export const clientLeadForm = z.object({ lead_id: optionalUuid });
+
+// Proformas (E11-05) --------------------------------------------------------------
+
+/** "Nueva proforma": what was offered to a lead, without VAT; never zero. */
+export const proformaForm = z.object({
+  lead_id: z.uuid(),
+  service_id: z.uuid(),
+  plan_id: optionalUuid,
+  price_without_vat: money.refine((price) => price > 0),
+  vat_rate: vatPercent,
+  sent_on: day,
+});
+
+/**
+ * "Aceptar proforma": the proforma to accept. The client and its service come
+ * with the same fields (and schemas) as "Nuevo cliente".
+ */
+export const acceptProformaForm = z.object({ proforma_id: z.uuid() });
+
+/** "Renovar" (E11-04): the next period of a client service, which always ends. */
+export const renewForm = z
+  .object({ client_service_id: z.uuid(), ...periodFields, ends_on: day })
   .refine(datesInOrder, { path: ["ends_on"] });
 
 // Client payments (E11-02) ------------------------------------------------------

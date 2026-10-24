@@ -11,6 +11,7 @@ import { ConfirmForm } from "@/components/admin/confirm-form";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { Section, SelectField } from "@/components/admin/fields";
 import { PriceField } from "@/components/admin/price-field";
+import { RenewForm } from "@/components/admin/renew-form";
 import { FormField } from "@/components/sitio/form-field";
 import { isUuid } from "@/lib/admin-forms";
 import { formatPostDate } from "@/lib/blog";
@@ -28,6 +29,7 @@ import { cx } from "@/lib/cx";
 import { PAYMENT_METHOD_LABELS, type PaymentMethod } from "@/lib/payments";
 import { formatCents, formatPriceWithVat } from "@/lib/price";
 import { serviceLicensesCostCents } from "@/lib/purchases";
+import { nextPeriod } from "@/lib/renewals";
 import {
   type ClientForAdmin,
   getClientCatalog,
@@ -107,6 +109,7 @@ export default async function ClientPage({
             clientName={client.name}
             catalog={catalog}
             purchases={purchases.get(service.id)}
+            today={today}
           />
         ))}
         <details className="rounded-control border border-border p-5">
@@ -240,12 +243,19 @@ function ServiceEditor({
   clientName,
   catalog,
   purchases,
+  today,
 }: {
   service: ClientService;
   clientName: string;
   catalog: CatalogService[];
   purchases?: ClientServicePurchases;
+  today: string;
 }) {
+  // One-off and cancelled services do not renew (E11-04).
+  const next =
+    service.status === "active"
+      ? nextPeriod(service, service.client_service_period[0] ?? null, today)
+      : null;
   const plans =
     catalog.find((candidate) => candidate.id === service.service_id)?.plans ??
     [];
@@ -312,6 +322,8 @@ function ServiceEditor({
             defaultValue={service.notes ?? ""}
           />
         </ActionForm>
+
+        {next && <RenewForm serviceId={service.id} next={next} />}
 
         <div className="flex flex-col gap-4">
           <h3 className="text-h4">Historial</h3>

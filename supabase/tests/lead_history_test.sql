@@ -40,11 +40,11 @@ set local role authenticated;
 select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-00000000ad01", "role": "authenticated"}', true);
 update public.lead set status = 'contacted' where id = '00000000-0000-0000-0000-0000000ad0a1';
 update public.lead set notes = 'Llamar el lunes.' where id = '00000000-0000-0000-0000-0000000ad0a1';
-update public.lead set status = 'closed' where id = '00000000-0000-0000-0000-0000000ad0a1';
+update public.lead set status = 'won' where id = '00000000-0000-0000-0000-0000000ad0a1';
 
 select is(
   (select array_agg(status::text order by created_at, status) from public.lead_status_event where lead_id = '00000000-0000-0000-0000-0000000ad0a1'),
-  array['new', 'contacted', 'closed'], 'admin: each status change is recorded, notes are not'
+  array['new', 'contacted', 'won'], 'admin: each status change is recorded, notes are not'
 );
 select is(
   (select count(*) from public.lead_status_event where changed_by = '00000000-0000-0000-0000-00000000ad01')::int,

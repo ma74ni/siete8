@@ -34,7 +34,11 @@ Mira `git diff origin/dev...HEAD` (más los cambios sin confirmar) y revisa:
 - **Seguridad:** sin secretos; `SUPABASE_SECRET_KEY` y `ANTHROPIC_API_KEY` solo en servidor; Server Actions del panel con `requireAdmin()` y Zod; tablas nuevas con RLS y pruebas.
 - **Alcance:** nada fuera de la tarea.
 
+- **Calidad:** lo de la sección "Calidad de código" del `CLAUDE.md` (capas, duplicación, tipos, errores, limpieza, pruebas).
+
 Para una revisión más profunda, delega al agente `code-reviewer`.
+
+Si el diff toca autenticación o permisos (`src/proxy.ts`, `src/server/auth*`, `requireAdmin`), RLS o migraciones (`supabase/`), secretos o variables de entorno (`src/env/`, `netlify/functions/`), o entradas del visitante (formularios públicos, `src/app/api/`), corre además el skill `security-review` y corrige lo que encuentre antes del PR.
 
 ## 3. Revisión manual
 
