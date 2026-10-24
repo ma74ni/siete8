@@ -222,3 +222,16 @@ Gestión interna en el panel (SRS 3.9). Tan sencilla como una hoja de cálculo: 
 | E11-06 | Ganancias: devengado y caja, por mes y año, por servicio, por cliente y licencias sin asignar | E11-02, E11-03 | La ganancia es sin IVA; una compra compartida anual se reparte por mes en la vista devengada y sale entera en caja; los cálculos van en centavos con pruebas | RF-CRM-21, 22 |
 
 Se ejecutan en orden. E11-01 va primero porque permite registrar ya a los clientes actuales y no perder renovaciones.
+
+## 10. E12 Panel desde Claude (MCP)
+
+Registrar ventas, renovar y consultar vencimientos hablándole a Claude (escritorio, web o celular) en vez de abrir el panel: "registra una firma para persona natural, 1 año, a Juan Pérez". Claude no guarda datos ni calcula: llama a herramientas de un servidor MCP propio, que usan las mismas validaciones, funciones de precio con IVA y permisos del panel. La base sigue siendo la única fuente de verdad; el panel no se reemplaza. Solo admin.
+
+| ID | Tarea | Depende de | Criterios de aceptación | SRS |
+| --- | --- | --- | --- | --- |
+| E12-01 | Servidor MCP remoto en `/api/mcp` con autenticación del admin y herramientas de lectura: `buscar_cliente`, `ficha_cliente`, `por_vencer`, `por_cobrar` | E11-04 | Sin sesión de admin responde 401; cada herramienta devuelve lo mismo que su pantalla del panel (mismas funciones de `src/server/`); cada llamada queda registrada con fecha, herramienta y resultado | RF-MCP-01..03 (por agregar al SRS) |
+| E12-02 | Herramientas de escritura: `registrar_venta` (cliente nuevo o existente, servicio y plan con precio, costo y vencimiento precargados), `renovar`, `registrar_pago` y `marcar_no_pagara` | E12-01 | Reusan los esquemas Zod y las acciones del panel; se marcan como herramientas que modifican datos para que Claude pida confirmación; una venta registrada por MCP tiene el mismo total con IVA y vencimiento que la misma venta hecha en el panel (prueba) | RF-MCP-04..06 (por agregar al SRS) |
+| E12-03 | Calendario de vencimientos: feed `.ics` privado con los vencimientos de clientes y compras, para suscribirse desde Google o Apple Calendar | E11-04 | La dirección lleva un token secreto que se cambia desde Configuración; el feed no incluye costos ni montos; un vencimiento renovado se mueve en el calendario sin hacer nada | RF-MCP-07 (por agregar al SRS) |
+| E12-04 | Guía de uso: conectar el servidor en Claude, ejemplos de pedidos y límites | E12-02 | Una persona del equipo conecta el servidor y registra una venta siguiendo solo la guía | — |
+
+Se ejecuta después de E11-06. Antes de E12-01 hay que decidir la autenticación (los conectores remotos de Claude usan OAuth) y agregar los requisitos RF-MCP al SRS (sección 3.10).
