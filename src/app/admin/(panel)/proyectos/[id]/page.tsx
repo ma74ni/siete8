@@ -5,8 +5,10 @@ import { notFound } from "next/navigation";
 import { ActionForm } from "@/components/admin/action-form";
 import { CheckboxField } from "@/components/admin/checkbox-field";
 import { DeleteButton } from "@/components/admin/delete-button";
+import { EmptyState } from "@/components/admin/empty-state";
 import { Section, SelectField } from "@/components/admin/fields";
 import { ImageField } from "@/components/admin/image-field";
+import { PageHeader } from "@/components/admin/page-header";
 import { ProjectFields } from "@/components/admin/project-fields";
 import { FormField } from "@/components/sitio/form-field";
 import { isUuid } from "@/lib/admin-forms";
@@ -34,19 +36,17 @@ export default async function EditProjectPage({
 
   return (
     <div className="flex max-w-[64rem] flex-col gap-10">
-      <div className="flex flex-col gap-2">
-        <Link href="/admin/proyectos" className="text-small">
-          Volver a proyectos
-        </Link>
-        <h1 className="text-h2">{project.title}</h1>
-        <p>
-          {project.published ? (
+      <PageHeader
+        title={project.title}
+        back={{ href: "/admin/proyectos", label: "Volver a proyectos" }}
+        intro={
+          project.published ? (
             <Link href={`/proyectos/${project.slug}`}>Ver en el sitio</Link>
           ) : (
             "Sin publicar: no aparece en el sitio."
-          )}
-        </p>
-      </div>
+          )
+        }
+      />
 
       <Section title="Datos del proyecto">
         <ActionForm
@@ -85,32 +85,35 @@ export default async function EditProjectPage({
       </Section>
 
       <Section title="Galería">
-        {project.project_image.length === 0 && <p>Todavía no hay capturas.</p>}
-        <ul className="grid gap-6 md:grid-cols-2">
-          {project.project_image.map((image) => (
-            <li key={image.id} className="flex flex-col gap-3">
-              <div className="relative aspect-[16/10] bg-surface">
-                <Image
-                  src={image.url}
-                  alt={image.alt}
-                  fill
-                  sizes="(min-width: 768px) 30rem, 100vw"
-                  className="object-contain"
+        {project.project_image.length === 0 ? (
+          <EmptyState>Todavía no hay capturas.</EmptyState>
+        ) : (
+          <ul className="grid gap-6 md:grid-cols-2">
+            {project.project_image.map((image) => (
+              <li key={image.id} className="flex flex-col gap-3">
+                <div className="relative aspect-[16/10] bg-surface">
+                  <Image
+                    src={image.url}
+                    alt={image.alt}
+                    fill
+                    sizes="(min-width: 768px) 30rem, 100vw"
+                    className="object-contain"
+                  />
+                </div>
+                <p className="text-small">
+                  {image.device === "mobile" ? "Celular" : "Escritorio"}, orden{" "}
+                  {image.sort_order}. Texto alternativo: {image.alt}
+                </p>
+                <DeleteButton
+                  action={deleteProjectImage}
+                  id={image.id}
+                  label="Borrar imagen"
+                  question="¿Borrar esta imagen? No se puede deshacer."
                 />
-              </div>
-              <p className="text-small">
-                {image.device === "mobile" ? "Celular" : "Escritorio"}, orden{" "}
-                {image.sort_order}. Texto alternativo: {image.alt}
-              </p>
-              <DeleteButton
-                action={deleteProjectImage}
-                id={image.id}
-                label="Borrar imagen"
-                question="¿Borrar esta imagen? No se puede deshacer."
-              />
-            </li>
-          ))}
-        </ul>
+              </li>
+            ))}
+          </ul>
+        )}
         <div className="flex flex-col gap-4 rounded-control border border-border p-5">
           <h3 className="text-h4">Agregar una captura</h3>
           <ActionForm
