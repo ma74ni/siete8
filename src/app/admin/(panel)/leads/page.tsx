@@ -1,6 +1,8 @@
 import Link from "next/link";
 
+import { DataTable } from "@/components/admin/data-table";
 import { SelectField } from "@/components/admin/fields";
+import { PageHeader } from "@/components/admin/page-header";
 import { Button } from "@/components/sitio/button";
 import { leadFilters } from "@/lib/admin-forms";
 import { formatPostDate } from "@/lib/blog";
@@ -23,16 +25,11 @@ export default async function LeadsPage({
 
   return (
     <div className="flex max-w-[64rem] flex-col gap-8">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-h2">Leads</h1>
-        <p>
-          Las personas que te dejaron sus datos, de la más reciente a la más
-          antigua.
-        </p>
-      </div>
-      <Button href="/admin/leads/nuevo" className="self-start">
-        Nuevo lead
-      </Button>
+      <PageHeader
+        title="Leads"
+        intro="Las personas que te dejaron sus datos, de la más reciente a la más antigua."
+        actions={<Button href="/admin/leads/nuevo">Nuevo lead</Button>}
+      />
 
       {/* A plain GET form: the filters live in the address. */}
       <form className="grid items-end gap-4 md:grid-cols-4">
@@ -80,32 +77,32 @@ export default async function LeadsPage({
         </Button>
       </form>
 
-      {leads.length === 0 ? (
-        <p>No hay leads con estos filtros.</p>
-      ) : (
-        <ul className="flex flex-col border-t border-border">
-          {leads.map((lead) => (
-            <li
-              key={lead.id}
-              className="flex flex-wrap items-center justify-between gap-2 border-b border-border py-3"
-            >
-              <span className="flex flex-col">
-                <Link href={`/admin/leads/${lead.id}`}>
-                  {lead.name ?? lead.phone ?? lead.email}
-                </Link>
-                <span className="text-small">
-                  {[lead.phone, lead.service?.name].filter(Boolean).join(", ")}
-                </span>
-              </span>
-              <span className="text-small">
-                {LEAD_STATUS_LABELS[lead.status]},{" "}
-                {LEAD_SOURCE_LABELS[lead.source]},{" "}
-                {formatPostDate(lead.created_at)}
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
+      <DataTable
+        rows={leads}
+        rowKey={(lead) => lead.id}
+        label="Leads"
+        empty="No hay leads con estos filtros."
+        minWidth="52rem"
+        columns={[
+          {
+            header: "Nombre",
+            rowHeader: true,
+            cell: (lead) => (
+              <Link href={`/admin/leads/${lead.id}`}>
+                {lead.name ?? lead.phone ?? lead.email}
+              </Link>
+            ),
+          },
+          { header: "Celular", cell: (lead) => lead.phone ?? "—" },
+          { header: "Servicio", cell: (lead) => lead.service?.name ?? "—" },
+          { header: "Estado", cell: (lead) => LEAD_STATUS_LABELS[lead.status] },
+          { header: "Origen", cell: (lead) => LEAD_SOURCE_LABELS[lead.source] },
+          {
+            header: "Recibido",
+            cell: (lead) => formatPostDate(lead.created_at),
+          },
+        ]}
+      />
     </div>
   );
 }
