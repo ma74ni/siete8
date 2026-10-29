@@ -9,7 +9,7 @@ import { ImageField } from "@/components/admin/image-field";
 import { PageHeader } from "@/components/admin/page-header";
 import { PostFields } from "@/components/admin/post-fields";
 import { isUuid } from "@/lib/admin-forms";
-import { formatPostDate } from "@/lib/blog";
+import { formatPostDate, postState } from "@/lib/blog";
 import { getPostForAdmin } from "@/server/admin-blog";
 import {
   deletePost,
@@ -29,10 +29,7 @@ export default async function EditPostPage({
   const post = await getPostForAdmin(id);
   if (!post) notFound();
 
-  const live =
-    post.status === "published" &&
-    post.published_at !== null &&
-    new Date(post.published_at) <= new Date();
+  const live = postState(post) === "published";
 
   return (
     <div className="flex max-w-[64rem] flex-col gap-10">

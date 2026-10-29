@@ -53,3 +53,37 @@ export const POSTS_PER_PAGE = 9;
 export function pageCount(total: number): number {
   return Math.max(1, Math.ceil(total / POSTS_PER_PAGE));
 }
+
+/** Where a post stands; the database decides the same way (RLS on `post`). */
+export type PostState = "draft" | "scheduled" | "published";
+
+type PostDates = {
+  status: "draft" | "published";
+  published_at: string | null;
+};
+
+/**
+ * A published post is on the site from its date on, inclusive; with a later
+ * date it is scheduled.
+ */
+export function postState(post: PostDates, now: Date = new Date()): PostState {
+  if (post.status === "draft") return "draft";
+  if (post.published_at && new Date(post.published_at) > now) {
+    return "scheduled";
+  }
+  return "published";
+}
+
+/** "Borrador", "Programado para el …" or "Publicado el …" (COPY §13). */
+export function postStateLabel(
+  post: PostDates,
+  now: Date = new Date(),
+): string {
+  const state = postState(post, now);
+  if (state === "draft") return "Borrador";
+  if (!post.published_at) return "Publicado";
+  const day = formatPostDate(post.published_at);
+  return state === "scheduled"
+    ? `Programado para el ${day}`
+    : `Publicado el ${day}`;
+}
