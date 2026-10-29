@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { DataTable } from "@/components/admin/data-table";
+import { PageHeader } from "@/components/admin/page-header";
 import { listServicesForAdmin } from "@/server/admin-catalog";
 
 // Texts from docs/COPY.md §13.
@@ -10,13 +12,10 @@ export default async function PanelHome() {
 
   return (
     <div className="flex max-w-[64rem] flex-col gap-10">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-h2">Servicios</h1>
-        <p>
-          Elige un servicio para cambiar sus planes, precios y textos. Lo que
-          guardes se ve en el sitio en menos de un minuto.
-        </p>
-      </div>
+      <PageHeader
+        title="Servicios"
+        intro="Elige un servicio para cambiar sus planes, precios y textos. Lo que guardes se ve en el sitio en menos de un minuto."
+      />
       {categories.map((category) => (
         <section key={category.id} className="flex flex-col gap-3">
           <h2 className="text-h4">
@@ -25,25 +24,35 @@ export default async function PanelHome() {
               <span className="font-normal"> (categoría oculta)</span>
             )}
           </h2>
-          <ul className="flex flex-col border-t border-border">
-            {category.service.map((service) => (
-              <li
-                key={service.id}
-                className="flex flex-wrap items-center justify-between gap-2 border-b border-border py-3"
-              >
-                <Link href={`/admin/servicios/${service.id}`}>
-                  {service.name}
-                </Link>
-                <span className="text-small">
-                  {service.visible ? "Visible" : "Oculto"}
-                  {", "}
-                  {service.plan.length === 1
+          <DataTable
+            rows={category.service}
+            rowKey={(service) => service.id}
+            label={category.name}
+            empty="Esta categoría todavía no tiene servicios."
+            minWidth="20rem"
+            columns={[
+              {
+                header: "Servicio",
+                rowHeader: true,
+                cell: (service) => (
+                  <Link href={`/admin/servicios/${service.id}`}>
+                    {service.name}
+                  </Link>
+                ),
+              },
+              {
+                header: "Estado",
+                cell: (service) => (service.visible ? "Visible" : "Oculto"),
+              },
+              {
+                header: "Planes",
+                cell: (service) =>
+                  service.plan.length === 1
                     ? "1 plan"
-                    : `${service.plan.length} planes`}
-                </span>
-              </li>
-            ))}
-          </ul>
+                    : `${service.plan.length} planes`,
+              },
+            ]}
+          />
         </section>
       ))}
     </div>
