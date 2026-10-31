@@ -1,7 +1,7 @@
 import { ActionForm } from "@/components/admin/action-form";
 import { Disclosure } from "@/components/admin/disclosure";
 import { PriceField } from "@/components/admin/price-field";
-import { FormField } from "@/components/sitio/form-field";
+import { FormField } from "@/components/form/form-field";
 import { formatDecimal } from "@/lib/clients";
 import type { NextPeriod } from "@/lib/renewals";
 import { renewClientService } from "@/server/admin-clients-actions";

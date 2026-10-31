@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { DataTable } from "@/components/admin/data-table";
-import { SelectField } from "@/components/admin/fields";
+import { SelectField } from "@/components/form/select-field";
 import { PageHeader } from "@/components/admin/page-header";
 import { Button } from "@/components/sitio/button";
 import { leadFilters } from "@/lib/admin-forms";

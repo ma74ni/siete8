@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { Fragment, useActionState, useEffect, useRef, useState } from "react";
 
-import { CheckboxField } from "@/components/admin/checkbox-field";
-import { SelectField } from "@/components/admin/fields";
+import { CheckboxField } from "@/components/form/checkbox-field";
+import { SelectField } from "@/components/form/select-field";
 import { Button } from "@/components/sitio/button";
-import { FormField } from "@/components/sitio/form-field";
+import { FormField } from "@/components/form/form-field";
+import { HoneypotField } from "@/components/sitio/honeypot-field";
 import { loadTurnstile } from "@/components/sitio/turnstile";
 import { CAMPAIGN_KEY } from "@/lib/analytics";
 import type { ContactState } from "@/lib/contact-form";
@@ -164,19 +165,7 @@ export function ContactForm({
           error={invalid("message")}
         />
       </Fragment>
-      {/* Honeypot: hidden from people and screen readers, filled by bots. */}
-      <div
-        aria-hidden
-        className="absolute -left-[9999px] h-px w-px overflow-hidden"
-      >
-        <label htmlFor="field-website">Sitio web</label>
-        <input
-          id="field-website"
-          name="website"
-          tabIndex={-1}
-          autoComplete="off"
-        />
-      </div>
+      <HoneypotField />
       <input type="hidden" name="utm" value={utm} />
       <CheckboxField
         id="field-consent"

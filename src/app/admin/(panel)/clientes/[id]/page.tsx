@@ -12,12 +12,13 @@ import { DataTable } from "@/components/admin/data-table";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { Disclosure } from "@/components/admin/disclosure";
 import { EmptyState } from "@/components/admin/empty-state";
-import { Section, SelectField } from "@/components/admin/fields";
+import { Section } from "@/components/admin/fields";
+import { SelectField } from "@/components/form/select-field";
 import { PageHeader } from "@/components/admin/page-header";
 import { PriceField } from "@/components/admin/price-field";
 import { RenewForm } from "@/components/admin/renew-form";
 import { StatusText } from "@/components/admin/status-text";
-import { FormField } from "@/components/sitio/form-field";
+import { FormField } from "@/components/form/form-field";
 import { isUuid } from "@/lib/admin-forms";
 import { formatPostDate } from "@/lib/blog";
 import {

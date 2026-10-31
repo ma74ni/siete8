@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 
-import { SelectField } from "@/components/admin/fields";
+import { SelectField } from "@/components/form/select-field";
 import { PriceField } from "@/components/admin/price-field";
 import { Input, Select } from "@/components/form/controls";
-import { FormField } from "@/components/sitio/form-field";
+import { FormField } from "@/components/form/form-field";
 import {
   type CatalogService,
   DEFAULT_VAT_RATE,

@@ -1,6 +1,6 @@
-import { SelectField } from "@/components/admin/fields";
+import { SelectField } from "@/components/form/select-field";
 import { MarkdownEditor } from "@/components/admin/markdown-editor";
-import { FormField } from "@/components/sitio/form-field";
+import { FormField } from "@/components/form/form-field";
 import { toQuitoInput } from "@/lib/blog";
 import type { PostForAdmin } from "@/server/admin-blog";
 

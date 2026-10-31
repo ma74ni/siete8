@@ -53,11 +53,19 @@ export function Input({
   return <input {...props} className={controlClass({ numeric, className })} />;
 }
 
-export function Textarea({ className, ...props }: ComponentProps<"textarea">) {
+/**
+ * A text area of 128 px, or, `compact`, as tall as a text box (the chat's
+ * one-line composer).
+ */
+export function Textarea({
+  compact = false,
+  className,
+  ...props
+}: ComponentProps<"textarea"> & { compact?: boolean }) {
   return (
     <textarea
       {...props}
-      className={controlClass({ multiline: true, className })}
+      className={controlClass({ multiline: !compact, className })}
     />
   );
 }

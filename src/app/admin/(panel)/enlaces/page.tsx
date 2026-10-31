@@ -1,11 +1,11 @@
 import Link from "next/link";
 
 import { ActionForm } from "@/components/admin/action-form";
-import { CheckboxField } from "@/components/admin/checkbox-field";
+import { CheckboxField } from "@/components/form/checkbox-field";
 import { DeleteButton } from "@/components/admin/delete-button";
-import { SelectField } from "@/components/admin/fields";
+import { SelectField } from "@/components/form/select-field";
 import { PageHeader } from "@/components/admin/page-header";
-import { FormField } from "@/components/sitio/form-field";
+import { FormField } from "@/components/form/form-field";
 import { deleteLinkButton, saveLinkButton } from "@/server/admin-links-actions";
 import {
   type LinkButtonForAdmin as LinkButton,

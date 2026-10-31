@@ -41,7 +41,7 @@ describe("PageHeader", () => {
       '<a href="/admin/leads" class="text-small">Volver a leads</a>',
     );
     expect(markup).toContain(
-      "<p>Para registrar a quien te escribió por WhatsApp.</p>",
+      '<p class="max-w-[68ch]">Para registrar a quien te escribió por WhatsApp.</p>',
     );
     expect(markup).toContain("<button>Crear</button>");
   });
@@ -58,7 +58,7 @@ describe("PageHeader", () => {
       />,
     );
     expect(markup).toContain(
-      '<p>De <a href="#proveedor">Proveedor Uno</a>.</p>',
+      '<p class="max-w-[68ch]">De <a href="#proveedor">Proveedor Uno</a>.</p>',
     );
   });
 

@@ -1,8 +1,8 @@
 import { ActionForm } from "@/components/admin/action-form";
-import { CheckboxField } from "@/components/admin/checkbox-field";
+import { CheckboxField } from "@/components/form/checkbox-field";
 import { LeadServiceFields } from "@/components/admin/lead-service-fields";
 import { PageHeader } from "@/components/admin/page-header";
-import { FormField } from "@/components/sitio/form-field";
+import { FormField } from "@/components/form/form-field";
 import { getClientCatalog } from "@/server/admin-clients";
 import { createLead } from "@/server/admin-leads-actions";
 

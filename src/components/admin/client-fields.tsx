@@ -1,5 +1,5 @@
-import { SelectField } from "@/components/admin/fields";
-import { FormField } from "@/components/sitio/form-field";
+import { SelectField } from "@/components/form/select-field";
+import { FormField } from "@/components/form/form-field";
 import { CLIENT_KIND_LABELS, type ClientKind } from "@/lib/clients";
 
 // Texts from docs/COPY.md §13 (Clientes: Datos del cliente).

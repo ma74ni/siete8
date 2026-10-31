@@ -29,7 +29,7 @@ export function PageHeader({
           </Link>
         )}
         <h1 className="text-h2">{title}</h1>
-        {intro && <p>{intro}</p>}
+        {intro && <p className="max-w-[68ch]">{intro}</p>}
       </div>
       {actions && (
         <div className="flex flex-wrap items-center gap-4">{actions}</div>

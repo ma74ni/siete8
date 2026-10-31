@@ -3,14 +3,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ActionForm } from "@/components/admin/action-form";
-import { CheckboxField } from "@/components/admin/checkbox-field";
+import { CheckboxField } from "@/components/form/checkbox-field";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { EmptyState } from "@/components/admin/empty-state";
-import { Section, SelectField } from "@/components/admin/fields";
+import { Section } from "@/components/admin/fields";
+import { SelectField } from "@/components/form/select-field";
 import { ImageField } from "@/components/admin/image-field";
 import { PageHeader } from "@/components/admin/page-header";
 import { ProjectFields } from "@/components/admin/project-fields";
-import { FormField } from "@/components/sitio/form-field";
+import { FormField } from "@/components/form/form-field";
 import { isUuid } from "@/lib/admin-forms";
 import { getProjectForAdmin } from "@/server/admin-portfolio";
 import {
