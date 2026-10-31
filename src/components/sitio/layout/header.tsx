@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/sitio/button";
 import { MobileMenu } from "@/components/sitio/layout/mobile-menu";
+import { PendingLabel } from "@/components/sitio/layout/pending-label";
 import { ServicesMenu } from "@/components/sitio/layout/services-menu";
 import { Logo } from "@/components/sitio/logo";
 import { type MenuCategory, type NavLink } from "@/lib/menu";
@@ -32,7 +33,7 @@ export function Header({
               href={link.href}
               className="flex min-h-11 items-center px-3 font-medium text-fg no-underline hover:underline"
             >
-              {link.label}
+              <PendingLabel>{link.label}</PendingLabel>
             </Link>
           ))}
         </nav>

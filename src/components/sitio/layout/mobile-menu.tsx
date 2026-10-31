@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 
 import { Button } from "@/components/sitio/button";
+import { PendingLabel } from "@/components/sitio/layout/pending-label";
+import { usePageMenu } from "@/components/sitio/layout/use-page-menu";
 import { cx } from "@/lib/cx";
 import { type MenuCategory, type NavLink } from "@/lib/menu";
 
@@ -20,10 +22,12 @@ const navItem =
 /**
  * Navigation for small screens: a toggle opens a panel under the header with
  * Servicios (folded until tapped), the main links and the WhatsApp button.
- * Escape closes the panel and returns focus to the toggle.
+ * Escape closes the panel and returns focus to the toggle. A link to another
+ * page keeps the panel open, marked as loading, until that page arrives: the
+ * panel belongs to the page it was opened on.
  */
 export function MobileMenu({ categories, links, cta }: MobileMenuProps) {
-  const [open, setOpen] = useState(false);
+  const { open, pathname, setOpen, close: closePanel } = usePageMenu();
   const [servicesOpen, setServicesOpen] = useState(false);
   const panelId = useId();
   const servicesId = useId();
@@ -33,18 +37,22 @@ export function MobileMenu({ categories, links, cta }: MobileMenuProps) {
     if (!open) return;
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        setOpen(false);
+        closePanel();
         setServicesOpen(false);
         toggleRef.current?.focus();
       }
     }
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [open]);
+  }, [open, closePanel]);
 
   const close = () => {
-    setOpen(false);
+    closePanel();
     setServicesOpen(false);
+  };
+  // A link to the page already open does not navigate, so it closes the panel.
+  const closeOnSamePage = (href: string) => () => {
+    if (href === pathname) close();
   };
 
   return (
@@ -55,7 +63,11 @@ export function MobileMenu({ categories, links, cta }: MobileMenuProps) {
         aria-expanded={open}
         aria-controls={panelId}
         aria-label={open ? "Cerrar menú" : "Menú"}
-        onClick={() => (open ? close() : setOpen(true))}
+        onClick={() => {
+          if (open) return close();
+          setServicesOpen(false);
+          setOpen(true);
+        }}
         className="flex size-11 items-center justify-center"
       >
         {open ? (
@@ -108,10 +120,12 @@ export function MobileMenu({ categories, links, cta }: MobileMenuProps) {
                         <li key={service.slug}>
                           <Link
                             href={`/servicios/${service.slug}`}
-                            onClick={close}
+                            onClick={closeOnSamePage(
+                              `/servicios/${service.slug}`,
+                            )}
                             className="flex min-h-11 items-center pl-4 text-fg no-underline"
                           >
-                            {service.name}
+                            <PendingLabel>{service.name}</PendingLabel>
                           </Link>
                         </li>
                       ))}
@@ -122,8 +136,12 @@ export function MobileMenu({ categories, links, cta }: MobileMenuProps) {
             </li>
             {links.map((link) => (
               <li key={link.href}>
-                <Link href={link.href} onClick={close} className={navItem}>
-                  {link.label}
+                <Link
+                  href={link.href}
+                  onClick={closeOnSamePage(link.href)}
+                  className={navItem}
+                >
+                  <PendingLabel>{link.label}</PendingLabel>
                 </Link>
               </li>
             ))}
