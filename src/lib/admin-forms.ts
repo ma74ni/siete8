@@ -74,25 +74,6 @@ export const serviceForm = z.object({
   cross_sell_cta: optionalText(60),
 });
 
-export const planForm = z.object({
-  id: z.uuid().optional(),
-  service_id: z.uuid(),
-  name: requiredText(60),
-  detail: optionalText(200),
-  holder_type: holderType,
-  price_without_vat: money,
-  vat_rate: vatPercent,
-  visible: checkbox,
-  recommended: checkbox,
-  sort_order: order,
-  /** What the plan costs Siete8 (E11-01); empty: no direct cost. */
-  cost_without_vat: z
-    .string()
-    .optional()
-    .transform((value) => value?.trim() || null)
-    .pipe(money.nullable()),
-});
-
 export const idForm = z.object({ id: z.uuid() });
 
 /** Whether a route parameter is a valid id, before querying with it. */
@@ -388,6 +369,37 @@ function withRenewal<
     ? { ...form, renews_every_value: null }
     : { ...form, renews_every_value: form.renews_every_value ?? 1 };
 }
+
+/**
+ * A plan of a service. Its "Se renueva cada" is the plan's duration, which
+ * pre-fills the renewal of the clients' services that use it.
+ */
+export const planForm = z
+  .object({
+    id: z.uuid().optional(),
+    service_id: z.uuid(),
+    name: requiredText(60),
+    detail: optionalText(200),
+    holder_type: holderType,
+    price_without_vat: money,
+    vat_rate: vatPercent,
+    visible: checkbox,
+    recommended: checkbox,
+    sort_order: order,
+    /** What the plan costs Siete8 (E11-01); empty: no direct cost. */
+    cost_without_vat: z
+      .string()
+      .optional()
+      .transform((value) => value?.trim() || null)
+      .pipe(money.nullable()),
+    ...renewalFields,
+  })
+  .transform(withRenewal)
+  .transform(({ renews_every_value, renews_every_unit, ...plan }) => ({
+    ...plan,
+    duration_value: renews_every_value,
+    duration_unit: renews_every_unit,
+  }));
 
 const periodFields = {
   sold_on: day,
