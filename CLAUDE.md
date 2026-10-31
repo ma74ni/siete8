@@ -129,6 +129,7 @@ Las carpetas se crean cuando tienen su primer archivo, no antes. Alias único: `
 ## Convenciones de código
 
 - Server Components por defecto. `"use client"` solo en el componente que necesita estado, efectos o eventos, lo más abajo posible del árbol.
+- Campos, listas de opciones, casillas, tablas, desplegables, encabezados y estados vacíos se hacen con sus componentes: la tabla "Qué componente usar" de `.claude/rules/diseno.md` dice cuál, y `src/app/component-guards.test.ts` falla si un archivo que no es su componente escribe un `<select>`, `<textarea>`, `<input>` visible, `<table>`, `<details>`/`<summary>` o llama a `controlClass()`.
 - Datos: se leen en Server Components desde `src/server/`; las escrituras van por Server Actions o rutas de `api/`, validadas con Zod.
 - Nombres de archivos en kebab-case (`plan-card.tsx`); componentes en PascalCase; funciones y variables en camelCase.
 - Pruebas junto al archivo que prueban: `price.ts` → `price.test.ts`.

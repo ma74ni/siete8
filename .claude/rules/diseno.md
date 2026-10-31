@@ -23,4 +23,20 @@ Fuente: `docs/DESIGN.md`. Estas reglas aplican a todo componente o página.
 - Los precios se muestran solo con `formatPriceWithVat` de `@/lib/price` (o `PlanTable` y `PlanGrid`, que la usan).
 - Los enlaces de WhatsApp se arman solo con `@/lib/whatsapp` (`whatsappUrl(mensaje, waMe)` y los mensajes de COPY §2); nunca se escribe un `wa.me` a mano. El número, el horario, el teléfono, el correo y las redes salen de la configuración del sitio (`getSiteSettings` de `src/server/site-settings.ts`, E4-08), que se edita en el panel (Configuración); nunca se escriben en el código. Los valores de respaldo, si falta una fila, están en `DEFAULT_SETTINGS` de `@/lib/site-settings`. La imagen `public/og.png` no lleva el número, para que no quede vieja.
 - Texto en Markdown escrito en el panel (proyectos, artículos): siempre con `Markdown` (`@/components/sitio/markdown`, react-markdown sin HTML crudo), nunca con `dangerouslySetInnerHTML`.
+- Qué componente usar en cada caso. `src/app/component-guards.test.ts` falla si un archivo que no es el componente dueño escribe uno de los elementos de las seis primeras filas; las demás son la regla:
+
+  | Necesitas                          | Usa                                                                                                                              | Nunca                                     |
+  | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+  | Campo de texto o área de texto     | `FormField` (`multiline` para el área de texto; `Input`, `Textarea`, con `compact` si es de una línea, si armas el campo a mano) | `<input>`, `<textarea>`                   |
+  | Lista de opciones                  | `SelectField` (`Select`)                                                                                                         | `<select>`                                |
+  | Casilla u opción                   | `CheckboxField` (`Checkbox`, `Radio`)                                                                                            | `<input type="checkbox">`                 |
+  | Selector de archivo                | `ImageField` para imágenes; otro caso, un componente propio agregado a los dueños de `<input>` en la prueba                      | `controlClass()` fuera de `controls.tsx`  |
+  | Tabla de datos del panel           | `DataTable` (`PlanTable` para los planes del sitio)                                                                              | `<table>`                                 |
+  | Contenido que se abre              | `Disclosure` (`Faq` para las preguntas del sitio)                                                                                | `<details>`, `<summary>`                  |
+  | Encabezado de una página del panel | `PageHeader`                                                                                                                     | Un `h1` con su enlace y su párrafo a mano |
+  | Lista vacía                        | `EmptyState` (o el `empty` de `DataTable`)                                                                                       | Un `<p>` suelto                           |
+  | Texto de estado ("Venció el …")    | `StatusText`                                                                                                                     | `text-accent` a mano                      |
+
+  Los `<input type="hidden">` de los formularios sí se escriben en la página. Si un caso nuevo de verdad necesita el elemento, va en un componente y se agrega a sus dueños en la prueba.
+
 - Server Components por defecto. `"use client"` solo en el componente que necesita estado, efectos o eventos, lo más abajo posible del árbol. Ningún componente cliente importa `@/server/*` ni `@supabase/*` (lo verifica `src/server/client-boundary.test.ts`).

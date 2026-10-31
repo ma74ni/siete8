@@ -194,7 +194,7 @@ El sitio y el panel usan los mismos controles, en `src/components/form/controls.
 
 | Pieza | Uso |
 | --- | --- |
-| `Input`, `Textarea`, `Select` | Control nativo con el estilo común: alto 48 px (el área de texto, 128 px), borde `field-border`, fondo `bg`, texto `fg`. Con error (`aria-invalid`), borde `accent`; deshabilitado, al 60 % de opacidad. `numeric` usa cifras tabulares, para precios y cantidades |
+| `Input`, `Textarea`, `Select` | Control nativo con el estilo común: alto 48 px (el área de texto, 128 px; con `compact`, 48 px, como el campo del chat), borde `field-border`, fondo `bg`, texto `fg`. Con error (`aria-invalid`), borde `accent`; deshabilitado, al 60 % de opacidad. `numeric` usa cifras tabulares, para precios y cantidades |
 | `Checkbox`, `Radio` | Casilla y opción de 20 px en el color `action`, siempre dentro de una etiqueta de al menos 44 px de alto |
 | `Label`, `Hint`, `FieldError` | Etiqueta en peso 500; ayuda en `text-small`; error en `text-small`, peso 500 y color `accent`. La ayuda y el error se enlazan al control con `aria-describedby` |
 | `FormField`, `SelectField`, `CheckboxField` | El campo completo (etiqueta, control, ayuda y error) para el caso común. Se usan antes que los átomos sueltos |
@@ -243,7 +243,7 @@ En `src/components/admin/`. Las pantallas del panel se arman con estas piezas y 
 
 | Pieza | Uso |
 | --- | --- |
-| `PageHeader` | El inicio de cada página: enlace para volver (opcional), el título como único `h1`, la introducción en un párrafo (puede llevar enlaces) y las acciones principales ("Nuevo cliente"). Las acciones van siempre debajo del título, en cualquier ancho |
+| `PageHeader` | El inicio de cada página: enlace para volver (opcional), el título como único `h1`, la introducción en un párrafo de 68 caracteres como máximo (puede llevar enlaces) y las acciones principales ("Nuevo cliente"). Las acciones van siempre debajo del título, en cualquier ancho |
 | `DataTable` | Listados en tabla, definidos por columnas. La columna que identifica la fila (el cliente; en Compras, el concepto, que abre la compra) es su encabezado de fila. Las columnas `numeric` usan cifras tabulares; las `emphasis`, peso 500; las de botones van con relleno `compact` y su título solo para lectores de pantalla. En pantallas angostas se desplaza de lado (ancho mínimo de 44 rem por defecto) y la zona que se desplaza recibe el foco del teclado y lleva un nombre. Sin filas muestra el estado vacío. Una fila de detalle opcional, del ancho visible, para acciones que necesitan espacio, como Renovar |
 | `Disclosure` | Contenido que se abre al pedirlo, con `<details>` nativo y una flecha que gira al abrir. `panel`: caja con borde `line` y título, para formularios de la página ("Agregar servicio"); su contenido va con 24 px entre bloques. `action`: el resumen es un botón secundario, para acciones en una fila ("Renovar"). `inline`: solo el título en peso 500, para un extra dentro de otro bloque ("Registrar abono") |
 | `EmptyState` | Lo que dice una lista vacía ("Todavía no hay clientes."), con una acción opcional |
