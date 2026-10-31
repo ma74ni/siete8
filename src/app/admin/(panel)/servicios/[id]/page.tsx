@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ActionForm } from "@/components/admin/action-form";
+import { RenewalInputs } from "@/components/admin/client-service-fields";
 import { CheckboxField } from "@/components/form/checkbox-field";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { Section } from "@/components/admin/fields";
@@ -11,7 +12,7 @@ import { PageHeader } from "@/components/admin/page-header";
 import { PriceField } from "@/components/admin/price-field";
 import { FormField } from "@/components/form/form-field";
 import { isUuid } from "@/lib/admin-forms";
-import { formatDecimal } from "@/lib/clients";
+import { formatDecimal, planRenewal } from "@/lib/clients";
 import {
   HOLDER_LABELS,
   holderTypes,
@@ -175,6 +176,11 @@ function PlanEditor({
           idPrefix={`plan-${key}`}
           price={plan?.price_without_vat ?? 0}
           vatRate={plan?.vat_rate ?? 0.15}
+        />
+        <RenewalInputs
+          idPrefix={`plan-${key}`}
+          // A new plan starts at 1 year, the most common period.
+          renewal={plan ? planRenewal(plan) : { value: "1", unit: "year" }}
         />
         <FormField
           label="Costo sin IVA"
