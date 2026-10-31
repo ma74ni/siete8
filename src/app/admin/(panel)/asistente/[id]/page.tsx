@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Conversation } from "@/components/admin/conversation";
+import { PageHeader } from "@/components/admin/page-header";
 import { isUuid } from "@/lib/admin-forms";
 import { formatDateTime } from "@/lib/blog";
 import { getConversationForAdmin } from "@/server/admin-assistant";
@@ -19,22 +20,20 @@ export default async function ConversationPage({
 
   return (
     <div className="flex max-w-[64rem] flex-col gap-8">
-      <div className="flex flex-col gap-2">
-        <Link href="/admin/asistente" className="text-small">
-          Volver al asistente
-        </Link>
-        <h1 className="text-h2">
-          Conversación del {formatDateTime(conversation.created_at)}
-        </h1>
-        {conversation.lead && (
-          <p>
-            Dejó sus datos:{" "}
-            <Link href={`/admin/leads/${conversation.lead.id}`}>
-              {conversation.lead.name}
-            </Link>
-          </p>
-        )}
-      </div>
+      <PageHeader
+        title={`Conversación del ${formatDateTime(conversation.created_at)}`}
+        back={{ href: "/admin/asistente", label: "Volver al asistente" }}
+        intro={
+          conversation.lead && (
+            <>
+              Dejó sus datos:{" "}
+              <Link href={`/admin/leads/${conversation.lead.id}`}>
+                {conversation.lead.name}
+              </Link>
+            </>
+          )
+        }
+      />
       <Conversation messages={conversation.chat_message} />
     </div>
   );

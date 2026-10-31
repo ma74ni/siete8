@@ -4,6 +4,7 @@ import { ActionForm } from "@/components/admin/action-form";
 import { CheckboxField } from "@/components/admin/checkbox-field";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { SelectField } from "@/components/admin/fields";
+import { PageHeader } from "@/components/admin/page-header";
 import { FormField } from "@/components/sitio/form-field";
 import { deleteLinkButton, saveLinkButton } from "@/server/admin-links-actions";
 import {
@@ -109,15 +110,17 @@ export default async function LinksAdminPage() {
 
   return (
     <div className="flex max-w-[64rem] flex-col gap-8">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-h2">Enlaces</h1>
-        <p className="max-w-[68ch]">
-          Los botones de <Link href="/enlaces">siete8.com/enlaces</Link>, la
-          página para la biografía de tus redes. Para saber de qué red llega
-          cada visita, usa el enlace con su origen, por ejemplo
-          siete8.com/enlaces?utm_source=instagram.
-        </p>
-      </div>
+      <PageHeader
+        title="Enlaces"
+        intro={
+          <>
+            Los botones de <Link href="/enlaces">siete8.com/enlaces</Link>, la
+            página para la biografía de tus redes. Para saber de qué red llega
+            cada visita, usa el enlace con su origen, por ejemplo
+            siete8.com/enlaces?utm_source=instagram.
+          </>
+        }
+      />
       {buttons.map((item) => (
         <ButtonEditor key={item.id} item={item} />
       ))}
