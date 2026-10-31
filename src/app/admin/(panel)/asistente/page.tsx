@@ -1,9 +1,11 @@
 import Link from "next/link";
 
 import { ActionForm } from "@/components/admin/action-form";
-import { CheckboxField } from "@/components/admin/checkbox-field";
+import { CheckboxField } from "@/components/form/checkbox-field";
+import { DataTable } from "@/components/admin/data-table";
 import { Section } from "@/components/admin/fields";
-import { FormField } from "@/components/sitio/form-field";
+import { PageHeader } from "@/components/admin/page-header";
+import { FormField } from "@/components/form/form-field";
 import { formatDateTime } from "@/lib/blog";
 import { getAssistantForAdmin } from "@/server/admin-assistant";
 import { saveAssistant } from "@/server/admin-assistant-actions";
@@ -28,21 +30,24 @@ export default async function AssistantPage() {
 
   return (
     <div className="flex max-w-[64rem] flex-col gap-8">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-h2">Asistente</h1>
-        <p>
-          El chat del sitio responde con los servicios, planes, precios y
-          preguntas publicados, y pasa a WhatsApp a quien quiere contratar.
-          Cuando está activado, reemplaza al botón flotante de WhatsApp.
-        </p>
-        <p className="font-medium">
-          Este mes: {assistant.conversationsThisMonth}{" "}
-          {assistant.conversationsThisMonth === 1
-            ? "conversación"
-            : "conversaciones"}
-          , {usd(assistant.spentThisMonth)} de {usd(settings.monthlyBudgetUsd)}.
-        </p>
-      </div>
+      <PageHeader
+        title="Asistente"
+        intro={
+          <>
+            El chat del sitio responde con los servicios, planes, precios y
+            preguntas publicados, y pasa a WhatsApp a quien quiere contratar.
+            Cuando está activado, reemplaza al botón flotante de WhatsApp.
+            <span className="mt-2 block font-medium">
+              Este mes: {assistant.conversationsThisMonth}{" "}
+              {assistant.conversationsThisMonth === 1
+                ? "conversación"
+                : "conversaciones"}
+              , {usd(assistant.spentThisMonth)} de{" "}
+              {usd(settings.monthlyBudgetUsd)}.
+            </span>
+          </>
+        }
+      />
       <ActionForm
         action={saveAssistant}
         submitLabel="Guardar asistente"
@@ -77,23 +82,35 @@ export default async function AssistantPage() {
       </ActionForm>
 
       <Section title="Últimas conversaciones">
-        {assistant.recent.length === 0 ? (
-          <p>Aún no hay conversaciones.</p>
-        ) : (
-          <ul className="flex flex-col gap-2">
-            {assistant.recent.map((session) => (
-              <li key={session.id}>
+        <DataTable
+          rows={assistant.recent}
+          rowKey={(session) => session.id}
+          label="Últimas conversaciones"
+          empty="Aún no hay conversaciones."
+          minWidth="32rem"
+          columns={[
+            {
+              header: "Fecha",
+              rowHeader: true,
+              cell: (session) => (
                 <Link href={`/admin/asistente/${session.id}`}>
                   {formatDateTime(session.created_at)}
                 </Link>
-                : {session.message_count}{" "}
-                {session.message_count === 1 ? "mensaje" : "mensajes"},{" "}
-                {usd(Number(session.cost_usd))}
-                {session.lead && <>. Lead: {session.lead.name}</>}
-              </li>
-            ))}
-          </ul>
-        )}
+              ),
+            },
+            {
+              header: "Mensajes",
+              numeric: true,
+              cell: (session) => session.message_count,
+            },
+            {
+              header: "Costo",
+              numeric: true,
+              cell: (session) => usd(Number(session.cost_usd)),
+            },
+            { header: "Lead", cell: (session) => session.lead?.name ?? "—" },
+          ]}
+        />
       </Section>
     </div>
   );

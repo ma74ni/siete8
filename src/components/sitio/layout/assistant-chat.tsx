@@ -1,6 +1,7 @@
 "use client";
 
 import { MessageCircle, Send, X } from "lucide-react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import {
   type FormEvent,
@@ -11,9 +12,8 @@ import {
   useState,
 } from "react";
 
-import { controlClass } from "@/components/form/controls";
+import { Textarea } from "@/components/form/controls";
 import { Button, buttonClasses } from "@/components/sitio/button";
-import { Markdown } from "@/components/sitio/markdown";
 import { WhatsAppIcon } from "@/components/sitio/layout/whatsapp-icon";
 import { loadTurnstile } from "@/components/sitio/turnstile";
 import { CAMPAIGN_KEY } from "@/lib/analytics";
@@ -33,6 +33,14 @@ type Saved = {
 
 /** The conversation survives page changes within the visit. */
 const STORAGE_KEY = "siete8-chat";
+
+// The answers' Markdown reader is the heaviest part of the chat: it is not
+// sent with every page. It loads when the launcher is pointed at or focused,
+// or at once when a saved conversation will show it.
+const Markdown = dynamic(() =>
+  import("@/components/sitio/markdown").then((mod) => mod.Markdown),
+);
+const preloadMarkdown = () => void import("@/components/sitio/markdown");
 
 function readSaved(): Saved | null {
   try {
@@ -84,8 +92,10 @@ export function AssistantChat({
 
   // sessionStorage is only readable after mounting.
   useEffect(() => {
+    const restored = readSaved();
+    if (restored) preloadMarkdown();
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setSaved(readSaved());
+    setSaved(restored);
   }, []);
 
   useEffect(() => {
@@ -278,7 +288,12 @@ export function AssistantChat({
         <button
           ref={launcher}
           type="button"
-          onClick={() => setOpen(true)}
+          onPointerEnter={preloadMarkdown}
+          onFocus={preloadMarkdown}
+          onClick={() => {
+            preloadMarkdown();
+            setOpen(true);
+          }}
           aria-haspopup="dialog"
           aria-label="Abrir el asistente de Siete8"
           className={cx(
@@ -409,7 +424,8 @@ export function AssistantChat({
                   <label htmlFor="assistant-message" className="sr-only">
                     Tu mensaje
                   </label>
-                  <textarea
+                  <Textarea
+                    compact
                     ref={input}
                     id="assistant-message"
                     rows={2}
@@ -418,10 +434,7 @@ export function AssistantChat({
                     onChange={(event) => setDraft(event.target.value)}
                     onKeyDown={onEnter}
                     placeholder="Escribe tu pregunta"
-                    // One-line composer: the base control look, not a tall textarea.
-                    className={controlClass({
-                      className: "flex-1 resize-none py-2",
-                    })}
+                    className="flex-1 resize-none py-2"
                   />
                   <button
                     type="submit"

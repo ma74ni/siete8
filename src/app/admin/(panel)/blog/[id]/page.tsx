@@ -6,9 +6,10 @@ import { ActionForm } from "@/components/admin/action-form";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { Section } from "@/components/admin/fields";
 import { ImageField } from "@/components/admin/image-field";
+import { PageHeader } from "@/components/admin/page-header";
 import { PostFields } from "@/components/admin/post-fields";
 import { isUuid } from "@/lib/admin-forms";
-import { formatPostDate } from "@/lib/blog";
+import { formatPostDate, postState } from "@/lib/blog";
 import { getPostForAdmin } from "@/server/admin-blog";
 import {
   deletePost,
@@ -28,31 +29,28 @@ export default async function EditPostPage({
   const post = await getPostForAdmin(id);
   if (!post) notFound();
 
-  const live =
-    post.status === "published" &&
-    post.published_at !== null &&
-    new Date(post.published_at) <= new Date();
+  const live = postState(post) === "published";
 
   return (
     <div className="flex max-w-[64rem] flex-col gap-10">
-      <div className="flex flex-col gap-2">
-        <Link href="/admin/blog" className="text-small">
-          Volver al blog
-        </Link>
-        <h1 className="text-h2">{post.title}</h1>
-        <p>
-          {live ? (
-            <Link href={`/blog/${post.slug}`}>Ver en el sitio</Link>
-          ) : (
-            "No aparece en el sitio: es un borrador o está programado."
-          )}
-        </p>
-        <p className="text-small">
-          {post.social_sent_at
-            ? `Anunciado en redes el ${formatPostDate(post.social_sent_at)}.`
-            : "Se anunciará en redes hasta 15 minutos después de salir publicado."}
-        </p>
-      </div>
+      <PageHeader
+        title={post.title}
+        back={{ href: "/admin/blog", label: "Volver al blog" }}
+        intro={
+          <>
+            {live ? (
+              <Link href={`/blog/${post.slug}`}>Ver en el sitio</Link>
+            ) : (
+              "No aparece en el sitio: es un borrador o está programado."
+            )}
+            <span className="mt-2 block text-small">
+              {post.social_sent_at
+                ? `Anunciado en redes el ${formatPostDate(post.social_sent_at)}.`
+                : "Se anunciará en redes hasta 15 minutos después de salir publicado."}
+            </span>
+          </>
+        }
+      />
 
       <Section title="Artículo">
         <ActionForm

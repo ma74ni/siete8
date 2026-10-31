@@ -1,6 +1,6 @@
-import { CheckboxField } from "@/components/admin/checkbox-field";
-import { SelectField } from "@/components/admin/fields";
-import { FormField } from "@/components/sitio/form-field";
+import { CheckboxField } from "@/components/form/checkbox-field";
+import { SelectField } from "@/components/form/select-field";
+import { FormField } from "@/components/form/form-field";
 import {
   PROJECT_STATUS_LABELS,
   type ProjectStatus,

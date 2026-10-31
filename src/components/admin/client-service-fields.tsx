@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 
-import { SelectField } from "@/components/admin/fields";
+import { SelectField } from "@/components/form/select-field";
 import { PriceField } from "@/components/admin/price-field";
 import { Input, Select } from "@/components/form/controls";
-import { FormField } from "@/components/sitio/form-field";
+import { FormField } from "@/components/form/form-field";
 import {
   type CatalogService,
   DEFAULT_VAT_RATE,
@@ -30,6 +30,9 @@ export function RenewalInputs({
   onChange?: (renewal: Renewal) => void;
 }) {
   const controlled = onChange !== undefined;
+  // Uncontrolled, the chosen unit still decides whether the number is typed.
+  const [ownUnit, setOwnUnit] = useState(renewal.unit);
+  const unit = controlled ? renewal.unit : ownUnit;
   return (
     <fieldset className="flex flex-col gap-1.5">
       <legend className="mb-1.5 font-medium">Se renueva cada</legend>
@@ -45,7 +48,7 @@ export function RenewalInputs({
           max={999}
           numeric
           className="w-24"
-          disabled={renewal.unit === ""}
+          disabled={unit === ""}
           {...(controlled
             ? {
                 value: renewal.value,
@@ -69,13 +72,19 @@ export function RenewalInputs({
                     unit: event.target.value as DurationUnit | "",
                   }),
               }
-            : { defaultValue: renewal.unit })}
+            : {
+                defaultValue: renewal.unit,
+                onChange: (event) =>
+                  setOwnUnit(event.target.value as DurationUnit | ""),
+              })}
         >
-          {(Object.keys(RENEWAL_UNIT_LABELS) as DurationUnit[]).map((unit) => (
-            <option key={unit} value={unit}>
-              {RENEWAL_UNIT_LABELS[unit]}
-            </option>
-          ))}
+          {(Object.keys(RENEWAL_UNIT_LABELS) as DurationUnit[]).map(
+            (option) => (
+              <option key={option} value={option}>
+                {RENEWAL_UNIT_LABELS[option]}
+              </option>
+            ),
+          )}
           <option value="">Pago único</option>
         </Select>
       </div>

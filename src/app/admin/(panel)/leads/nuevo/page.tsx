@@ -1,9 +1,8 @@
-import Link from "next/link";
-
 import { ActionForm } from "@/components/admin/action-form";
-import { CheckboxField } from "@/components/admin/checkbox-field";
+import { CheckboxField } from "@/components/form/checkbox-field";
 import { LeadServiceFields } from "@/components/admin/lead-service-fields";
-import { FormField } from "@/components/sitio/form-field";
+import { PageHeader } from "@/components/admin/page-header";
+import { FormField } from "@/components/form/form-field";
 import { getClientCatalog } from "@/server/admin-clients";
 import { createLead } from "@/server/admin-leads-actions";
 
@@ -15,15 +14,11 @@ export default async function NewLeadPage() {
 
   return (
     <div className="flex max-w-[64rem] flex-col gap-8">
-      <div className="flex flex-col gap-2">
-        <Link href="/admin/leads" className="text-small">
-          Volver a leads
-        </Link>
-        <h1 className="text-h2">Nuevo lead</h1>
-        <p>
-          Para registrar a quien te escribió por WhatsApp. Origen: WhatsApp.
-        </p>
-      </div>
+      <PageHeader
+        title="Nuevo lead"
+        back={{ href: "/admin/leads", label: "Volver a leads" }}
+        intro="Para registrar a quien te escribió por WhatsApp. Origen: WhatsApp."
+      />
       <ActionForm action={createLead} submitLabel="Crear lead">
         <FormField
           label="Nombre"

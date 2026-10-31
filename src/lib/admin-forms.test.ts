@@ -132,7 +132,44 @@ describe("planForm", () => {
       recommended: true,
       sort_order: 3,
       cost_without_vat: null,
+      duration_value: null,
+      duration_unit: null,
     });
+  });
+
+  it("keeps the renewal period as the plan's duration", () => {
+    const monthly = planForm.parse({
+      ...plan,
+      renews_every_value: "1",
+      renews_every_unit: "month",
+    });
+    expect([monthly.duration_value, monthly.duration_unit]).toEqual([
+      1,
+      "month",
+    ]);
+    // The number is disabled until a unit is chosen: it defaults to 1.
+    const yearly = planForm.parse({ ...plan, renews_every_unit: "year" });
+    expect([yearly.duration_value, yearly.duration_unit]).toEqual([1, "year"]);
+    // "Pago único" drops the number.
+    const once = planForm.parse({
+      ...plan,
+      renews_every_value: "6",
+      renews_every_unit: "",
+    });
+    expect([once.duration_value, once.duration_unit]).toEqual([null, null]);
+  });
+
+  it("rejects a period of 0 or an unknown unit", () => {
+    expect(
+      planForm.safeParse({
+        ...plan,
+        renews_every_value: "0",
+        renews_every_unit: "month",
+      }).success,
+    ).toBe(false);
+    expect(
+      planForm.safeParse({ ...plan, renews_every_unit: "week" }).success,
+    ).toBe(false);
   });
 
   it("reads the cost with a decimal comma", () => {

@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { Fragment, useActionState, useEffect, useRef, useState } from "react";
 
-import { Checkbox, Label, Select } from "@/components/form/controls";
+import { CheckboxField } from "@/components/form/checkbox-field";
+import { SelectField } from "@/components/form/select-field";
 import { Button } from "@/components/sitio/button";
-import { FormField } from "@/components/sitio/form-field";
+import { FormField } from "@/components/form/form-field";
+import { HoneypotField } from "@/components/sitio/honeypot-field";
 import { loadTurnstile } from "@/components/sitio/turnstile";
 import { CAMPAIGN_KEY } from "@/lib/analytics";
 import type { ContactState } from "@/lib/contact-form";
-import { cx } from "@/lib/cx";
 
 // Texts from docs/COPY.md §10.
 
@@ -137,25 +138,23 @@ export function ContactForm({
             defaultValue={typed.email}
             error={invalid("email")}
           />
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="field-service">Servicio (opcional)</Label>
-            <Select
-              // Remounts when the preset arrives; after an error it keeps
-              // what was chosen.
-              key={preset}
-              id="field-service"
-              name="service"
-              defaultValue={typed.service ?? preset}
-              onChange={(event) => (chosen.current = event.target.value)}
-            >
-              <option value="">Todavía no sé</option>
-              {services.map((option) => (
-                <option key={option.slug} value={option.slug}>
-                  {option.name}
-                </option>
-              ))}
-            </Select>
-          </div>
+          <SelectField
+            // Remounts when the preset arrives; after an error it keeps what
+            // was chosen.
+            key={preset}
+            label="Servicio (opcional)"
+            id="field-service"
+            name="service"
+            defaultValue={typed.service ?? preset}
+            onChange={(event) => (chosen.current = event.target.value)}
+          >
+            <option value="">Todavía no sé</option>
+            {services.map((option) => (
+              <option key={option.slug} value={option.slug}>
+                {option.name}
+              </option>
+            ))}
+          </SelectField>
         </div>
         <FormField
           label="¿En qué te ayudamos? (opcional)"
@@ -166,39 +165,20 @@ export function ContactForm({
           error={invalid("message")}
         />
       </Fragment>
-      {/* Honeypot: hidden from people and screen readers, filled by bots. */}
-      <div
-        aria-hidden
-        className="absolute -left-[9999px] h-px w-px overflow-hidden"
-      >
-        <label htmlFor="field-website">Sitio web</label>
-        <input
-          id="field-website"
-          name="website"
-          tabIndex={-1}
-          autoComplete="off"
-        />
-      </div>
+      <HoneypotField />
       <input type="hidden" name="utm" value={utm} />
-      <label
-        htmlFor="field-consent"
-        className={cx(
-          "flex items-start gap-3",
-          invalid("consent") && "font-medium text-accent",
-        )}
-      >
-        <Checkbox
-          id="field-consent"
-          name="consent"
-          required
-          aria-invalid={invalid("consent") ? true : undefined}
-          className="mt-1 shrink-0"
-        />
-        <span>
-          Acepto que Siete8 use mis datos para responder mi solicitud, según la{" "}
-          <Link href="/privacidad">política de privacidad</Link>.
-        </span>
-      </label>
+      <CheckboxField
+        id="field-consent"
+        name="consent"
+        required
+        error={invalid("consent")}
+        label={
+          <>
+            Acepto que Siete8 use mis datos para responder mi solicitud, según
+            la <Link href="/privacidad">política de privacidad</Link>.
+          </>
+        }
+      />
       <div ref={widget} className="min-h-[65px]" />
       <div className="flex flex-wrap items-center gap-4">
         <Button type="submit" disabled={pending}>

@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 
-import { CheckboxField } from "@/components/admin/checkbox-field";
+import { CheckboxField } from "@/components/form/checkbox-field";
 import { RenewalInputs } from "@/components/admin/client-service-fields";
-import { SelectField } from "@/components/admin/fields";
+import { SelectField } from "@/components/form/select-field";
 import { Radio } from "@/components/form/controls";
-import { FormField } from "@/components/sitio/form-field";
+import { FormField } from "@/components/form/form-field";
 import { type DurationUnit, formatDecimal, parseMoney } from "@/lib/clients";
 import { formatCents } from "@/lib/price";
 import { paymentTotalCents } from "@/lib/purchases";

@@ -62,3 +62,15 @@ export function navLinks(published: PublishedSections): NavLink[] {
     { label: "Contacto", href: "/contacto" },
   ];
 }
+
+/**
+ * The page a header menu stays open on: the one it was opened on. Once the
+ * visitor is on another page it is forgotten, so coming back does not reopen
+ * the menu.
+ */
+export function keepOnPage(
+  openOn: string | null,
+  pathname: string,
+): string | null {
+  return openOn === pathname ? openOn : null;
+}

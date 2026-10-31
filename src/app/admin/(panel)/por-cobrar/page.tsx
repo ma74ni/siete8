@@ -5,7 +5,7 @@ import { ConfirmForm } from "@/components/admin/confirm-form";
 import { DataTable } from "@/components/admin/data-table";
 import { Section } from "@/components/admin/fields";
 import { PageHeader } from "@/components/admin/page-header";
-import { FormField } from "@/components/sitio/form-field";
+import { FormField } from "@/components/form/form-field";
 import { formatDayShort, todayInQuito } from "@/lib/clients";
 import { ageLabel } from "@/lib/payments";
 import { formatCents } from "@/lib/price";

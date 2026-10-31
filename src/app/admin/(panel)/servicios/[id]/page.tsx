@@ -2,14 +2,17 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ActionForm } from "@/components/admin/action-form";
-import { CheckboxField } from "@/components/admin/checkbox-field";
+import { RenewalInputs } from "@/components/admin/client-service-fields";
+import { CheckboxField } from "@/components/form/checkbox-field";
 import { DeleteButton } from "@/components/admin/delete-button";
-import { Section, SelectField } from "@/components/admin/fields";
+import { Section } from "@/components/admin/fields";
+import { SelectField } from "@/components/form/select-field";
 import { MarkdownEditor } from "@/components/admin/markdown-editor";
+import { PageHeader } from "@/components/admin/page-header";
 import { PriceField } from "@/components/admin/price-field";
-import { FormField } from "@/components/sitio/form-field";
+import { FormField } from "@/components/form/form-field";
 import { isUuid } from "@/lib/admin-forms";
-import { formatDecimal } from "@/lib/clients";
+import { formatDecimal, planRenewal } from "@/lib/clients";
 import {
   HOLDER_LABELS,
   holderTypes,
@@ -52,20 +55,20 @@ export default async function EditServicePage({
 
   return (
     <div className="flex max-w-[64rem] flex-col gap-10">
-      <div className="flex flex-col gap-2">
-        <Link href="/admin" className="text-small">
-          Volver a servicios
-        </Link>
-        <h1 className="text-h2">{service.name}</h1>
-        <p>
-          {service.category?.name}.{" "}
-          {service.visible ? (
-            <Link href={`/servicios/${service.slug}`}>Ver en el sitio</Link>
-          ) : (
-            "Oculto: no aparece en el sitio."
-          )}
-        </p>
-      </div>
+      <PageHeader
+        title={service.name}
+        back={{ href: "/admin", label: "Volver a servicios" }}
+        intro={
+          <>
+            {service.category?.name}.{" "}
+            {service.visible ? (
+              <Link href={`/servicios/${service.slug}`}>Ver en el sitio</Link>
+            ) : (
+              "Oculto: no aparece en el sitio."
+            )}
+          </>
+        }
+      />
 
       <Section title="Planes y precios">
         <p className="max-w-[68ch]">
@@ -173,6 +176,11 @@ function PlanEditor({
           idPrefix={`plan-${key}`}
           price={plan?.price_without_vat ?? 0}
           vatRate={plan?.vat_rate ?? 0.15}
+        />
+        <RenewalInputs
+          idPrefix={`plan-${key}`}
+          // A new plan starts at 1 year, the most common period.
+          renewal={plan ? planRenewal(plan) : { value: "1", unit: "year" }}
         />
         <FormField
           label="Costo sin IVA"

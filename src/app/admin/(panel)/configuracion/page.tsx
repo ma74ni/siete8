@@ -1,6 +1,7 @@
 import { ActionForm } from "@/components/admin/action-form";
 import { Section } from "@/components/admin/fields";
-import { FormField } from "@/components/sitio/form-field";
+import { PageHeader } from "@/components/admin/page-header";
+import { FormField } from "@/components/form/form-field";
 import { requireAdmin } from "@/server/auth";
 import { saveSettings } from "@/server/admin-settings-actions";
 import { getSiteSettings } from "@/server/site-settings";
@@ -24,13 +25,10 @@ export default async function SettingsPage() {
 
   return (
     <div className="flex max-w-[64rem] flex-col gap-8">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-h2">Configuración</h1>
-        <p>
-          Lo que guardes aquí cambia en todo el sitio: los botones de WhatsApp,
-          el pie de página, Contacto y los datos para Google.
-        </p>
-      </div>
+      <PageHeader
+        title="Configuración"
+        intro="Lo que guardes aquí cambia en todo el sitio: los botones de WhatsApp, el pie de página, Contacto y los datos para Google."
+      />
       <ActionForm
         action={saveSettings}
         submitLabel="Guardar configuración"

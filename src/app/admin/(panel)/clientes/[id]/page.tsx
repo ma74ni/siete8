@@ -8,11 +8,17 @@ import {
   RenewalInputs,
 } from "@/components/admin/client-service-fields";
 import { ConfirmForm } from "@/components/admin/confirm-form";
+import { DataTable } from "@/components/admin/data-table";
 import { DeleteButton } from "@/components/admin/delete-button";
-import { Section, SelectField } from "@/components/admin/fields";
+import { Disclosure } from "@/components/admin/disclosure";
+import { EmptyState } from "@/components/admin/empty-state";
+import { Section } from "@/components/admin/fields";
+import { SelectField } from "@/components/form/select-field";
+import { PageHeader } from "@/components/admin/page-header";
 import { PriceField } from "@/components/admin/price-field";
 import { RenewForm } from "@/components/admin/renew-form";
-import { FormField } from "@/components/sitio/form-field";
+import { StatusText } from "@/components/admin/status-text";
+import { FormField } from "@/components/form/form-field";
 import { isUuid } from "@/lib/admin-forms";
 import { formatPostDate } from "@/lib/blog";
 import {
@@ -22,10 +28,10 @@ import {
   formatDay,
   formatDecimal,
   formatSignedCents,
+  needsAttention,
   profitCents,
   todayInQuito,
 } from "@/lib/clients";
-import { cx } from "@/lib/cx";
 import { PAYMENT_METHOD_LABELS, type PaymentMethod } from "@/lib/payments";
 import { formatCents, formatPriceWithVat } from "@/lib/price";
 import { serviceLicensesCostCents } from "@/lib/purchases";
@@ -76,32 +82,28 @@ export default async function ClientPage({
 
   return (
     <div className="flex max-w-[72rem] flex-col gap-10">
-      <div className="flex flex-col gap-2">
-        <Link href="/admin/clientes" className="text-small">
-          Volver a clientes
-        </Link>
-        <h1 className="text-h2">{client.name}</h1>
-        <p>
-          {[CLIENT_KIND_LABELS[client.kind], client.tax_id]
-            .filter(Boolean)
-            .join(", ")}
-          {client.lead && (
-            <>
-              {". "}
-              <Link href={`/admin/leads/${client.lead.id}`}>
-                Lead de origen
-              </Link>
-            </>
-          )}
-        </p>
-      </div>
+      <PageHeader
+        title={client.name}
+        back={{ href: "/admin/clientes", label: "Volver a clientes" }}
+        intro={
+          <>
+            {[CLIENT_KIND_LABELS[client.kind], client.tax_id]
+              .filter(Boolean)
+              .join(", ")}
+            {client.lead && (
+              <>
+                {". "}
+                <Link href={`/admin/leads/${client.lead.id}`}>
+                  Lead de origen
+                </Link>
+              </>
+            )}
+          </>
+        }
+      />
 
       <Section title="Servicios">
-        {client.client_service.length === 0 ? (
-          <p>Este cliente todavía no tiene servicios.</p>
-        ) : (
-          <ServicesTable services={client.client_service} today={today} />
-        )}
+        <ServicesTable services={client.client_service} today={today} />
         {client.client_service.map((service) => (
           <ServiceEditor
             key={service.id}
@@ -112,14 +114,10 @@ export default async function ClientPage({
             today={today}
           />
         ))}
-        <details className="rounded-control border border-border p-5">
-          <summary className="cursor-pointer font-medium">
-            Agregar servicio
-          </summary>
+        <Disclosure summary="Agregar servicio">
           <ActionForm
             action={addClientService}
             submitLabel="Agregar servicio"
-            className="mt-6"
             resetKey={String(client.client_service.length)}
           >
             <input type="hidden" name="client_id" value={client.id} />
@@ -129,7 +127,7 @@ export default async function ClientPage({
               idPrefix="new-service"
             />
           </ActionForm>
-        </details>
+        </Disclosure>
       </Section>
 
       <Section title="Datos del cliente">
@@ -167,74 +165,71 @@ function ServicesTable({
   today: string;
 }) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[44rem] border-collapse text-left">
-        <thead>
-          <tr className="border-b border-border">
-            {[
-              "Servicio",
-              "Detalle",
-              "Precio con IVA",
-              "Vence",
-              "Pago",
-              "Estado",
-            ].map((column) => (
-              <th key={column} scope="col" className="py-3 pr-4 font-medium">
-                {column}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {services.map((service) => {
+    <DataTable
+      rows={services}
+      rowKey={(service) => service.id}
+      label="Servicios"
+      empty="Este cliente todavía no tiene servicios."
+      columns={[
+        {
+          header: "Servicio",
+          rowHeader: true,
+          // Jumps to the service's editor below.
+          cell: (service) => (
+            <a href={`#servicio-${service.id}`}>{service.service?.name}</a>
+          ),
+        },
+        { header: "Detalle", cell: (service) => service.detail ?? "—" },
+        {
+          header: "Precio con IVA",
+          numeric: true,
+          cell: (service) => {
             const current = service.client_service_period[0];
-            const due = expiry(current?.ends_on ?? null, today);
-            const cancelled = service.status === "cancelled";
-            return (
-              <tr key={service.id} className="border-b border-border align-top">
-                <td className="py-3 pr-4">
-                  <a href={`#servicio-${service.id}`}>
-                    {service.service?.name}
-                  </a>
-                </td>
-                <td className="py-3 pr-4">{service.detail ?? "—"}</td>
-                <td className="py-3 pr-4 tabular-nums">
-                  {current
-                    ? formatPriceWithVat(
-                        current.price_without_vat,
-                        current.vat_rate,
-                      )
-                    : "—"}
-                </td>
-                <td
-                  className={cx(
-                    "py-3 pr-4",
-                    !cancelled &&
-                      due.state === "expired" &&
-                      "font-medium text-accent",
-                  )}
-                >
-                  {due.label}
-                </td>
-                <td
-                  className={cx(
-                    "py-3 pr-4",
-                    current?.balance.status === "partial" && "font-medium",
-                  )}
-                >
-                  {current?.balance.label ?? "—"}
-                </td>
-                <td className="py-3">
-                  {cancelled && service.cancelled_at
-                    ? `Cancelado el ${formatPostDate(service.cancelled_at)}`
-                    : "Activo"}
-                </td>
-              </tr>
+            return current
+              ? formatPriceWithVat(current.price_without_vat, current.vat_rate)
+              : "—";
+          },
+        },
+        {
+          header: "Vence",
+          cell: (service) => {
+            const due = expiry(
+              service.client_service_period[0]?.ends_on ?? null,
+              today,
             );
-          })}
-        </tbody>
-      </table>
-    </div>
+            return (
+              <StatusText
+                tone={needsAttention(due, service.status) ? "alert" : "default"}
+              >
+                {due.label}
+              </StatusText>
+            );
+          },
+        },
+        {
+          header: "Pago",
+          cell: (service) => {
+            const balance = service.client_service_period[0]?.balance;
+            return balance ? (
+              <StatusText
+                tone={balance.status === "partial" ? "alert" : "default"}
+              >
+                {balance.label}
+              </StatusText>
+            ) : (
+              "—"
+            );
+          },
+        },
+        {
+          header: "Estado",
+          cell: (service) =>
+            service.status === "cancelled" && service.cancelled_at
+              ? `Cancelado el ${formatPostDate(service.cancelled_at)}`
+              : "Activo",
+        },
+      ]}
+    />
   );
 }
 
@@ -268,96 +263,90 @@ function ServiceEditor({
     : null;
 
   return (
-    <details
+    <Disclosure
       id={`servicio-${service.id}`}
-      className="rounded-control border border-border p-5"
+      summary={`${serviceTitle(service)}${service.status === "cancelled" ? " (cancelado)" : ""}`}
     >
-      <summary className="cursor-pointer font-medium">
-        {serviceTitle(service)}
-        {service.status === "cancelled" && " (cancelado)"}
-      </summary>
-      <div className="mt-6 flex flex-col gap-8">
-        {purchases && <ServicePurchases purchases={purchases} />}
+      {purchases && <ServicePurchases purchases={purchases} />}
+      <ActionForm
+        action={updateClientService}
+        submitLabel="Guardar servicio"
+        resetKey={service.updated_at}
+      >
+        <input type="hidden" name="id" value={service.id} />
+        <div className="grid gap-4 md:grid-cols-2">
+          <SelectField
+            label="Plan"
+            id={`plan-${key}`}
+            name="plan_id"
+            defaultValue={service.plan_id ?? ""}
+          >
+            <option value="">Ninguno</option>
+            {plans.map((plan) => (
+              <option key={plan.id} value={plan.id}>
+                {plan.name}
+              </option>
+            ))}
+          </SelectField>
+          <FormField
+            label="Detalle"
+            name="detail"
+            id={`detail-${key}`}
+            maxLength={200}
+            defaultValue={service.detail ?? ""}
+          />
+        </div>
+        <RenewalInputs
+          idPrefix={`renew-${key}`}
+          renewal={{
+            value: String(service.renews_every_value ?? ""),
+            unit: service.renews_every_unit ?? "",
+          }}
+        />
+        <FormField
+          label="Notas"
+          name="notes"
+          id={`notes-${key}`}
+          multiline
+          maxLength={4000}
+          defaultValue={service.notes ?? ""}
+        />
+      </ActionForm>
+
+      {next && <RenewForm serviceId={service.id} next={next} />}
+
+      <div className="flex flex-col gap-4">
+        <h3 className="text-h4">Historial</h3>
+        {service.client_service_period.map((period, index) => (
+          <div key={period.id} className="flex flex-col gap-4">
+            <PeriodEditor
+              period={period}
+              licensesCostCents={index === 0 ? licensesCost : null}
+            />
+            <PeriodPayments period={period} />
+          </div>
+        ))}
+      </div>
+
+      {service.status === "active" ? (
+        <DeleteButton
+          action={cancelClientService}
+          id={service.id}
+          label="Cancelar servicio"
+          question={`¿Cancelar ${serviceTitle(service)} de ${clientName}? Deja de aparecer en por vencer; su historial se conserva.`}
+          confirmLabel="Sí, cancelar"
+          cancelLabel="No"
+        />
+      ) : (
         <ActionForm
-          action={updateClientService}
-          submitLabel="Guardar servicio"
-          resetKey={service.updated_at}
+          action={reactivateClientService}
+          submitLabel="Reactivar servicio"
+          variant="secondary"
         >
           <input type="hidden" name="id" value={service.id} />
-          <div className="grid gap-4 md:grid-cols-2">
-            <SelectField
-              label="Plan"
-              id={`plan-${key}`}
-              name="plan_id"
-              defaultValue={service.plan_id ?? ""}
-            >
-              <option value="">Ninguno</option>
-              {plans.map((plan) => (
-                <option key={plan.id} value={plan.id}>
-                  {plan.name}
-                </option>
-              ))}
-            </SelectField>
-            <FormField
-              label="Detalle"
-              name="detail"
-              id={`detail-${key}`}
-              maxLength={200}
-              defaultValue={service.detail ?? ""}
-            />
-          </div>
-          <RenewalInputs
-            idPrefix={`renew-${key}`}
-            renewal={{
-              value: String(service.renews_every_value ?? ""),
-              unit: service.renews_every_unit ?? "",
-            }}
-          />
-          <FormField
-            label="Notas"
-            name="notes"
-            id={`notes-${key}`}
-            multiline
-            maxLength={4000}
-            defaultValue={service.notes ?? ""}
-          />
         </ActionForm>
-
-        {next && <RenewForm serviceId={service.id} next={next} />}
-
-        <div className="flex flex-col gap-4">
-          <h3 className="text-h4">Historial</h3>
-          {service.client_service_period.map((period, index) => (
-            <div key={period.id} className="flex flex-col gap-4">
-              <PeriodEditor
-                period={period}
-                licensesCostCents={index === 0 ? licensesCost : null}
-              />
-              <PeriodPayments period={period} />
-            </div>
-          ))}
-        </div>
-
-        {service.status === "active" ? (
-          <DeleteButton
-            action={cancelClientService}
-            id={service.id}
-            label="Cancelar servicio"
-            question={`¿Cancelar ${serviceTitle(service)} de ${clientName}? Deja de aparecer en por vencer; su historial se conserva.`}
-            confirmLabel="Sí, cancelar"
-            cancelLabel="No"
-          />
-        ) : (
-          <ActionForm
-            action={reactivateClientService}
-            submitLabel="Reactivar servicio"
-            variant="secondary"
-          >
-            <input type="hidden" name="id" value={service.id} />
-          </ActionForm>
-        )}
-      </div>
-    </details>
+      )}
+    </Disclosure>
   );
 }
 
@@ -459,7 +448,7 @@ function PeriodPayments({ period }: { period: Period }) {
       </p>
 
       {period.client_payment.length === 0 ? (
-        <p>Todavía no hay pagos.</p>
+        <EmptyState>Todavía no hay pagos.</EmptyState>
       ) : (
         <ul className="flex flex-col gap-2">
           {period.client_payment.map((payment) => (
@@ -488,15 +477,11 @@ function PeriodPayments({ period }: { period: Period }) {
       )}
 
       {open && (
-        <details>
-          <summary className="cursor-pointer font-medium">
-            Registrar abono
-          </summary>
+        <Disclosure summary="Registrar abono" variant="inline">
           <ActionForm
             action={addPayment}
             submitLabel="Registrar pago"
             variant="secondary"
-            className="mt-4"
             resetKey={String(period.client_payment.length)}
           >
             <input type="hidden" name="period_id" value={period.id} />
@@ -539,7 +524,7 @@ function PeriodPayments({ period }: { period: Period }) {
               maxLength={1000}
             />
           </ActionForm>
-        </details>
+        </Disclosure>
       )}
 
       {open && (

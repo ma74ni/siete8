@@ -2,8 +2,10 @@
 
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef } from "react";
 
+import { PendingLabel } from "@/components/sitio/layout/pending-label";
+import { usePageMenu } from "@/components/sitio/layout/use-page-menu";
 import { cx } from "@/lib/cx";
 import type { MenuCategory } from "@/lib/menu";
 
@@ -11,10 +13,12 @@ import type { MenuCategory } from "@/lib/menu";
  * "Servicios" dropdown for large screens (disclosure pattern): the button
  * toggles the panel; Escape, a click outside or leaving it with the keyboard
  * closes it. Each column is a category (linking to its section of the
- * catalog) with its services as a plain list.
+ * catalog) with its services as a plain list. A service link keeps the panel
+ * open, marked as loading, until its page arrives: the panel belongs to the
+ * page it was opened on.
  */
 export function ServicesMenu({ categories }: { categories: MenuCategory[] }) {
-  const [open, setOpen] = useState(false);
+  const { open, setOpen, close } = usePageMenu();
   const panelId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -22,11 +26,11 @@ export function ServicesMenu({ categories }: { categories: MenuCategory[] }) {
   useEffect(() => {
     if (!open) return;
     function onPointerDown(event: PointerEvent) {
-      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+      if (!rootRef.current?.contains(event.target as Node)) close();
     }
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        setOpen(false);
+        close();
         buttonRef.current?.focus();
       }
     }
@@ -36,9 +40,7 @@ export function ServicesMenu({ categories }: { categories: MenuCategory[] }) {
       document.removeEventListener("pointerdown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [open]);
-
-  const close = () => setOpen(false);
+  }, [open, close]);
 
   return (
     <div
@@ -55,7 +57,7 @@ export function ServicesMenu({ categories }: { categories: MenuCategory[] }) {
         type="button"
         aria-expanded={open}
         aria-controls={panelId}
-        onClick={() => setOpen((value) => !value)}
+        onClick={() => setOpen(!open)}
         className="flex min-h-11 items-center gap-1 px-3 font-medium"
       >
         Servicios
@@ -88,10 +90,9 @@ export function ServicesMenu({ categories }: { categories: MenuCategory[] }) {
                   <li key={service.slug}>
                     <Link
                       href={`/servicios/${service.slug}`}
-                      onClick={close}
                       className="block py-1 text-small leading-snug text-fg no-underline hover:text-accent hover:underline"
                     >
-                      {service.name}
+                      <PendingLabel>{service.name}</PendingLabel>
                     </Link>
                   </li>
                 ))}

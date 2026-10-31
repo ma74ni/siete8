@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { navLinks, visibleCatalog, type CatalogRow } from "./menu";
+import { type CatalogRow, keepOnPage, navLinks, visibleCatalog } from "./menu";
 
 const service = (
   slug: string,
@@ -84,5 +84,19 @@ describe("navLinks", () => {
     expect(
       navLinks({ projects: true, posts: true }).map((l) => l.label),
     ).toEqual(["Proyectos", "Blog", "Nosotros", "Contacto"]);
+  });
+});
+
+describe("keepOnPage", () => {
+  it("keeps a menu open only on the page it was opened on", () => {
+    expect(keepOnPage("/", "/")).toBe("/");
+    expect(keepOnPage(null, "/")).toBeNull();
+  });
+
+  it("forgets it after leaving, so coming back does not reopen it", () => {
+    let openOn = keepOnPage("/", "/blog");
+    expect(openOn).toBeNull();
+    openOn = keepOnPage(openOn, "/");
+    expect(openOn).toBeNull();
   });
 });

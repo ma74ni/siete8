@@ -46,8 +46,8 @@ importers:
         version: 4.6.5
     devDependencies:
       '@netlify/plugin-nextjs':
-        specifier: ^5.16.0
-        version: 5.16.0
+        specifier: ^5.16.5
+        version: 5.16.5
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.3.3
@@ -437,8 +437,8 @@ packages:
       '@emnapi/core': ^1.7.1 || ^2.0.0-alpha.4
       '@emnapi/runtime': ^1.7.1 || ^2.0.0-alpha.4
 
-  '@netlify/plugin-nextjs@5.16.0':
-    resolution: {integrity: sha512-ys9G34vifslRRy1VwbOMVNFSKU/vuWdNGcYqvAsCAB8VlDFnZDUBM1WUDjDjXOnNXb8kLXA3hX5LgISEONAhAA==}
+  '@netlify/plugin-nextjs@5.16.5':
+    resolution: {integrity: sha512-pt0j/YCZr5Kn2ziGS4Ps+RvREEn5LN2M9iv9iqEgNWZGb4esu7MCMy4RIYS0UR3JuBHxVtsvPHo0gEv+RKFpag==}
     engines: {node: '>=18.0.0'}
 
   '@next/env@16.3.8':
@@ -3667,7 +3667,7 @@ snapshots:
       '@tybys/wasm-util': 0.10.4
     optional: true
 
-  '@netlify/plugin-nextjs@5.16.0': {}
+  '@netlify/plugin-nextjs@5.16.5': {}
 
   '@next/env@16.3.8': {}
 
