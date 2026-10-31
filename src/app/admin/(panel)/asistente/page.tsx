@@ -1,11 +1,11 @@
 import Link from "next/link";
 
 import { ActionForm } from "@/components/admin/action-form";
-import { CheckboxField } from "@/components/admin/checkbox-field";
+import { CheckboxField } from "@/components/form/checkbox-field";
 import { DataTable } from "@/components/admin/data-table";
 import { Section } from "@/components/admin/fields";
 import { PageHeader } from "@/components/admin/page-header";
-import { FormField } from "@/components/sitio/form-field";
+import { FormField } from "@/components/form/form-field";
 import { formatDateTime } from "@/lib/blog";
 import { getAssistantForAdmin } from "@/server/admin-assistant";
 import { saveAssistant } from "@/server/admin-assistant-actions";

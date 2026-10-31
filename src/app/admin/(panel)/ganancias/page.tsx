@@ -1,5 +1,6 @@
 import { DataTable } from "@/components/admin/data-table";
-import { Section, SelectField } from "@/components/admin/fields";
+import { Section } from "@/components/admin/fields";
+import { SelectField } from "@/components/form/select-field";
 import { PageHeader } from "@/components/admin/page-header";
 import { Button } from "@/components/sitio/button";
 import { formatSignedCents, todayInQuito } from "@/lib/clients";

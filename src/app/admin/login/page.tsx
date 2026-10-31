@@ -1,5 +1,5 @@
 import { Button } from "@/components/sitio/button";
-import { FormField } from "@/components/sitio/form-field";
+import { FormField } from "@/components/form/form-field";
 import { Logo } from "@/components/sitio/logo";
 import { safeAdminPath } from "@/lib/admin-access";
 import { signIn } from "@/server/auth-actions";

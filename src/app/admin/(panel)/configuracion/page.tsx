@@ -1,7 +1,7 @@
 import { ActionForm } from "@/components/admin/action-form";
 import { Section } from "@/components/admin/fields";
 import { PageHeader } from "@/components/admin/page-header";
-import { FormField } from "@/components/sitio/form-field";
+import { FormField } from "@/components/form/form-field";
 import { requireAdmin } from "@/server/auth";
 import { saveSettings } from "@/server/admin-settings-actions";
 import { getSiteSettings } from "@/server/site-settings";

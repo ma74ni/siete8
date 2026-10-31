@@ -1,11 +1,11 @@
 import Link from "next/link";
 
 import { DataTable } from "@/components/admin/data-table";
-import { SelectField } from "@/components/admin/fields";
+import { SelectField } from "@/components/form/select-field";
 import { PageHeader } from "@/components/admin/page-header";
 import { StatusText } from "@/components/admin/status-text";
 import { Button } from "@/components/sitio/button";
-import { FormField } from "@/components/sitio/form-field";
+import { FormField } from "@/components/form/form-field";
 import { clientFilters } from "@/lib/admin-forms";
 import { expiry, todayInQuito } from "@/lib/clients";
 import { listClientsForAdmin } from "@/server/admin-clients";
