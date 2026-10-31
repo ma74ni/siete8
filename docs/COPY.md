@@ -52,6 +52,12 @@ Menú Servicios, por categoría:
 
 Número de WhatsApp: 0967155626 (en enlaces wa.me: 593967155626). Horario de atención: todos los días, incluidos feriados, de 07:00 a 20:00.
 
+### Estados
+
+| Contexto | Texto |
+| --- | --- |
+| Página cargando (solo para lectores de pantalla; en pantalla, bloques sin texto) | Cargando la página. |
+
 ### Pie de página
 
 - Cierre: **¿Qué necesitas resolver?** (en la página de firma: **¿Listo para sacar tu firma?**)

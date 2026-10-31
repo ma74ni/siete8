@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { CookieSettingsButton } from "@/components/sitio/analytics";
+import { PendingLabel } from "@/components/sitio/layout/pending-label";
 import { Logo } from "@/components/sitio/logo";
 import { clientEnv } from "@/env/client";
 import { cx } from "@/lib/cx";
@@ -92,7 +93,7 @@ export function Footer({
               {pages.map((page) => (
                 <li key={page.href}>
                   <Link href={page.href} className={link}>
-                    {page.label}
+                    <PendingLabel>{page.label}</PendingLabel>
                   </Link>
                 </li>
               ))}
@@ -119,12 +120,12 @@ export function Footer({
           <ul className="flex flex-wrap gap-x-6">
             <li>
               <Link href="/privacidad" className={link}>
-                Privacidad
+                <PendingLabel>Privacidad</PendingLabel>
               </Link>
             </li>
             <li>
               <Link href="/terminos" className={link}>
-                Términos
+                <PendingLabel>Términos</PendingLabel>
               </Link>
             </li>
             {clientEnv.NEXT_PUBLIC_GA_ID && (
