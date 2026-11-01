@@ -4,11 +4,14 @@ import { useLinkStatus } from "next/link";
 import type { ReactNode } from "react";
 
 /**
- * A link's text that stays underlined from the click until the next page
- * arrives, even while its prefetch is still on the way. Goes inside a
- * `<Link>`. The same 1 px line as a hovered link (DESIGN §7), so the two
- * overlap; a fixed style, with no animation. Screen readers hear the loading
- * state from `loading.tsx` instead.
+ * A link's text whose underline turns 2 px from the click until the next
+ * page arrives, even while its prefetch is still on the way (DESIGN §7). At
+ * the links' 3 px offset it covers their 1 px line instead of adding a second
+ * one, so it shows on plain links, menu links and buttons alike. A fixed
+ * style, with no animation. Goes inside a `<Link>`.
+ *
+ * The site has no `loading.tsx` on purpose: a loading boundary sends the page
+ * with status 200 before a missing service or post can answer 404.
  */
 export function PendingLabel({ children }: { children: ReactNode }) {
   const { pending } = useLinkStatus();
@@ -16,7 +19,7 @@ export function PendingLabel({ children }: { children: ReactNode }) {
     <span
       data-pending={pending || undefined}
       className={
-        pending ? "underline decoration-1 underline-offset-[3px]" : undefined
+        pending ? "underline decoration-2 underline-offset-[3px]" : undefined
       }
     >
       {children}

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { Floor } from "@/components/sitio/floor";
-import { serverEnv } from "@/env/server";
+import { clientEnv } from "@/env/client";
+import { isProductionDeploy } from "@/lib/deploy";
 
 import { ThrowButtons } from "./throw-buttons";
 
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
 };
 
 export default function SentryTestPage() {
-  if (serverEnv.CONTEXT === "production") notFound();
+  if (isProductionDeploy(clientEnv.NEXT_PUBLIC_SENTRY_ENVIRONMENT)) notFound();
   return (
     <Floor>
       <div className="flex flex-col items-start gap-6">

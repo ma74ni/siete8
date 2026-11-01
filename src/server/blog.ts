@@ -2,6 +2,9 @@ import "server-only";
 
 import { createPublicClient } from "@/server/supabase/public";
 
+/** PostgREST's error for an offset after the last row. */
+const RANGE_PAST_END = "PGRST103";
+
 export type PostSummary = {
   slug: string;
   title: string;
@@ -49,6 +52,9 @@ export async function getPublishedPosts(
     .order("published_at", { ascending: false })
     .range(from, from + perPage - 1);
 
+  // Past the last post PostgREST answers "range not satisfiable" instead of
+  // an empty list: that page has no posts, and the page answers 404.
+  if (error?.code === RANGE_PAST_END) return { posts: [], total: count ?? 0 };
   if (error) throw new Error(`Could not list posts: ${error.message}`);
   return {
     total: count ?? 0,

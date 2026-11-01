@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { PendingLabel } from "@/components/sitio/layout/pending-label";
 import { formatPostDate, pageCount } from "@/lib/blog";
 import type { PostListItem } from "@/server/blog";
 
@@ -46,7 +47,7 @@ export function PostList({
               </p>
               <h2 className="text-h4">
                 <Link href={`/blog/${post.slug}`} className="text-fg">
-                  {post.title}
+                  <PendingLabel>{post.title}</PendingLabel>
                 </Link>
               </h2>
               {post.excerpt && <p>{post.excerpt}</p>}
@@ -57,10 +58,14 @@ export function PostList({
       {pages > 1 && (
         <nav aria-label="Páginas del blog" className="flex flex-wrap gap-6">
           {page > 1 && (
-            <Link href={pageHref(page - 1)}>Artículos más recientes</Link>
+            <Link href={pageHref(page - 1)}>
+              <PendingLabel>Artículos más recientes</PendingLabel>
+            </Link>
           )}
           {page < pages && (
-            <Link href={pageHref(page + 1)}>Artículos anteriores</Link>
+            <Link href={pageHref(page + 1)}>
+              <PendingLabel>Artículos anteriores</PendingLabel>
+            </Link>
           )}
         </nav>
       )}

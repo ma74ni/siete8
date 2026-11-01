@@ -179,7 +179,7 @@ Una sola familia en dos anchos, en eco del logotipo ancho de SIETE8: **Archivo**
 | --- | --- |
 | Botón principal | Fondo `carmin`, texto blanco, peso 500, radio 4 px, alto 48 px. Hover: `granate`. Texto = la acción ("Escríbenos por WhatsApp", "Ver planes"); sin flechas añadidas |
 | Botón secundario | Borde 1,5 px `ink`, fondo transparente. Hover: fondo `mist` |
-| Enlace | `carmin`, subrayado de 1 px con 3 px de separación |
+| Enlace | `carmin`, subrayado de 1 px con 3 px de separación. Desde el clic hasta que llega la página de destino, el subrayado pasa a 2 px (`PendingLabel`), también en los enlaces del menú y los botones; sin animación |
 | Botón flotante de WhatsApp | Círculo de 56 px, fondo `ink` (no el verde de WhatsApp), ícono blanco; esquina inferior derecha, respeta el área segura |
 | Tabla de planes | Filas con divisor `line`, precio alineado a la derecha en cifras tabulares, fila recomendada con borde izquierdo de 3 px `carmin` |
 | Grilla de planes | En la página de cada servicio. Tarjetas con borde `line` y radio 4 px: nombre, precio en cifras tabulares con "incluye IVA" debajo, y botón "Solicitar". Una columna en pantallas angostas y tantas columnas de 12 rem como quepan en las anchas. La tarjeta recomendada lleva borde izquierdo de 3 px `carmin` |

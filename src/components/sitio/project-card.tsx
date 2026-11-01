@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { PendingLabel } from "@/components/sitio/layout/pending-label";
 import { PROJECT_STATUS_LABELS } from "@/lib/project-status";
 import type { ProjectCardData } from "@/lib/portfolio-filter";
 
@@ -25,7 +26,7 @@ export function ProjectCard({ project }: { project: ProjectCardData }) {
       </div>
       <h3 className="text-h4">
         <Link href={`/proyectos/${project.slug}`} className="text-fg">
-          {project.title}
+          <PendingLabel>{project.title}</PendingLabel>
         </Link>
       </h3>
       {project.summary && <p>{project.summary}</p>}
