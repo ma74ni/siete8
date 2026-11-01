@@ -16,6 +16,13 @@ pnpm test
 pnpm format:check
 ```
 
+Si el diff toca el panel (`src/app/admin/`, `src/components/admin/`, `src/server/admin-*` o `src/lib/admin-forms.ts`), además, con la base local encendida:
+
+```
+pnpm e2e:admin   # solo si no existe .env.e2e.local o se hizo db:reset
+pnpm e2e
+```
+
 Si el diff contra `origin/dev` toca `supabase/`, además:
 
 ```

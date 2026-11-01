@@ -15,7 +15,7 @@ paths:
 - La configuración de build de Netlify se declara en `netlify.toml`, no en la interfaz de Netlify. El adaptador `@netlify/plugin-nextjs` va declarado ahí y fijado en `package.json`, y necesita `publish = ".next"`; sin él Netlify publica la carpeta `.next` como estática y todo da 404.
 - En la interfaz de Netlify, la versión de Node debe ser 22 (Dependency management): los plugins de build usan esa versión, no la del `netlify.toml`.
 - `pnpm build` borra `.next/cache/fetch-cache` antes de compilar: Next reutiliza ahí las respuestas de Supabase entre builds (y Netlify conserva `.next/cache`), lo que dejaría precios o menús viejos.
-- `dev` y `master` exigen dos checks para fusionar: `CI` y `netlify/siete8/deploy-preview`.
+- `dev` y `master` exigen dos checks para fusionar: `CI` y `netlify/siete8/deploy-preview`. `Database` y `E2E` (pruebas de extremo a extremo del panel contra un Supabase local del runner) corren en cada PR; para exigirlos, se agregan en la protección de ramas de GitHub.
 - `public/ce24dd8215336358aaaadd8607c5a049.txt` es la verificación de dominio de Mailjet del sitio anterior. No se borra sin confirmarlo con el usuario.
 
 ## Dominio y correo

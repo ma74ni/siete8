@@ -33,7 +33,7 @@ Las rutas de esta tabla son relativas a la raíz del repo.
 - Supabase: Postgres, Auth, Storage, con las claves nuevas (publishable y secret). Migraciones con Supabase CLI (devDependency, se usa con `pnpm exec supabase`) en `supabase/migrations`.
 - Zod para validar entradas y variables de entorno.
 - ESLint (config de Next) y Prettier (con orden de clases de Tailwind).
-- Vitest para pruebas unitarias (`src/**/*.test.ts(x)`); Playwright para extremo a extremo (aún no instalado).
+- Vitest para pruebas unitarias (`src/**/*.test.ts(x)`); Playwright para las pruebas de extremo a extremo del panel (`e2e/`), siempre contra la base local.
 - Despliegue en Netlify con el adaptador oficial de Next.js.
 
 ## Comandos
@@ -52,6 +52,10 @@ pnpm db:migration <nombre>  # crea una migración nueva en supabase/migrations (
 pnpm db:status    # URLs y claves de la instancia local
 pnpm db:test      # pruebas pgTAP de supabase/tests contra la base local
 pnpm db:types     # regenera src/lib/database.types.ts desde la base local (después de cada migración)
+pnpm db:seed:volumen  # carga en la base local unos 40 clientes, 30 leads y 20 compras inventados (se borran con db:reset)
+pnpm e2e:admin    # crea el admin de las pruebas en la base local (de nuevo después de cada db:reset)
+pnpm e2e          # pruebas de extremo a extremo del panel; levantan su propio `next dev` en el puerto 3100 (e2e:ui para verlas) y dejan datos "E2E" en la base local
+pnpm check:routes <url>  # códigos de respuesta de las rutas límite y del sitemap de un preview o de producción
 ```
 
 ## Forma de trabajar
@@ -65,7 +69,7 @@ pnpm db:types     # regenera src/lib/database.types.ts desde la base local (desp
 ## Definición de terminado
 
 - Cumple los criterios de aceptación de la tarea.
-- `pnpm typecheck`, `pnpm lint` y `pnpm test` pasan sin errores, y los checks del PR están en verde (`CI`, `Database` y el preview de Netlify).
+- `pnpm typecheck`, `pnpm lint` y `pnpm test` pasan sin errores, y los checks del PR están en verde (`CI`, `Database`, `E2E` y el preview de Netlify).
 - Textos tomados de `docs/COPY.md`.
 - Estilos solo con tokens de `docs/DESIGN.md`.
 - Revisado a 360 px y 1440 px, con teclado y con `prefers-reduced-motion`.
