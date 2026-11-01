@@ -1,7 +1,6 @@
 import * as Sentry from "@sentry/nextjs";
 
 import { clientEnv } from "@/env/client";
-import { serverEnv } from "@/env/server";
 import { sentryOptions } from "@/lib/sentry";
 
 // Error monitoring on the server (E7-06): pages, Server Actions and `api/`
@@ -10,7 +9,11 @@ import { sentryOptions } from "@/lib/sentry";
 
 export async function register() {
   Sentry.init(
-    sentryOptions(clientEnv.NEXT_PUBLIC_SENTRY_DSN, serverEnv.CONTEXT),
+    // Not `CONTEXT`: it only exists while building (see `@/lib/deploy`).
+    sentryOptions(
+      clientEnv.NEXT_PUBLIC_SENTRY_DSN,
+      clientEnv.NEXT_PUBLIC_SENTRY_ENVIRONMENT,
+    ),
   );
 }
 

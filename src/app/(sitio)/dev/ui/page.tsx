@@ -20,7 +20,8 @@ import { HeroMotif } from "@/components/sitio/motif/hero-motif";
 import { ReadingProgress } from "@/components/sitio/motif/reading-progress";
 import { Tabs } from "@/components/sitio/tabs";
 import { TextLink } from "@/components/sitio/text-link";
-import { serverEnv } from "@/env/server";
+import { clientEnv } from "@/env/client";
+import { isProductionDeploy } from "@/lib/deploy";
 
 import { Replay } from "./replay";
 
@@ -144,7 +145,7 @@ const sampleDue = [
 const noRows: typeof sampleDue = [];
 
 export default function DevUiPage() {
-  if (serverEnv.CONTEXT === "production") notFound();
+  if (isProductionDeploy(clientEnv.NEXT_PUBLIC_SENTRY_ENVIRONMENT)) notFound();
 
   return (
     <div>

@@ -6,6 +6,7 @@ import { Button } from "@/components/sitio/button";
 import { Closing } from "@/components/sitio/closing";
 import { Floor } from "@/components/sitio/floor";
 import { JsonLd } from "@/components/sitio/json-ld";
+import { PendingLabel } from "@/components/sitio/layout/pending-label";
 import { CategoryDivider } from "@/components/sitio/motif/category-divider";
 import { HeroMotif } from "@/components/sitio/motif/hero-motif";
 import { PlanTable } from "@/components/sitio/plan-table";
@@ -213,7 +214,7 @@ function Categories({
                     href={`/servicios/${service.slug}`}
                     className="flex min-h-11 items-center"
                   >
-                    {service.name}
+                    <PendingLabel>{service.name}</PendingLabel>
                   </Link>
                 </li>
               ))}
@@ -275,7 +276,7 @@ function LatestPost({
       <article className="flex flex-col gap-3">
         <h3>
           <Link href={`/blog/${post.slug}`} className="text-fg">
-            {post.title}
+            <PendingLabel>{post.title}</PendingLabel>
           </Link>
         </h3>
         {post.excerpt && <p>{post.excerpt}</p>}

@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { Closing } from "@/components/sitio/closing";
 import { Floor } from "@/components/sitio/floor";
+import { PendingLabel } from "@/components/sitio/layout/pending-label";
 import { CategoryDivider } from "@/components/sitio/motif/category-divider";
 import { getServiceMenu } from "@/server/catalog";
 import { pageMetadata } from "@/lib/metadata";
@@ -65,7 +66,7 @@ export default async function ServicesPage() {
                     aria-describedby={`servicio-${service.slug}`}
                     className="flex min-h-11 items-center self-start"
                   >
-                    Ver planes y requisitos
+                    <PendingLabel>Ver planes y requisitos</PendingLabel>
                   </Link>
                 </li>
               ))}

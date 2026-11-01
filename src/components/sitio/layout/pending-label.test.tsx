@@ -18,7 +18,7 @@ describe("PendingLabel", () => {
     status.pending = true;
     const markup = renderToStaticMarkup(<PendingLabel>Blog</PendingLabel>);
     expect(markup).toContain('data-pending="true"');
-    expect(markup).toContain("underline decoration-1 underline-offset-[3px]");
+    expect(markup).toContain("underline decoration-2 underline-offset-[3px]");
     expect(markup).not.toMatch(/animate-|transition/);
   });
 });
