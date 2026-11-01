@@ -9,6 +9,7 @@ import { Floor } from "@/components/sitio/floor";
 import { JsonLd } from "@/components/sitio/json-ld";
 import { Markdown } from "@/components/sitio/markdown";
 import { ReadingProgress } from "@/components/sitio/motif/reading-progress";
+import { PendingLabel } from "@/components/sitio/layout/pending-label";
 import { clientEnv } from "@/env/client";
 import { formatPostDate, readingMinutes } from "@/lib/blog";
 import { pageMetadata } from "@/lib/metadata";
@@ -65,7 +66,7 @@ export default async function PostPage({ params }: PageProps<"/blog/[slug]">) {
         <article className="flex flex-col gap-10">
           <header className="flex flex-col gap-6">
             <Link href="/blog" className="text-small">
-              Volver al blog
+              <PendingLabel>Volver al blog</PendingLabel>
             </Link>
             <h1 className="text-h2">{post.title}</h1>
             {post.excerpt && (

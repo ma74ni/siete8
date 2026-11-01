@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ComponentProps } from "react";
 
+import { PendingLabel } from "@/components/sitio/layout/pending-label";
 import { cx } from "@/lib/cx";
 
 type Variant = "primary" | "secondary";
@@ -32,8 +33,12 @@ type LinkButtonProps = Omit<ComponentProps<typeof Link>, "href"> & {
  */
 export function Button(props: ButtonProps | LinkButtonProps) {
   if ("href" in props && props.href !== undefined) {
-    const { variant, className, ...rest } = props;
-    return <Link {...rest} className={buttonClasses(variant, className)} />;
+    const { variant, className, children, ...link } = props;
+    return (
+      <Link {...link} className={buttonClasses(variant, className)}>
+        <PendingLabel>{children}</PendingLabel>
+      </Link>
+    );
   }
   const { variant, className, type = "button", ...rest } = props as ButtonProps;
   return (

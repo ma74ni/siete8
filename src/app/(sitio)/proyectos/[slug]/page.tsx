@@ -7,6 +7,7 @@ import { Button } from "@/components/sitio/button";
 import { Closing } from "@/components/sitio/closing";
 import { Floor } from "@/components/sitio/floor";
 import { Markdown } from "@/components/sitio/markdown";
+import { PendingLabel } from "@/components/sitio/layout/pending-label";
 import { pageMetadata } from "@/lib/metadata";
 import { PROJECT_STATUS_LABELS, showsLiveLink } from "@/lib/project-status";
 import {
@@ -71,7 +72,7 @@ export default async function ProjectPage({
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-6">
             <Link href="/proyectos" className="text-small">
-              Volver a proyectos
+              <PendingLabel>Volver a proyectos</PendingLabel>
             </Link>
             <h1>{project.title}</h1>
             {project.summary && <p>{project.summary}</p>}

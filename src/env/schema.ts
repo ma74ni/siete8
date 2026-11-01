@@ -12,8 +12,6 @@ import { z } from "zod";
 export const serverSchema = z.object({
   // Bypasses Row Level Security. Only used from `src/server/`.
   SUPABASE_SECRET_KEY: z.string().startsWith("sb_secret_"),
-  // Set by Netlify: production, deploy-preview, branch-deploy or dev.
-  CONTEXT: z.string().optional(),
   // Contact form (E3-08). Optional: without Turnstile the form is not shown,
   // without Resend the lead is saved but no email is sent.
   TURNSTILE_SECRET_KEY: z.string().min(1).optional(),
