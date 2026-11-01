@@ -54,6 +54,7 @@ pnpm db:test      # pruebas pgTAP de supabase/tests contra la base local
 pnpm db:types     # regenera src/lib/database.types.ts desde la base local (después de cada migración)
 pnpm db:seed:volumen  # carga en la base local unos 40 clientes, 30 leads y 20 compras inventados (se borran con db:reset)
 pnpm e2e:admin    # crea el admin de las pruebas en la base local (de nuevo después de cada db:reset)
+pnpm e2e:medir    # mide cada pantalla del panel (alto, formularios, campos, desborde a 360 px) en test-results/medicion-panel.md
 pnpm e2e          # pruebas de extremo a extremo del panel; levantan su propio `next dev` en el puerto 3100 (e2e:ui para verlas) y dejan datos "E2E" en la base local
 pnpm check:routes <url>  # códigos de respuesta de las rutas límite y del sitemap de un preview o de producción
 ```
@@ -112,7 +113,7 @@ El detalle de cada área vive en `.claude/rules/` y se carga solo cuando se trab
 ## Agentes y skills
 
 - Skills (`.claude/skills/`): `tarea`, `migracion`, `pagina-publica`, `verificar`, `release`.
-- Agentes (`.claude/agents/`): `code-reviewer` (revisión de solo lectura contra estas reglas), `db-specialist` (migraciones, RLS y pgTAP), `ui-checker` (revisión visual a 360 y 1440 px con Playwright).
+- Agentes (`.claude/agents/`): `code-reviewer` (revisión de solo lectura contra estas reglas), `db-specialist` (migraciones, RLS y pgTAP), `ui-checker` (revisión visual a 360 y 1440 px con Playwright), `ux-reviewer` (experiencia de uso del panel contra los patrones de DESIGN §12.2).
 
 ## Estructura de carpetas
 
