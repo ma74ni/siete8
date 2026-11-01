@@ -16,6 +16,7 @@
     "e2e": "playwright test",
     "e2e:ui": "playwright test --ui",
     "e2e:admin": "node e2e/create-admin.mjs",
+    "e2e:medir": "E2E_MEDIR=1 playwright test --grep @medicion",
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
