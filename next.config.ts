@@ -66,6 +66,9 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // The end-to-end tests run their own `next dev` in .next-e2e, so they never
+  // share (or wait for) the developer's server and its build output.
+  ...(process.env.NEXT_DIST_DIR && { distDir: process.env.NEXT_DIST_DIR }),
   experimental: {
     // Panel image uploads (E4-04): 2 MB files plus the multipart overhead.
     serverActions: { bodySizeLimit: "3mb" },

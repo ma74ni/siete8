@@ -6,3 +6,6 @@ CLAUDE.md
 AGENTS.md
 src/lib/database.types.ts
 supabase/.temp/
+.next-e2e/
+test-results/
+playwright-report/

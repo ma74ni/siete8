@@ -250,3 +250,26 @@ Se ejecuta después de E11-06. Antes de E12-01 hay que decidir la autenticación
 | E13-05 | Guardas: una prueba que falla si aparece un `<select>`, un `<table>`, un `<summary>` o la clase de control fuera de `src/components/`; la regla en `CLAUDE.md` y en `.claude/rules/diseno.md` | E13-04 | La prueba falla con un `<select>` agregado a una página y pasa sin él; la regla dice qué componente usar para cada caso | — |
 
 Se ejecuta antes de E11-06 o en paralelo, por secciones, porque E11-06 agrega tablas nuevas que ya deberían usar `DataTable`.
+
+## 12. E14 Rediseño del panel
+
+El panel funciona, pero no escala: la portada es la lista del catálogo, la barra lateral tiene 13 enlaces sin grupos y las fichas tienen todo abierto a la vez (la del cliente, 605 líneas y 8 formularios; la del servicio, 512 líneas con un formulario completo por cada plan). Después de guardar, el formulario queda abierto y vacío; las listas no tienen paginación, y no se pueden crear servicios. En el código, `admin-clients-actions.ts`, `admin-forms.ts` y `lib/clients.ts` superan las 600 líneas cada uno y mezclan temas, y no hay pruebas de extremo a extremo.
+
+Esta épica rehace todas las pantallas con cuatro patrones (Lista, Ficha, Sublista y Formulario, en DESIGN §12.2) y las plantillas que les faltan al sistema de componentes. Cada pantalla se entrega con su boceto aprobado, su prueba de extremo a extremo antes y después, la revisión de `code-reviewer` y `ux-reviewer`, la revisión visual a 360 y 1440 px y `pnpm check:routes` en el preview. No cambia los textos de COPY sin aprobación, ni la base salvo lo necesario para crear servicios, ni el sitio público.
+
+| ID | Tarea | Depende de | Criterios de aceptación | SRS |
+| --- | --- | --- | --- | --- |
+| E14-00 | Red de seguridad: Playwright con pruebas de extremo a extremo de los flujos críticos del panel contra la base local (crear cliente, agregar servicio, registrar pago, renovar, lead → proforma → cliente, crear plan) y una semilla local con volumen realista (unos 40 clientes, 150 servicios y 30 leads) | — | Las pruebas pasan contra el panel actual y fallan si un flujo deja de guardar; la semilla se carga y se borra con un comando y nunca toca el proyecto remoto | — |
+| E14-01 | Revisión de UX pantalla por pantalla, con prioridades; patrones y reglas en DESIGN §12.2; bocetos navegables de la navegación, la portada "Hoy", la ficha del cliente y la del servicio; agente `ux-reviewer` con esas reglas | E14-00 | Los bocetos están aprobados antes de escribir código de pantallas; DESIGN §12.2 dice qué patrón usa cada tipo de pantalla | — |
+| E14-02 | Plantillas comunes: `FormPage` (volver, un formulario, Cancelar), aviso después de guardar (textos de COPY por clave), `SubList`, pestañas como rutas (`SectionTabs`), paginación en `DataTable` y `adminPaths` | E14-01 | Cada pieza en `/dev/ui` y con pruebas; ninguna pantalla cambia todavía | RNF-12 |
+| E14-03 | Navegación agrupada (Hoy, Ventas, Catálogo, Finanzas, Sitio), menú del celular y portada "Hoy" (por vencer en 7 días, por cobrar, leads sin contactar, proformas sin respuesta) | E14-02 | La portada muestra lo pendiente con enlaces a cada sección; la navegación se usa con teclado y a 360 px sin amontonarse | — |
+| E14-04 | Clientes: ficha resumen y subpáginas (agregar servicio, servicio del cliente con historial, pagos, renovar y cancelar, editar datos); lista paginada. Divide `admin-clients-actions.ts` por tema y `lib/clients.ts` por responsabilidad | E14-03 | Ninguna página del cliente tiene más de un formulario abierto; las pruebas de E14-00 siguen en verde | — |
+| E14-05 | Catálogo: servicio con pestañas (Planes, Requisitos, Pasos y preguntas, Página y SEO), planes en sublista con su página de edición, y crear servicios y categorías (con su migración de permisos si hace falta) | E14-03 | Se crea un servicio desde el panel y aparece en el sitio al hacerlo visible; las pruebas de E14-00 siguen en verde | RF-ADM-02 |
+| E14-06 | Leads y proformas con los patrones (ficha, proforma nueva en su página, lista paginada) | E14-03 | Igual que E14-04 en leads | — |
+| E14-07 | Compras con los patrones (ficha, pagos y licencias en sublista) | E14-03 | Igual que E14-04 en compras | — |
+| E14-08 | Por vencer y Por cobrar alineados con las fichas nuevas; Renovar y registrar pago siguen siendo rápidos desde la lista | E14-04 | Las acciones rápidas llevan a la ficha nueva o se resuelven en la lista sin formularios abiertos de más | — |
+| E14-09 | Proyectos y Blog con pestañas (Contenido, Imágenes, Publicación) | E14-03 | Igual que E14-04 en proyectos y blog | — |
+| E14-10 | Enlaces (sublista), Configuración, Asistente y Ganancias con los patrones | E14-03 | Igual que E14-04 en esas pantallas | — |
+| E14-11 | Cierre: divide `admin-forms.ts` por tema; guarda que falla si una página del panel tiene más de un formulario abierto; reglas actualizadas en `CLAUDE.md` y `.claude/rules/panel.md` | E14-10 | La guarda falla con dos formularios en una página y pasa sin ellos; las reglas describen los cuatro patrones | — |
+
+Cada tarea de pantalla se hace en una o varias ramas desde `dev`. E14-06 a E14-10 pueden ir en cualquier orden después de E14-03.
