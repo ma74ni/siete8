@@ -284,6 +284,7 @@ Textos internos del panel (`/admin`). El panel usa la misma voz que el sitio: tu
 | Ingreso | Error | El correo o la contraseña no coinciden. Revísalos e inténtalo de nuevo. |
 | Acceso denegado | Título y texto | No tienes acceso al panel. Tu cuenta no tiene permiso de administrador. Cierra sesión e ingresa con otra cuenta. Botón: Cerrar sesión. |
 | Barra lateral | Enlaces | Servicios. Proyectos. Blog. Leads. Clientes. Por vencer. Por cobrar. Compras. Ganancias. Asistente. Enlaces. Configuración. Ver el sitio. Cerrar sesión. |
+| Panel | Comunes (E14-02) | Junto al botón principal de un formulario: Cancelar. En cada fila de una sublista: Editar. Debajo de una lista con varias páginas: Anteriores. Página {n} de {total}. Siguientes. Nombre de esos enlaces para lectores de pantalla: Páginas. Aviso al volver de un formulario: el mensaje de la acción (por ejemplo, Servicio agregado.). |
 | Servicios | Título e introducción | Servicios. Elige un servicio para cambiar sus planes, precios y textos. Lo que guardes se ve en el sitio en menos de un minuto. |
 | Servicios | Estado | Una tabla por categoría, con columnas Servicio, Estado, Planes. Visible / Oculto; "1 plan" / "{n} planes"; "(categoría oculta)". Sin servicios: Esta categoría todavía no tiene servicios. |
 | Servicio | Encabezado | Volver a servicios. Ver en el sitio. Si está oculto: Oculto: no aparece en el sitio. |

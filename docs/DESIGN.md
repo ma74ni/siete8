@@ -248,6 +248,13 @@ En `src/components/admin/`. Las pantallas del panel se arman con estas piezas y 
 | `Disclosure` | Contenido que se abre al pedirlo, con `<details>` nativo y una flecha que gira al abrir. `panel`: caja con borde `line` y título, para formularios de la página ("Agregar servicio"); su contenido va con 24 px entre bloques. `action`: el resumen es un botón secundario, para acciones en una fila ("Renovar"). `inline`: solo el título en peso 500, para un extra dentro de otro bloque ("Registrar abono") |
 | `EmptyState` | Lo que dice una lista vacía ("Todavía no hay clientes."), con una acción opcional |
 | `StatusText` | Un estado en texto, nunca en una píldora de color. Tono `alert` (peso 500, `accent`) para lo que requiere atención: "Venció el …", "Debe $…" |
+| `FormPage` | Plantilla del patrón Formulario (§12.2): volver, título, introducción, un formulario y, aparte al final, la zona para borrar, en una columna de 48 rem como máximo. El `ActionForm` de la página lleva `cancelHref` ("Cancelar"). Las acciones que dan de baja o borran ("Cancelar servicio", "Borrar plan") van solo en la zona de abajo, con `DeleteButton` y su confirmación, nunca junto a "Cancelar" |
+| `Notice` | El aviso al volver de un formulario ("Servicio agregado."), siempre lo primero de la página, antes de `PageHeader`; se anuncia a los lectores de pantalla después de cargar. Recibe el valor de `?aviso=` tal cual y solo muestra claves de `@/lib/notices`, nunca texto libre; después de mostrarse se quita de la dirección. La acción termina con `redirectWithNotice(ruta, clave)` |
+| `SubList` | Plantilla del patrón Sublista: `DataTable` compacta con "Editar" por fila (con el nombre de la fila para lectores de pantalla) y "Agregar …" debajo |
+| `SectionTabs` | Pestañas que son rutas, para las partes de una ficha larga; la página dice cuál es la actual (`aria-current`) |
+| `Pagination` | "Anteriores", "Página n de m" y "Siguientes" bajo una lista; `DataTable` la incluye con `pagination`. La página va en `?pagina=` (`pageNumber`, solo dígitos), se acota con `clampPage` y las filas se piden al servidor con `pageRange` (`@/lib/pagination`, 25 por página) |
+
+`DataTable` también acepta `width` por columna: con una sola, la tabla pasa a ancho fijo y las tablas seguidas (por categoría) quedan alineadas. Las direcciones del panel salen de `adminPaths` (`@/lib/admin-paths`), no se escriben a mano.
 
 La muestra de cada pieza está en `/dev/ui`.
 
@@ -298,7 +305,7 @@ Medido el 1 de noviembre de 2026 con `pnpm e2e:medir` sobre los datos de volumen
 
 Hallazgos comunes:
 
-- **Desborde lateral a 360 px** en Por vencer, Por cobrar y Compra, las tres con columnas de acción dentro de `DataTable`. Hipótesis por confirmar en E14-02: los textos solo para lectores de pantalla (posición absoluta) de esas columnas escapan del recorte de la zona desplazable, que no tiene `position: relative`. Si se confirma, se corrige una vez en `DataTable`.
+- **Desborde lateral a 360 px** en Por vencer, Por cobrar y Compra, las tres con columnas de acción dentro de `DataTable`: los textos solo para lectores de pantalla (posición absoluta) de esas columnas escapaban del recorte de la zona desplazable, que no tenía `position: relative`. Corregido en E14-02; `pnpm e2e:medir` ya no marca desborde en ninguna pantalla.
 - **Barra lateral**: 13 enlaces sin grupos; en el celular se apilan arriba de cada página.
 - **Sin paginación** en ninguna lista.
 - **Sin "Cancelar"** en ningún formulario y sin aviso después de redirigir.

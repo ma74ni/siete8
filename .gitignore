@@ -52,3 +52,6 @@ next-env.d.ts
 # claude code (personal)
 CLAUDE.local.md
 .claude/settings.local.json
+
+# Playwright MCP browser snapshots (agents)
+/.playwright-mcp/
