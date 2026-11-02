@@ -12,6 +12,7 @@ import { PageHeader } from "@/components/admin/page-header";
 import { PriceField } from "@/components/admin/price-field";
 import { FormField } from "@/components/form/form-field";
 import { isUuid } from "@/lib/admin-forms";
+import { adminPaths } from "@/lib/admin-paths";
 import { formatDecimal, planRenewal } from "@/lib/clients";
 import {
   HOLDER_LABELS,
@@ -57,7 +58,7 @@ export default async function EditServicePage({
     <div className="flex max-w-[64rem] flex-col gap-10">
       <PageHeader
         title={service.name}
-        back={{ href: "/admin", label: "Volver a servicios" }}
+        back={{ href: adminPaths.services, label: "Volver a servicios" }}
         intro={
           <>
             {service.category?.name}.{" "}

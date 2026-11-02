@@ -140,7 +140,7 @@ export async function acceptProforma(page: Page) {
 // Catalog ---------------------------------------------------------------------
 
 export async function openCatalogService(page: Page, name: string) {
-  await page.goto("/admin");
+  await page.goto("/admin/servicios");
   await page.getByRole("link", { name, exact: true }).click();
   await expect(page.getByRole("heading", { level: 1, name })).toBeVisible();
 }

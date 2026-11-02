@@ -283,7 +283,12 @@ Textos internos del panel (`/admin`). El panel usa la misma voz que el sitio: tu
 | Ingreso | Sesión caducada | Tu sesión caducó. Ingresa de nuevo para seguir. |
 | Ingreso | Error | El correo o la contraseña no coinciden. Revísalos e inténtalo de nuevo. |
 | Acceso denegado | Título y texto | No tienes acceso al panel. Tu cuenta no tiene permiso de administrador. Cierra sesión e ingresa con otra cuenta. Botón: Cerrar sesión. |
-| Barra lateral | Enlaces | Servicios. Proyectos. Blog. Leads. Clientes. Por vencer. Por cobrar. Compras. Ganancias. Asistente. Enlaces. Configuración. Ver el sitio. Cerrar sesión. |
+| Barra lateral | Enlaces (E14-03) | Hoy. Grupos con su título: Ventas (Leads, Clientes, Por cobrar, Por vencer), Catálogo (Servicios, Proyectos, Blog, Enlaces), Finanzas (Compras, Ganancias), Sitio (Asistente, Configuración). Ver el sitio. Cerrar sesión. En el celular, todo dentro de: Menú. |
+| Hoy | Título e introducción | Hoy. Lo que necesita tu atención: lo que vence esta semana, lo que te deben y quién espera respuesta. (No se muestra: cada sección lista hasta 10 filas; el resto está en su sección.) |
+| Hoy | Vence en 7 días | Servicios de tus clientes que vencen en los próximos 7 días (el más próximo primero) y después los que ya vencieron (el más reciente primero). Columnas: Cliente, Servicio, Vence (Venció el {fecha} / Vence el {fecha}). Vacío: Nada vence esta semana. Enlace: Ver todo lo que vence. |
+| Hoy | Te deben | Total por cobrar: {total} (la cifra en grande). Columnas: Cliente, Servicios, Debe. Vacío: Nadie te debe nada. Enlace: Ver todo lo que te deben. |
+| Hoy | Leads sin contactar | Leads en estado Nuevo, del más reciente al más antiguo. Columnas: Nombre, Servicio, Origen, Recibido. Vacío: No hay leads nuevos. Enlace: Ver todos los leads. |
+| Hoy | Proformas sin respuesta | Proformas enviadas, de la más antigua a la más reciente. Columnas: Lead, Servicio, Precio con IVA, Enviada. Vacío: No hay proformas esperando respuesta. |
 | Panel | Comunes (E14-02) | Junto al botón principal de un formulario: Cancelar. En cada fila de una sublista: Editar. Debajo de una lista con varias páginas: Anteriores. Página {n} de {total}. Siguientes. Nombre de esos enlaces para lectores de pantalla: Páginas. Aviso al volver de un formulario: el mensaje de la acción (por ejemplo, Servicio agregado.). |
 | Servicios | Título e introducción | Servicios. Elige un servicio para cambiar sus planes, precios y textos. Lo que guardes se ve en el sitio en menos de un minuto. |
 | Servicios | Estado | Una tabla por categoría, con columnas Servicio, Estado, Planes. Visible / Oculto; "1 plan" / "{n} planes"; "(categoría oculta)". Sin servicios: Esta categoría todavía no tiene servicios. |
