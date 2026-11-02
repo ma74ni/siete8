@@ -1,8 +1,7 @@
 // The panel's addresses in one place (E14-02), so links, redirects and
 // revalidations never spell a route by hand. The redesigned screens (E14-03
 // onwards) use these. Some do not exist yet and answer 404 until their task:
-// `services` (E14-03, the catalog moves there from /admin) and the sub-pages
-// of clients and plans (E14-04, E14-05).
+// the sub-pages of clients and plans (E14-04, E14-05).
 
 const id = (value: string) => encodeURIComponent(value);
 

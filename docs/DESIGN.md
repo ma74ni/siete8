@@ -236,6 +236,7 @@ La muestra de cada pieza, en todos sus estados, está en `/dev/ui`.
 - Densidad media, tipografía Archivo `wdth` 100 en todo el panel, sin el ancho expandido.
 - Sin motivo de barras, salvo el logo en la barra lateral.
 - La barra lateral marca la sección actual con fondo `surface` y un borde izquierdo `accent` de 4 px (`aria-current="page"`); el contorno de foco (`focus`) se mantiene aparte.
+- Navegación (`PanelNav`, E14-03): los grupos de §12.2 (regla 7), definidos en `ADMIN_NAV` (`@/lib/admin-nav`). Cada grupo, salvo Hoy, va bajo una línea `border` con su título en `text-small` `fg-muted`. En el celular todo queda dentro de "Menú" (`Disclosure` `inline`), que se cierra al ir a otra página. La portada del panel es Hoy; el catálogo vive en `/admin/servicios`.
 
 ### 12.1 Componentes del panel
 

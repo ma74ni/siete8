@@ -143,7 +143,8 @@ test("@medicion every panel screen", async ({ page }) => {
   test.setTimeout(600_000);
   const ids = await sampleIds();
   const screens: [string, string | null][] = [
-    ["Inicio (servicios)", "/admin"],
+    ["Hoy", "/admin"],
+    ["Servicios", "/admin/servicios"],
     [
       "Servicio: Firma electrónica",
       ids.service && `/admin/servicios/${ids.service}`,
