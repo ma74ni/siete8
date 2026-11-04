@@ -2,7 +2,7 @@ import { ClientImportForm } from "@/components/admin/client-import-form";
 import { Disclosure } from "@/components/admin/disclosure";
 import { PageHeader } from "@/components/admin/page-header";
 import { getClientCatalog } from "@/server/admin-clients";
-import { importClientsCsv } from "@/server/admin-clients-actions";
+import { importClientsCsv } from "@/server/admin-clients-import-actions";
 
 // Texts from docs/COPY.md §13.
 

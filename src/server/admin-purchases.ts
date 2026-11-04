@@ -1,11 +1,7 @@
 import "server-only";
 
-import {
-  type DurationUnit,
-  formatDayShort,
-  formatDecimal,
-  renewalText,
-} from "@/lib/clients";
+import { type DurationUnit, formatDecimal, renewalText } from "@/lib/clients";
+import { formatDayShort } from "@/lib/days";
 import {
   licenseUse,
   paymentTotalCents,

@@ -5,7 +5,7 @@ import { ClientFields } from "@/components/admin/client-fields";
 import { ClientServiceFields } from "@/components/admin/client-service-fields";
 import { PageHeader } from "@/components/admin/page-header";
 import { isUuid } from "@/lib/admin-forms";
-import { todayInQuito } from "@/lib/clients";
+import { todayInQuito } from "@/lib/days";
 import { createClient } from "@/server/admin-clients-actions";
 import { getClientCatalog } from "@/server/admin-clients";
 import { getLeadContact } from "@/server/admin-leads";

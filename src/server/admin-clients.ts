@@ -1,14 +1,14 @@
 import "server-only";
 
+import { normalizeName } from "@/lib/client-contact";
+import { CSV_COLUMNS } from "@/lib/client-import";
 import {
   type CatalogService,
-  CSV_COLUMNS,
   CLIENT_KIND_LABELS,
-  formatDayShort,
   formatDecimal,
-  normalizeName,
   renewalText,
 } from "@/lib/clients";
+import { formatDayShort } from "@/lib/days";
 import { daysBetween, periodBalance } from "@/lib/payments";
 import { requireAdmin } from "@/server/auth";
 import { createSessionClient } from "@/server/supabase/session";
@@ -169,6 +169,23 @@ export async function getClientForAdmin(id: string) {
 export type ClientForAdmin = NonNullable<
   Awaited<ReturnType<typeof getClientForAdmin>>
 >;
+
+/**
+ * One of the client's services (E14-04) with the client it belongs to; null
+ * when either is missing or the service is another client's.
+ */
+export async function getClientServiceForAdmin(
+  clientId: string,
+  serviceId: string,
+) {
+  const client = await getClientForAdmin(clientId);
+  const service = client?.client_service.find(
+    (candidate) => candidate.id === serviceId,
+  );
+  return client && service ? { client, service } : null;
+}
+
+export type ClientServiceForAdmin = ClientForAdmin["client_service"][number];
 
 /** RUC and cédula numbers already registered, for the import preview. */
 export async function getExistingTaxIds(): Promise<Set<string>> {

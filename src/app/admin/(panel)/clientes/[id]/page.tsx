@@ -1,194 +1,186 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { ActionForm } from "@/components/admin/action-form";
-import { ClientFields } from "@/components/admin/client-fields";
-import {
-  ClientServiceFields,
-  RenewalInputs,
-} from "@/components/admin/client-service-fields";
-import { ConfirmForm } from "@/components/admin/confirm-form";
 import { DataTable } from "@/components/admin/data-table";
-import { DeleteButton } from "@/components/admin/delete-button";
-import { Disclosure } from "@/components/admin/disclosure";
-import { EmptyState } from "@/components/admin/empty-state";
 import { Section } from "@/components/admin/fields";
-import { SelectField } from "@/components/form/select-field";
+import { KeyFigures } from "@/components/admin/key-figures";
+import { Notice } from "@/components/admin/notice";
 import { PageHeader } from "@/components/admin/page-header";
-import { PriceField } from "@/components/admin/price-field";
-import { RenewForm } from "@/components/admin/renew-form";
 import { StatusText } from "@/components/admin/status-text";
-import { FormField } from "@/components/form/form-field";
+import { Button } from "@/components/sitio/button";
 import { isUuid } from "@/lib/admin-forms";
-import { formatPostDate } from "@/lib/blog";
+import { adminPaths } from "@/lib/admin-paths";
 import {
-  type CatalogService,
-  CLIENT_KIND_LABELS,
-  expiry,
-  formatDay,
-  formatDecimal,
-  formatSignedCents,
-  needsAttention,
-  profitCents,
-  todayInQuito,
-} from "@/lib/clients";
-import { PAYMENT_METHOD_LABELS, type PaymentMethod } from "@/lib/payments";
-import { formatCents, formatPriceWithVat } from "@/lib/price";
-import { serviceLicensesCostCents } from "@/lib/purchases";
-import { nextPeriod } from "@/lib/renewals";
+  clientSummary,
+  type ClientSummary,
+  latestPayments,
+  paymentNeedsAttention,
+  serviceTitle,
+} from "@/lib/client-record";
+import { CLIENT_KIND_LABELS, expiry, needsAttention } from "@/lib/clients";
+import { formatDay, todayInQuito } from "@/lib/days";
+import { PAYMENT_METHOD_LABELS } from "@/lib/payments";
+import { formatCents, formatPriceWithVat, toCents } from "@/lib/price";
 import {
   type ClientForAdmin,
-  getClientCatalog,
+  type ClientServiceForAdmin,
   getClientForAdmin,
 } from "@/server/admin-clients";
-import {
-  type ClientServicePurchases,
-  getPurchasesForClientServices,
-} from "@/server/admin-purchases";
-import {
-  addClientService,
-  addPayment,
-  cancelClientService,
-  clearWriteOff,
-  deletePayment,
-  markPaidToday,
-  deleteClient,
-  reactivateClientService,
-  savePeriod,
-  updateClient,
-  updateClientService,
-  writeOffPeriod,
-} from "@/server/admin-clients-actions";
 
-// Texts from docs/COPY.md §13.
+// Texts from docs/COPY.md §13 (Clientes, Ficha).
 
-type ClientService = ClientForAdmin["client_service"][number];
-
-/** One page per client: data and services (E11-01, RF-CRM-02). */
+/**
+ * The client's record (E11-01, E14-04, RF-CRM-02): what they owe, what
+ * expires next, their services and last payments, in reading. Every change
+ * happens on its own page (DESIGN §12.2, Ficha).
+ */
 export default async function ClientPage({
   params,
+  searchParams,
 }: PageProps<"/admin/clientes/[id]">) {
   const { id } = await params;
   if (!isUuid(id)) notFound();
-  const [client, catalog] = await Promise.all([
-    getClientForAdmin(id),
-    getClientCatalog(),
-  ]);
+  const client = await getClientForAdmin(id);
   if (!client) notFound();
+  const { aviso } = await searchParams;
   const today = todayInQuito();
-  const purchases = await getPurchasesForClientServices(
-    client.client_service.map((service) => service.id),
-  );
 
   return (
-    <div className="flex max-w-[72rem] flex-col gap-10">
+    <div className="flex max-w-[64rem] flex-col gap-10">
+      <Notice value={aviso} />
       <PageHeader
         title={client.name}
-        back={{ href: "/admin/clientes", label: "Volver a clientes" }}
-        intro={
+        back={{ href: adminPaths.clients, label: "Volver a clientes" }}
+        intro={<ClientIntro client={client} />}
+        actions={
           <>
-            {[CLIENT_KIND_LABELS[client.kind], client.tax_id]
-              .filter(Boolean)
-              .join(", ")}
-            {client.lead && (
-              <>
-                {". "}
-                <Link href={`/admin/leads/${client.lead.id}`}>
-                  Lead de origen
-                </Link>
-              </>
-            )}
+            <Button href={adminPaths.newClientService(client.id)}>
+              Agregar servicio
+            </Button>
+            <Button href={adminPaths.editClient(client.id)} variant="secondary">
+              Editar datos
+            </Button>
           </>
         }
       />
 
+      <Summary summary={clientSummary(client.client_service, today)} />
+
       <Section title="Servicios">
-        <ServicesTable services={client.client_service} today={today} />
-        {client.client_service.map((service) => (
-          <ServiceEditor
-            key={service.id}
-            service={service}
-            clientName={client.name}
-            catalog={catalog}
-            purchases={purchases.get(service.id)}
-            today={today}
-          />
-        ))}
-        <Disclosure summary="Agregar servicio">
-          <ActionForm
-            action={addClientService}
-            submitLabel="Agregar servicio"
-            resetKey={String(client.client_service.length)}
-          >
-            <input type="hidden" name="client_id" value={client.id} />
-            <ClientServiceFields
-              catalog={catalog}
-              today={today}
-              idPrefix="new-service"
-            />
-          </ActionForm>
-        </Disclosure>
+        <ServicesTable client={client} today={today} />
       </Section>
 
-      <Section title="Datos del cliente">
-        <ActionForm
-          action={updateClient}
-          submitLabel="Guardar cliente"
-          resetKey={client.updated_at}
-        >
-          <input type="hidden" name="id" value={client.id} />
-          <ClientFields client={client} />
-        </ActionForm>
+      <Section title="Últimos pagos">
+        <LatestPayments services={client.client_service} />
       </Section>
 
-      <div className="border-t border-border pt-8">
-        <DeleteButton
-          action={deleteClient}
-          id={client.id}
-          label="Borrar cliente"
-          question={`¿Borrar a ${client.name}? Se borran también sus servicios y su historial, y no se puede deshacer. Si ya no trabaja contigo, mejor cancela sus servicios.`}
-        />
-      </div>
+      {client.notes && (
+        <Section title="Notas">
+          <p className="max-w-[68ch] whitespace-pre-line">{client.notes}</p>
+        </Section>
+      )}
     </div>
   );
 }
 
-function serviceTitle(service: ClientService) {
-  return [service.service?.name, service.detail].filter(Boolean).join(", ");
+/** "{Tipo}, {RUC o cédula}. {celular}, {correo}." and the lead it came from. */
+function ClientIntro({ client }: { client: ClientForAdmin }) {
+  const identity = [CLIENT_KIND_LABELS[client.kind], client.tax_id]
+    .filter(Boolean)
+    .join(", ");
+  const contact = [client.phone, client.email].filter(Boolean).join(", ");
+  return (
+    <>
+      {identity}.{contact && ` ${contact}.`}
+      {client.lead && (
+        <>
+          {" "}
+          <Link href={adminPaths.lead(client.lead.id)}>Lead de origen</Link>
+        </>
+      )}
+    </>
+  );
+}
+
+function Summary({ summary }: { summary: ClientSummary }) {
+  return (
+    <KeyFigures
+      items={[
+        {
+          label: "Debe",
+          large: true,
+          value:
+            summary.owedCents > 0 ? (
+              <StatusText tone="alert">
+                {formatCents(summary.owedCents)}
+              </StatusText>
+            ) : (
+              "Al día"
+            ),
+        },
+        {
+          label: "Próximo vencimiento",
+          value: summary.nextExpiry ? (
+            <NextExpiry expiry={summary.nextExpiry} />
+          ) : (
+            "Ninguno"
+          ),
+        },
+        {
+          label: "Servicios activos",
+          large: true,
+          value: summary.activeServices,
+        },
+      ]}
+    />
+  );
+}
+
+/** "Hosting, 12 de noviembre de 2026", or in red when it already expired. */
+function NextExpiry({
+  expiry,
+}: {
+  expiry: NonNullable<ClientSummary["nextExpiry"]>;
+}) {
+  return expiry.expired ? (
+    <StatusText tone="alert">
+      {`${expiry.service}, venció el ${formatDay(expiry.day)}`}
+    </StatusText>
+  ) : (
+    `${expiry.service}, ${formatDay(expiry.day)}`
+  );
+}
+
+/** "Hosting, heladeria.com (cancelado)". */
+function serviceName(service: ClientServiceForAdmin) {
+  return `${serviceTitle(service)}${service.status === "cancelled" ? " (cancelado)" : ""}`;
 }
 
 function ServicesTable({
-  services,
+  client,
   today,
 }: {
-  services: ClientService[];
+  client: ClientForAdmin;
   today: string;
 }) {
   return (
     <DataTable
-      rows={services}
+      rows={client.client_service}
       rowKey={(service) => service.id}
       label="Servicios"
       empty="Este cliente todavía no tiene servicios."
+      minWidth="44rem"
+      // What needs attention (Vence, Pago) comes right after the name, so a
+      // phone sees it without scrolling the table sideways.
       columns={[
         {
           header: "Servicio",
           rowHeader: true,
-          // Jumps to the service's editor below.
           cell: (service) => (
-            <a href={`#servicio-${service.id}`}>{service.service?.name}</a>
+            <Link href={adminPaths.clientService(client.id, service.id)}>
+              {serviceName(service)}
+            </Link>
           ),
-        },
-        { header: "Detalle", cell: (service) => service.detail ?? "—" },
-        {
-          header: "Precio con IVA",
-          numeric: true,
-          cell: (service) => {
-            const current = service.client_service_period[0];
-            return current
-              ? formatPriceWithVat(current.price_without_vat, current.vat_rate)
-              : "—";
-          },
         },
         {
           header: "Vence",
@@ -209,12 +201,14 @@ function ServicesTable({
         {
           header: "Pago",
           cell: (service) => {
-            const balance = service.client_service_period[0]?.balance;
-            return balance ? (
+            const current = service.client_service_period[0];
+            return current ? (
               <StatusText
-                tone={balance.status === "partial" ? "alert" : "default"}
+                tone={
+                  paymentNeedsAttention(current, today) ? "alert" : "default"
+                }
               >
-                {balance.label}
+                {current.balance.label}
               </StatusText>
             ) : (
               "—"
@@ -222,384 +216,51 @@ function ServicesTable({
           },
         },
         {
-          header: "Estado",
-          cell: (service) =>
-            service.status === "cancelled" && service.cancelled_at
-              ? `Cancelado el ${formatPostDate(service.cancelled_at)}`
-              : "Activo",
+          header: "Precio con IVA",
+          numeric: true,
+          cell: (service) => {
+            const current = service.client_service_period[0];
+            return current
+              ? formatPriceWithVat(current.price_without_vat, current.vat_rate)
+              : "—";
+          },
         },
+        { header: "Plan", cell: (service) => service.plan?.name ?? "—" },
       ]}
     />
   );
 }
 
-function ServiceEditor({
-  service,
-  clientName,
-  catalog,
-  purchases,
-  today,
+function LatestPayments({
+  services,
 }: {
-  service: ClientService;
-  clientName: string;
-  catalog: CatalogService[];
-  purchases?: ClientServicePurchases;
-  today: string;
-}) {
-  // One-off and cancelled services do not renew (E11-04).
-  const next =
-    service.status === "active"
-      ? nextPeriod(service, service.client_service_period[0] ?? null, today)
-      : null;
-  const plans =
-    catalog.find((candidate) => candidate.id === service.service_id)?.plans ??
-    [];
-  const key = service.id;
-  const licensesCost = purchases
-    ? serviceLicensesCostCents(purchases.licenses, {
-        value: service.renews_every_value,
-        unit: service.renews_every_unit,
-      })
-    : null;
-
-  return (
-    <Disclosure
-      id={`servicio-${service.id}`}
-      summary={`${serviceTitle(service)}${service.status === "cancelled" ? " (cancelado)" : ""}`}
-    >
-      {purchases && <ServicePurchases purchases={purchases} />}
-      <ActionForm
-        action={updateClientService}
-        submitLabel="Guardar servicio"
-        resetKey={service.updated_at}
-      >
-        <input type="hidden" name="id" value={service.id} />
-        <div className="grid gap-4 md:grid-cols-2">
-          <SelectField
-            label="Plan"
-            id={`plan-${key}`}
-            name="plan_id"
-            defaultValue={service.plan_id ?? ""}
-          >
-            <option value="">Ninguno</option>
-            {plans.map((plan) => (
-              <option key={plan.id} value={plan.id}>
-                {plan.name}
-              </option>
-            ))}
-          </SelectField>
-          <FormField
-            label="Detalle"
-            name="detail"
-            id={`detail-${key}`}
-            maxLength={200}
-            defaultValue={service.detail ?? ""}
-          />
-        </div>
-        <RenewalInputs
-          idPrefix={`renew-${key}`}
-          renewal={{
-            value: String(service.renews_every_value ?? ""),
-            unit: service.renews_every_unit ?? "",
-          }}
-        />
-        <FormField
-          label="Notas"
-          name="notes"
-          id={`notes-${key}`}
-          multiline
-          maxLength={4000}
-          defaultValue={service.notes ?? ""}
-        />
-      </ActionForm>
-
-      {next && <RenewForm serviceId={service.id} next={next} />}
-
-      <div className="flex flex-col gap-4">
-        <h3 className="text-h4">Historial</h3>
-        {service.client_service_period.map((period, index) => (
-          <div key={period.id} className="flex flex-col gap-4">
-            <PeriodEditor
-              period={period}
-              licensesCostCents={index === 0 ? licensesCost : null}
-            />
-            <PeriodPayments period={period} />
-          </div>
-        ))}
-      </div>
-
-      {service.status === "active" ? (
-        <DeleteButton
-          action={cancelClientService}
-          id={service.id}
-          label="Cancelar servicio"
-          question={`¿Cancelar ${serviceTitle(service)} de ${clientName}? Deja de aparecer en por vencer; su historial se conserva.`}
-          confirmLabel="Sí, cancelar"
-          cancelLabel="No"
-        />
-      ) : (
-        <ActionForm
-          action={reactivateClientService}
-          submitLabel="Reactivar servicio"
-          variant="secondary"
-        >
-          <input type="hidden" name="id" value={service.id} />
-        </ActionForm>
-      )}
-    </Disclosure>
-  );
-}
-
-/**
- * One period of the history. The current one, while it has no cost, comes with
- * the cost of the service's licenses prefilled (E11-03): saving confirms it.
- */
-function PeriodEditor({
-  period,
-  licensesCostCents,
-}: {
-  period: Period;
-  licensesCostCents: number | null;
-}) {
-  const key = period.id;
-  const prefill =
-    period.cost_without_vat === 0 && licensesCostCents !== null
-      ? licensesCostCents / 100
-      : null;
-  return (
-    <ActionForm
-      action={savePeriod}
-      submitLabel="Guardar período"
-      variant="secondary"
-      resetKey={period.updated_at}
-      className="border-t border-border pt-4"
-    >
-      <input type="hidden" name="id" value={period.id} />
-      <div className="grid gap-4 md:grid-cols-3">
-        <FormField
-          label="Venta"
-          name="sold_on"
-          id={`sold-${key}`}
-          type="date"
-          required
-          defaultValue={period.sold_on}
-        />
-        <FormField
-          label="Desde"
-          name="starts_on"
-          id={`starts-${key}`}
-          type="date"
-          required
-          defaultValue={period.starts_on}
-        />
-        <FormField
-          label="Hasta"
-          name="ends_on"
-          id={`ends-${key}`}
-          type="date"
-          defaultValue={period.ends_on ?? ""}
-          hint="Vacío: no vence."
-        />
-      </div>
-      <div className="flex flex-wrap items-end gap-4">
-        <PriceField
-          idPrefix={`period-${key}`}
-          price={period.price_without_vat}
-          vatRate={period.vat_rate}
-          previewLabel="Con IVA"
-        />
-        <FormField
-          label="Costo"
-          name="cost_without_vat"
-          id={`cost-${key}`}
-          inputMode="decimal"
-          className="w-32"
-          defaultValue={formatDecimal(prefill ?? period.cost_without_vat)}
-          hint={prefill !== null ? "Costo de sus licencias." : undefined}
-        />
-        <p className="flex min-h-12 flex-col justify-center">
-          <span className="text-small">Ganancia</span>
-          <span className="font-medium tabular-nums">
-            {formatSignedCents(
-              profitCents(period.price_without_vat, period.cost_without_vat),
-            )}
-          </span>
-        </p>
-      </div>
-    </ActionForm>
-  );
-}
-
-type Period = ClientService["client_service_period"][number];
-
-/** Payments of one period, "Pagado hoy", partial payments and "no pagará" (E11-02). */
-function PeriodPayments({ period }: { period: Period }) {
-  const { balance } = period;
-  const key = period.id;
-  const open = balance.status === "pending" || balance.status === "partial";
-
-  return (
-    <div className="flex flex-col gap-4 rounded-control bg-surface p-4">
-      <p className="font-medium">
-        Total con IVA: {formatCents(balance.totalCents)}. {balance.label}
-        {balance.status === "written_off" &&
-          period.written_off_on &&
-          ` desde el ${formatDay(period.written_off_on)}: ${period.write_off_reason}`}
-      </p>
-
-      {period.client_payment.length === 0 ? (
-        <EmptyState>Todavía no hay pagos.</EmptyState>
-      ) : (
-        <ul className="flex flex-col gap-2">
-          {period.client_payment.map((payment) => (
-            <li key={payment.id} className="flex flex-col gap-2">
-              <span className="tabular-nums">
-                {formatDay(payment.paid_on)}:{" "}
-                {formatCents(Math.round(payment.amount * 100))},{" "}
-                {PAYMENT_METHOD_LABELS[payment.method]}
-                {payment.notes && `. ${payment.notes}`}
-              </span>
-              <DeleteButton
-                action={deletePayment}
-                id={payment.id}
-                label="Borrar pago"
-                question={`¿Borrar el pago de ${formatCents(Math.round(payment.amount * 100))} del ${formatDay(payment.paid_on)}?`}
-              />
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {open && (
-        <ActionForm action={markPaidToday} submitLabel="Pagado hoy">
-          <input type="hidden" name="period_id" value={period.id} />
-        </ActionForm>
-      )}
-
-      {open && (
-        <Disclosure summary="Registrar abono" variant="inline">
-          <ActionForm
-            action={addPayment}
-            submitLabel="Registrar pago"
-            variant="secondary"
-            resetKey={String(period.client_payment.length)}
-          >
-            <input type="hidden" name="period_id" value={period.id} />
-            <div className="grid gap-4 md:grid-cols-3">
-              <FormField
-                label="Fecha"
-                name="paid_on"
-                id={`paid-on-${key}`}
-                type="date"
-                required
-                defaultValue={todayInQuito()}
-              />
-              <FormField
-                label="Monto con IVA"
-                name="amount"
-                id={`amount-${key}`}
-                inputMode="decimal"
-                required
-                defaultValue={formatDecimal(balance.balanceCents / 100)}
-              />
-              <SelectField
-                label="Forma de pago"
-                id={`method-${key}`}
-                name="method"
-                defaultValue="transfer"
-              >
-                {(Object.keys(PAYMENT_METHOD_LABELS) as PaymentMethod[]).map(
-                  (method) => (
-                    <option key={method} value={method}>
-                      {PAYMENT_METHOD_LABELS[method]}
-                    </option>
-                  ),
-                )}
-              </SelectField>
-            </div>
-            <FormField
-              label="Notas"
-              name="notes"
-              id={`payment-notes-${key}`}
-              maxLength={1000}
-            />
-          </ActionForm>
-        </Disclosure>
-      )}
-
-      {open && (
-        <ConfirmForm
-          action={writeOffPeriod}
-          label="Marcar como no pagará"
-          question="¿Marcar este período como no pagará? Sale de por cobrar y cuenta como pérdida."
-          confirmLabel="Sí, marcar"
-          cancelLabel="No"
-        >
-          <input type="hidden" name="id" value={period.id} />
-          <FormField
-            label="Motivo"
-            name="reason"
-            id={`reason-${key}`}
-            required
-            maxLength={300}
-            hint="Por ejemplo: cerró el negocio, no responde."
-          />
-        </ConfirmForm>
-      )}
-
-      {period.written_off_on && (
-        <ActionForm
-          action={clearWriteOff}
-          submitLabel={'Quitar "no pagará"'}
-          variant="secondary"
-        >
-          <input type="hidden" name="id" value={period.id} />
-        </ActionForm>
-      )}
-    </div>
-  );
-}
-
-/** What this service needs from providers (E11-03): its purchases and licenses. */
-function ServicePurchases({
-  purchases,
-}: {
-  purchases: ClientServicePurchases;
+  services: ClientForAdmin["client_service"];
 }) {
   return (
-    <div className="flex flex-col gap-2">
-      {purchases.purchases.map((purchase) => (
-        <p key={purchase.id}>
-          Compras:{" "}
-          <Link href={`/admin/compras/${purchase.id}`}>{purchase.concept}</Link>{" "}
-          en {purchase.provider}
-          {purchase.cancelled
-            ? " (cancelada)"
-            : purchase.expires_on
-              ? `, vence el ${formatDay(purchase.expires_on)}`
-              : ""}
-          .
-        </p>
-      ))}
-      {purchases.licenses.map((license) => (
-        <p key={license.purchaseId}>
-          Licencias: {license.count} de{" "}
-          <Link href={`/admin/compras/${license.purchaseId}`}>
-            {license.concept}
-          </Link>
-          {license.emails.length > 0 && ` (${license.emails.join(", ")})`}
-          {license.unitCostCents !== null &&
-            `, ${formatCents(license.unitCostCents * license.count)}${
-              license.cycle ? ` por ${license.cycle}` : ""
-            } con impuestos`}
-          .
-        </p>
-      ))}
-      {purchases.licenses.length > 0 && (
-        <p className="text-small">
-          Se precarga como costo del período si está vacío.
-        </p>
-      )}
-    </div>
+    <DataTable
+      rows={latestPayments(services)}
+      rowKey={(payment) => payment.id}
+      label="Últimos pagos"
+      empty="Todavía no hay pagos."
+      minWidth="32rem"
+      columns={[
+        {
+          header: "Fecha",
+          rowHeader: true,
+          cell: (payment) => formatDay(payment.paid_on),
+        },
+        { header: "Servicio", cell: (payment) => payment.service },
+        {
+          header: "Forma de pago",
+          cell: (payment) => PAYMENT_METHOD_LABELS[payment.method],
+        },
+        {
+          header: "Monto",
+          numeric: true,
+          emphasis: true,
+          cell: (payment) => formatCents(toCents(payment.amount)),
+        },
+      ]}
+    />
   );
 }

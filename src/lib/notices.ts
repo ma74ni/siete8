@@ -4,19 +4,25 @@
 
 export const NOTICES = {
   "articulo-guardado": "Artículo guardado.",
+  "cliente-borrado": "Cliente borrado.",
   "cliente-guardado": "Cliente guardado.",
   "compra-guardada": "Compra guardada.",
   "lead-guardado": "Lead guardado.",
+  "no-pagara-quitado": '"No pagará" quitado.',
   "pago-borrado": "Pago borrado.",
   "pago-registrado": "Pago registrado.",
   "periodo-guardado": "Período guardado.",
+  "periodo-no-pagara": "Período marcado como no pagará.",
   "plan-agregado": "Plan agregado.",
   "plan-borrado": "Plan borrado.",
   "plan-guardado": "Plan guardado.",
   "proforma-registrada": "Proforma registrada.",
   "proyecto-guardado": "Proyecto guardado.",
   "servicio-agregado": "Servicio agregado.",
+  "servicio-cancelado": "Servicio cancelado.",
   "servicio-guardado": "Servicio guardado.",
+  "servicio-reactivado": "Servicio reactivado.",
+  "servicio-renovado": "Servicio renovado.",
 } as const;
 
 export type NoticeKey = keyof typeof NOTICES;

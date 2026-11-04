@@ -7,7 +7,8 @@ import { RenewalInputs } from "@/components/admin/client-service-fields";
 import { SelectField } from "@/components/form/select-field";
 import { Radio } from "@/components/form/controls";
 import { FormField } from "@/components/form/form-field";
-import { type DurationUnit, formatDecimal, parseMoney } from "@/lib/clients";
+import { parseMoney } from "@/lib/client-import";
+import { type DurationUnit, formatDecimal } from "@/lib/clients";
 import { formatCents } from "@/lib/price";
 import { paymentTotalCents } from "@/lib/purchases";
 

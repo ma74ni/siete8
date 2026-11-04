@@ -5,7 +5,8 @@ import { Section } from "@/components/admin/fields";
 import { PageHeader } from "@/components/admin/page-header";
 import { RenewForm } from "@/components/admin/renew-form";
 import { StatusText } from "@/components/admin/status-text";
-import { todayInQuito } from "@/lib/clients";
+import { adminPaths } from "@/lib/admin-paths";
+import { todayInQuito } from "@/lib/days";
 import { formatCents } from "@/lib/price";
 import { getDueReport } from "@/server/admin-renewals";
 
@@ -71,9 +72,7 @@ export default async function DuePage() {
               rowHeader: true,
               cell: (row) =>
                 row.clientId ? (
-                  <Link
-                    href={`/admin/clientes/${row.clientId}#servicio-${row.id}`}
-                  >
+                  <Link href={adminPaths.clientService(row.clientId, row.id)}>
                     {row.client}
                   </Link>
                 ) : (

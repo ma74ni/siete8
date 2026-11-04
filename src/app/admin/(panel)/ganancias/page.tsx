@@ -3,7 +3,8 @@ import { Section } from "@/components/admin/fields";
 import { SelectField } from "@/components/form/select-field";
 import { PageHeader } from "@/components/admin/page-header";
 import { Button } from "@/components/sitio/button";
-import { formatSignedCents, todayInQuito } from "@/lib/clients";
+import { formatSignedCents } from "@/lib/clients";
+import { todayInQuito } from "@/lib/days";
 import { formatCents } from "@/lib/price";
 import {
   monthlyProfits,

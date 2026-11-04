@@ -14,12 +14,8 @@ import {
 } from "@/components/admin/purchase-fields";
 import { FormField } from "@/components/form/form-field";
 import { isUuid } from "@/lib/admin-forms";
-import {
-  addPeriod,
-  formatDay,
-  formatDecimal,
-  todayInQuito,
-} from "@/lib/clients";
+import { formatDecimal } from "@/lib/clients";
+import { addPeriod, formatDay, todayInQuito } from "@/lib/days";
 import { formatCents, toCents } from "@/lib/price";
 import { licenseUseLabel, paymentTotalCents } from "@/lib/purchases";
 import {

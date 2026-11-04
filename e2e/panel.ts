@@ -40,6 +40,16 @@ export async function expectSaved(scope: Page | Locator, message: string) {
   await expect(scope.getByText(message, { exact: true })).toBeVisible();
 }
 
+/**
+ * Waits for the notice of the page a form went back to (E14-02), as screen
+ * readers hear it.
+ */
+export async function expectNotice(page: Page, message: string) {
+  await expect(
+    page.getByRole("status").filter({ hasText: message }),
+  ).toHaveText(message);
+}
+
 // Clients ---------------------------------------------------------------------
 
 export async function createClient(
@@ -70,36 +80,51 @@ export function servicesTable(page: Page) {
   return page.getByRole("region", { name: "Servicios" });
 }
 
+/** "Agregar servicio" from the client's record; back on it with the notice. */
 export async function addService(
   page: Page,
   service: { service: string; plan?: string },
 ) {
-  const form = await openDisclosure(page, "Agregar servicio");
-  await form.getByLabel("Servicio").selectOption({ label: service.service });
+  await page.getByRole("link", { name: "Agregar servicio" }).click();
+  await page.getByLabel("Servicio").selectOption({ label: service.service });
   if (service.plan) {
-    await form.getByLabel("Plan").selectOption({ label: service.plan });
+    await page.getByLabel("Plan").selectOption({ label: service.plan });
   }
-  await form.getByRole("button", { name: "Agregar servicio" }).click();
-  await expectSaved(form, "Servicio agregado.");
-  return form;
+  await page.getByRole("button", { name: "Agregar servicio" }).click();
+  await expectNotice(page, "Servicio agregado.");
 }
 
-/** The editor of one of the client's services, opened. */
-export async function openServiceEditor(page: Page, title: string) {
-  return openDisclosure(page, title);
+/** One of the client's services, opened from the record's table. */
+export async function openClientService(page: Page, title: string) {
+  await servicesTable(page)
+    .getByRole("link", { name: new RegExp(`^${title}`) })
+    .click();
+  await expect(
+    page.getByRole("heading", { level: 1, name: new RegExp(`^${title}`) }),
+  ).toBeVisible();
 }
 
-export async function renewService(editor: Locator) {
-  const form = await openDisclosure(editor, "Renovar");
-  await form.getByRole("button", { name: "Renovar servicio" }).click();
-  await expect(form.getByText(/^Servicio renovado hasta el /)).toBeVisible();
+/** The service page's history: one row per period, under the header row. */
+export function historyRows(page: Page) {
+  return page
+    .getByRole("region", { name: "Historial" })
+    .getByRole("row")
+    .filter({ has: page.getByRole("rowheader") });
 }
 
-export async function addPayment(editor: Locator, payment: { amount: string }) {
-  const form = await openDisclosure(editor, "Registrar abono");
-  await form.getByLabel("Monto con IVA").fill(payment.amount);
-  await form.getByRole("button", { name: "Registrar pago" }).click();
-  await expectSaved(form, "Pago registrado.");
+/** "Renovar" from the service page, with what the form prefills. */
+export async function renewService(page: Page) {
+  await page.getByRole("link", { name: "Renovar", exact: true }).click();
+  await page.getByRole("button", { name: "Renovar servicio" }).click();
+  await expectNotice(page, "Servicio renovado.");
+}
+
+/** "Registrar pago" from the service page. */
+export async function addPayment(page: Page, payment: { amount: string }) {
+  await page.getByRole("link", { name: "Registrar pago" }).click();
+  await page.getByLabel("Monto con IVA").fill(payment.amount);
+  await page.getByRole("button", { name: "Registrar pago" }).click();
+  await expectNotice(page, "Pago registrado.");
 }
 
 // Leads -----------------------------------------------------------------------

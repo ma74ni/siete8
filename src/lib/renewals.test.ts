@@ -7,6 +7,7 @@ import {
   dueReport,
   dueReportCsvRows,
   nextPeriod,
+  renewalOf,
   type PurchaseRow,
   weeklyDigest,
 } from "@/lib/renewals";
@@ -77,6 +78,35 @@ function purchase(overrides: Partial<PurchaseRow> = {}): PurchaseRow {
 describe("dueLimit", () => {
   it("is 30 days after today", () => {
     expect(dueLimit(TODAY)).toBe("2026-11-22");
+  });
+});
+
+describe("renewalOf", () => {
+  it("offers the next period of an active service", () => {
+    expect(
+      renewalOf(service({ client_service_period: [period()] }), TODAY)
+        ?.starts_on,
+    ).toBe("2026-11-05");
+  });
+
+  it("offers nothing for a cancelled, one-off or empty service", () => {
+    expect(
+      renewalOf(
+        service({ status: "cancelled", client_service_period: [period()] }),
+        TODAY,
+      ),
+    ).toBeNull();
+    expect(
+      renewalOf(
+        service({
+          renews_every_value: null,
+          renews_every_unit: null,
+          client_service_period: [period()],
+        }),
+        TODAY,
+      ),
+    ).toBeNull();
+    expect(renewalOf(service({ client_service_period: [] }), TODAY)).toBeNull();
   });
 });
 

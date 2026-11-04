@@ -5,7 +5,7 @@ import { ClientFields } from "@/components/admin/client-fields";
 import { ClientServiceFields } from "@/components/admin/client-service-fields";
 import { PageHeader } from "@/components/admin/page-header";
 import { isUuid } from "@/lib/admin-forms";
-import { todayInQuito } from "@/lib/clients";
+import { todayInQuito } from "@/lib/days";
 import { PROFORMA_STATUS_LABELS } from "@/lib/lead-status";
 import { formatPriceWithVat } from "@/lib/price";
 import { getClientCatalog } from "@/server/admin-clients";

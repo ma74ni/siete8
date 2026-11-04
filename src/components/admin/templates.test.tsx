@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import { ActionForm } from "@/components/admin/action-form";
 import { DataTable } from "@/components/admin/data-table";
 import { FormPage } from "@/components/admin/form-page";
+import { KeyFigures } from "@/components/admin/key-figures";
 import { Notice } from "@/components/admin/notice";
 import { Pagination } from "@/components/admin/pagination";
 import { SectionTabs } from "@/components/admin/section-tabs";
@@ -134,6 +135,24 @@ describe("SubList", () => {
     );
     expect(markup).toContain('href="/s/nuevo"');
     expect(markup).toContain("Agregar plan");
+    expect(markup).not.toContain("<form");
+  });
+});
+
+describe("KeyFigures (E14-04)", () => {
+  it("reads as a list of terms, the figures large", () => {
+    const markup = html(
+      <KeyFigures
+        items={[
+          { label: "Debe", value: "$63,85", large: true },
+          { label: "Próximo vencimiento", value: "Ninguno" },
+        ]}
+      />,
+    );
+    expect(markup).toContain('<dt class="text-small">Debe</dt>');
+    expect(markup).toContain('<dd class="text-h3">$63,85</dd>');
+    expect(markup).toContain('<dd class="text-h4">Ninguno</dd>');
+    expect(markup).toContain("sm:grid-cols-2");
     expect(markup).not.toContain("<form");
   });
 });

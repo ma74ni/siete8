@@ -94,7 +94,7 @@ async function sampleIds() {
 
   const { data: services, error } = await db
     .from("client_service")
-    .select("client_id");
+    .select("id, client_id, client_service_period(id)");
   if (error) throw new Error(error.message);
   const counts = new Map<string, number>();
   for (const row of services ?? []) {
@@ -102,6 +102,10 @@ async function sampleIds() {
   }
   const client =
     [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+  const clientService =
+    services?.find(
+      (row) => row.client_id === client && row.client_service_period.length,
+    ) ?? null;
   // A lead with proformas (left by the e2e tests) and a volume purchase:
   // older hand-made rows have ids the panel rejects.
   const { data: proformas, error: proformaError } = await db
@@ -113,6 +117,8 @@ async function sampleIds() {
   if (proformaError) throw new Error(proformaError.message);
   return {
     client,
+    clientService: clientService?.id ?? null,
+    period: clientService?.client_service_period[0]?.id ?? null,
     lead: proformas?.[0]?.lead_id ?? null,
     purchase: idOf(
       await db
@@ -162,6 +168,26 @@ test("@medicion every panel screen", async ({ page }) => {
     [
       "Cliente con más servicios",
       ids.client && `/admin/clientes/${ids.client}`,
+    ],
+    ["Editar datos", ids.client && `/admin/clientes/${ids.client}/editar`],
+    [
+      "Agregar servicio",
+      ids.client && `/admin/clientes/${ids.client}/servicios/nuevo`,
+    ],
+    [
+      "Servicio del cliente",
+      ids.clientService &&
+        `/admin/clientes/${ids.client}/servicios/${ids.clientService}`,
+    ],
+    [
+      "Editar servicio",
+      ids.clientService &&
+        `/admin/clientes/${ids.client}/servicios/${ids.clientService}/editar`,
+    ],
+    [
+      "Período",
+      ids.period &&
+        `/admin/clientes/${ids.client}/servicios/${ids.clientService}/periodos/${ids.period}`,
     ],
     ["Cliente nuevo", "/admin/clientes/nuevo"],
     ["Importar clientes", "/admin/clientes/importar"],

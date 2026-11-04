@@ -1,4 +1,5 @@
-import { todayInQuito, toCsv } from "@/lib/clients";
+import { toCsv } from "@/lib/csv";
+import { todayInQuito } from "@/lib/days";
 import { exportClientsRows } from "@/server/admin-clients";
 
 /** The clients list as CSV, in the import format (RF-CRM-08). */
