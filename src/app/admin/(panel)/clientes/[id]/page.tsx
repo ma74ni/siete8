@@ -169,7 +169,7 @@ function ServicesTable({
       rowKey={(service) => service.id}
       label="Servicios"
       empty="Este cliente todavía no tiene servicios."
-      minWidth="44rem"
+      minWidth="28rem"
       // What needs attention (Vence, Pago) comes right after the name, so a
       // phone sees it without scrolling the table sideways.
       columns={[
