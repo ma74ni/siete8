@@ -8,6 +8,8 @@ import {
   useRef,
 } from "react";
 
+import Link from "next/link";
+
 import { Button } from "@/components/sitio/button";
 import { type FormState, IDLE } from "@/lib/admin-forms";
 import { cx } from "@/lib/cx";
@@ -26,6 +28,11 @@ type ActionFormProps = {
    * selects and checkboxes would otherwise go back to the first render.
    */
   resetKey?: string;
+  /**
+   * On a form page (E14-02), where "Cancelar" goes: back to the record
+   * without saving. Texts from docs/COPY.md §13 (Panel: comunes).
+   */
+  cancelHref?: string;
   children?: ReactNode;
 };
 
@@ -42,6 +49,7 @@ export function ActionForm({
   variant = "primary",
   className,
   resetKey,
+  cancelHref,
   children,
 }: ActionFormProps) {
   const form = useRef<HTMLFormElement>(null);
@@ -90,6 +98,11 @@ export function ActionForm({
         <Button type="submit" variant={variant} disabled={pending}>
           {pending ? pendingLabel : submitLabel}
         </Button>
+        {cancelHref && (
+          <Link href={cancelHref} className="inline-flex min-h-12 items-center">
+            Cancelar
+          </Link>
+        )}
         <p
           role={state.status === "error" ? "alert" : "status"}
           className={cx(

@@ -1,9 +1,11 @@
 import "server-only";
 
 import { revalidatePath } from "next/cache";
+import { redirect, RedirectType } from "next/navigation";
 import type { z } from "zod";
 
 import { type FormState, formValues } from "@/lib/admin-forms";
+import { type NoticeKey, withNotice } from "@/lib/notices";
 import type { createSessionClient } from "@/server/supabase/session";
 
 // Shared by the panel's Server Actions. Texts from docs/COPY.md §13.
@@ -82,4 +84,14 @@ export async function removeImage(supabase: Supabase, url: string | null) {
   await supabase.storage
     .from(BUCKET)
     .remove([decodeURIComponent(url.slice(index + marker.length))]);
+}
+
+/**
+ * Ends a panel form by going back to the page it belongs to, with its notice
+ * ("Servicio agregado."), as DESIGN §12.2 asks. It replaces the form in the
+ * history, so "Atrás" does not return to the empty form (and a second save).
+ * Call it after saving and refreshing; like `redirect`, it does not return.
+ */
+export function redirectWithNotice(path: string, key: NoticeKey): never {
+  redirect(withNotice(path, key), RedirectType.replace);
 }

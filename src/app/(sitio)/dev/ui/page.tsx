@@ -3,6 +3,12 @@ import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { CheckboxField } from "@/components/form/checkbox-field";
+import { ActionForm } from "@/components/admin/action-form";
+import { FormPage } from "@/components/admin/form-page";
+import { Notice } from "@/components/admin/notice";
+import { Pagination } from "@/components/admin/pagination";
+import { SectionTabs } from "@/components/admin/section-tabs";
+import { SubList } from "@/components/admin/sub-list";
 import { DataTable } from "@/components/admin/data-table";
 import { Disclosure } from "@/components/admin/disclosure";
 import { EmptyState } from "@/components/admin/empty-state";
@@ -23,6 +29,7 @@ import { TextLink } from "@/components/sitio/text-link";
 import { clientEnv } from "@/env/client";
 import { isProductionDeploy } from "@/lib/deploy";
 
+import { sampleAction } from "./actions";
 import { Replay } from "./replay";
 
 /*
@@ -117,6 +124,12 @@ function Section({
     </section>
   );
 }
+
+/** Made-up plans for the sub-list sample. */
+const samplePlans = [
+  { id: "1", name: "1 año", price: "$20,69" },
+  { id: "2", name: "2 años", price: "$31,04" },
+];
 
 /** Made-up rows for the panel table (SRS 3.9: never real clients). */
 const sampleDue = [
@@ -402,6 +415,58 @@ export default function DevUiPage() {
           <Disclosure summary="Registrar abono" variant="inline">
             <p>Fecha, Monto con IVA, Forma de pago y Notas.</p>
           </Disclosure>
+        </div>
+      </Section>
+
+      <Section title="Plantillas del panel">
+        <div className="panel flex flex-col gap-8">
+          <Notice value="servicio-agregado" />
+          <SectionTabs
+            label="Partes del servicio"
+            current="Planes"
+            tabs={[
+              { label: "Planes", href: "/dev/ui" },
+              { label: "Requisitos", href: "/dev/ui" },
+              { label: "Pasos y preguntas", href: "/dev/ui" },
+            ]}
+          />
+          <SubList
+            rows={samplePlans}
+            rowKey={(row) => row.id}
+            rowLabel={(row) => row.name}
+            editHref={() => "/dev/ui"}
+            label="Planes"
+            empty="Este servicio todavía no tiene planes."
+            add={{ href: "/dev/ui", label: "Agregar plan" }}
+            minWidth="24rem"
+            columns={[
+              { header: "Plan", rowHeader: true, cell: (row) => row.name },
+              {
+                header: "Precio con IVA",
+                numeric: true,
+                width: "10rem",
+                cell: (row) => row.price,
+              },
+            ]}
+          />
+          <Pagination page={2} pageCount={3} href={() => "/dev/ui"} />
+          <FormPage
+            title="Agregar servicio"
+            back={{ href: "/dev/ui", label: "Volver al cliente" }}
+            danger={
+              <Button type="button" variant="secondary" className="self-start">
+                Borrar
+              </Button>
+            }
+          >
+            <ActionForm
+              action={sampleAction}
+              submitLabel="Agregar servicio"
+              cancelHref="/dev/ui"
+            >
+              <FormField label="Detalle" name="detail" id="ui-form-detail" />
+            </ActionForm>
+          </FormPage>
         </div>
       </Section>
     </div>

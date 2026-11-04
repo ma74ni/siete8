@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { EmptyState } from "@/components/admin/empty-state";
+import { Pagination } from "@/components/admin/pagination";
 import { cx } from "@/lib/cx";
 
 // Panel organisms (E13-02, DESIGN §12.1).
@@ -19,6 +20,12 @@ export type Column<Row> = {
   emphasis?: boolean;
   /** Less vertical padding, for a cell that holds a 48 px button. */
   compact?: boolean;
+  /**
+   * A fixed width ("10rem", "20%"). With any width set the table keeps the
+   * same columns whatever its content, so tables one after another (the
+   * catalog by category) line up.
+   */
+  width?: string;
 };
 
 /** Padding of a cell: no right padding on the last column. */
@@ -31,7 +38,8 @@ function cellPadding(compact: boolean | undefined, last: boolean): string {
  * sideways on narrow screens instead of squeezing the columns; the scrolling
  * area takes keyboard focus and is named by `label`. With no rows it shows
  * `empty` instead of an empty table. `details` adds a full-width row under an
- * item, for an action that needs room, like "Renovar".
+ * item, for an action that needs room, like "Renovar". `pagination` adds the
+ * page links under it (E14-02); the page's rows come from the server.
  */
 export function DataTable<Row>({
   rows,
@@ -41,6 +49,7 @@ export function DataTable<Row>({
   empty,
   minWidth = "44rem",
   details,
+  pagination,
 }: {
   rows: readonly Row[];
   columns: Column<Row>[];
@@ -52,8 +61,24 @@ export function DataTable<Row>({
   /** Below this width the table scrolls instead of wrapping. */
   minWidth?: string;
   details?: (row: Row) => ReactNode | null;
+  /** The page (kept within range with `clampPage`) and how to link others. */
+  pagination?: {
+    page: number;
+    pageCount: number;
+    href: (page: number) => string;
+  };
 }) {
-  if (rows.length === 0) return <EmptyState>{empty}</EmptyState>;
+  if (rows.length === 0) {
+    // A later page with no rows still offers the way back.
+    return pagination && pagination.page > 1 ? (
+      <div className="flex flex-col gap-4">
+        <EmptyState>{empty}</EmptyState>
+        <Pagination {...pagination} />
+      </div>
+    ) : (
+      <EmptyState>{empty}</EmptyState>
+    );
+  }
 
   const lastIndex = columns.length - 1;
   const cells = (row: Row) =>
@@ -78,16 +103,26 @@ export function DataTable<Row>({
       );
     });
 
-  return (
+  const fixed = columns.some((column) => column.width);
+  const table = (
     // A size container (detail rows measure the visible width, not the
     // table's) and a focusable region, so the keyboard can scroll it too.
+    // `relative` makes it the box of what is positioned inside (the
+    // screen-reader-only texts of action columns): without it they escaped
+    // its clipping and pushed the page sideways on phones (E14-01).
     <div
-      className="@container overflow-x-auto"
+      className="@container relative overflow-x-auto"
       role="region"
       aria-label={label}
       tabIndex={0}
     >
-      <table className="w-full border-collapse text-left" style={{ minWidth }}>
+      <table
+        className={cx(
+          "w-full border-collapse text-left",
+          fixed && "table-fixed",
+        )}
+        style={{ minWidth }}
+      >
         <caption className="sr-only">{label}</caption>
         <thead>
           <tr className="border-b border-border">
@@ -99,6 +134,7 @@ export function DataTable<Row>({
                   cellPadding(false, index === lastIndex),
                   "font-medium",
                 )}
+                style={column.width ? { width: column.width } : undefined}
               >
                 {column.hideHeader ? (
                   <span className="sr-only">{column.header}</span>
@@ -143,6 +179,13 @@ export function DataTable<Row>({
           </tbody>
         )}
       </table>
+    </div>
+  );
+  if (!pagination) return table;
+  return (
+    <div className="flex flex-col gap-4">
+      {table}
+      <Pagination {...pagination} />
     </div>
   );
 }

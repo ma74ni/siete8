@@ -236,6 +236,7 @@ La muestra de cada pieza, en todos sus estados, está en `/dev/ui`.
 - Densidad media, tipografía Archivo `wdth` 100 en todo el panel, sin el ancho expandido.
 - Sin motivo de barras, salvo el logo en la barra lateral.
 - La barra lateral marca la sección actual con fondo `surface` y un borde izquierdo `accent` de 4 px (`aria-current="page"`); el contorno de foco (`focus`) se mantiene aparte.
+- Navegación (`PanelNav`, E14-03): los grupos de §12.2 (regla 7), definidos en `ADMIN_NAV` (`@/lib/admin-nav`). Cada grupo, salvo Hoy, va bajo una línea `border` con su título en `text-small` `fg-muted`. En el celular todo queda dentro de "Menú" (`Disclosure` `inline`), que se cierra al ir a otra página. La portada del panel es Hoy; el catálogo vive en `/admin/servicios`.
 
 ### 12.1 Componentes del panel
 
@@ -248,8 +249,67 @@ En `src/components/admin/`. Las pantallas del panel se arman con estas piezas y 
 | `Disclosure` | Contenido que se abre al pedirlo, con `<details>` nativo y una flecha que gira al abrir. `panel`: caja con borde `line` y título, para formularios de la página ("Agregar servicio"); su contenido va con 24 px entre bloques. `action`: el resumen es un botón secundario, para acciones en una fila ("Renovar"). `inline`: solo el título en peso 500, para un extra dentro de otro bloque ("Registrar abono") |
 | `EmptyState` | Lo que dice una lista vacía ("Todavía no hay clientes."), con una acción opcional |
 | `StatusText` | Un estado en texto, nunca en una píldora de color. Tono `alert` (peso 500, `accent`) para lo que requiere atención: "Venció el …", "Debe $…" |
+| `FormPage` | Plantilla del patrón Formulario (§12.2): volver, título, introducción, un formulario y, aparte al final, la zona para borrar, en una columna de 48 rem como máximo. El `ActionForm` de la página lleva `cancelHref` ("Cancelar"). Las acciones que dan de baja o borran ("Cancelar servicio", "Borrar plan") van solo en la zona de abajo, con `DeleteButton` y su confirmación, nunca junto a "Cancelar" |
+| `Notice` | El aviso al volver de un formulario ("Servicio agregado."), siempre lo primero de la página, antes de `PageHeader`; se anuncia a los lectores de pantalla después de cargar. Recibe el valor de `?aviso=` tal cual y solo muestra claves de `@/lib/notices`, nunca texto libre; después de mostrarse se quita de la dirección. La acción termina con `redirectWithNotice(ruta, clave)` |
+| `SubList` | Plantilla del patrón Sublista: `DataTable` compacta con "Editar" por fila (con el nombre de la fila para lectores de pantalla) y "Agregar …" debajo |
+| `SectionTabs` | Pestañas que son rutas, para las partes de una ficha larga; la página dice cuál es la actual (`aria-current`) |
+| `Pagination` | "Anteriores", "Página n de m" y "Siguientes" bajo una lista; `DataTable` la incluye con `pagination`. La página va en `?pagina=` (`pageNumber`, solo dígitos), se acota con `clampPage` y las filas se piden al servidor con `pageRange` (`@/lib/pagination`, 25 por página) |
+
+`DataTable` también acepta `width` por columna: con una sola, la tabla pasa a ancho fijo y las tablas seguidas (por categoría) quedan alineadas. Las direcciones del panel salen de `adminPaths` (`@/lib/admin-paths`), no se escriben a mano.
 
 La muestra de cada pieza está en `/dev/ui`.
+
+### 12.2 Patrones de pantalla (E14)
+
+Cada pantalla del panel es una de estas cuatro. Una pantalla, una tarea: si una página necesita dos patrones, se divide.
+
+| Patrón | Para qué | Cómo es |
+| --- | --- | --- |
+| **Lista** | Clientes, leads, compras, artículos, proyectos | `PageHeader` con "Nuevo…" como acción; búsqueda y filtros en la dirección (`?q=`); `DataTable` paginada en el servidor (25 filas). La columna que identifica la fila enlaza a su ficha. Sin formularios en las filas, salvo una acción rápida de un solo botón ("Pagado hoy") |
+| **Ficha** | Un cliente, un servicio del catálogo, una compra, un lead | Resumen **en lectura**: estado, cifras clave y la próxima acción ("Vence el …", "Debe $…"). Las acciones son botones o enlaces a su página. Si la ficha tiene varias partes largas, van en **pestañas que son rutas** (cada una con su dirección y solo sus datos). Ningún formulario abierto |
+| **Sublista** | Lo que pertenece a una ficha: servicios de un cliente, planes, pasos, preguntas, pagos, licencias | Tabla o lista compacta dentro de la ficha, con "Editar" por fila y "Agregar …" al final. Nunca un formulario por fila |
+| **Formulario** | Crear o editar una sola cosa | Página propia, corta, con "Volver" arriba, **un** botón principal y "Cancelar". Al guardar vuelve a la ficha con un aviso ("Servicio agregado."); si hay error, se queda con lo escrito. "Borrar" va al final, separado, con su confirmación |
+
+Reglas que se verifican en cada pantalla (agente `ux-reviewer`):
+
+1. Una página tiene como máximo un formulario abierto. Las acciones rápidas de un solo botón no cuentan.
+2. Después de guardar, la persona vuelve a donde estaba y ve un aviso; nunca queda un formulario vacío y abierto.
+3. Lo primero que se ve de una ficha es su estado y lo que requiere atención, no un formulario.
+4. Una lista que crece con el uso tiene paginación y búsqueda.
+5. A 360 px no hay desplazamiento lateral de la página (solo dentro de una tabla) y ningún botón queda fuera de la pantalla.
+6. Los textos salen de COPY §13; las acciones dicen qué hacen ("Agregar servicio", no "Enviar").
+7. Navegación agrupada; la portada del panel es **Hoy**: lo que vence en 7 días, lo que se debe, los leads sin contactar y las proformas sin respuesta. Los grupos: **Ventas** (Leads, Clientes, Por cobrar, Por vencer), **Catálogo** (Servicios, Proyectos, Blog, Enlaces), **Finanzas** (Compras, Ganancias) y **Sitio** (Asistente, Configuración).
+
+### 12.3 Revisión del panel (E14-01)
+
+Medido el 1 de noviembre de 2026 con `pnpm e2e:medir` sobre los datos de volumen (`pnpm db:seed:volumen`: 40 clientes, unos 140 servicios, 30 leads, 20 compras). "Formularios" cuenta los visibles al abrir la página, incluidas las acciones de un solo botón ("Pagado hoy"), que la regla 1 de §12.2 permite; los desplegables cerrados no suman.
+
+| Pantalla | Alto a 1440 / 360 px | Formularios / campos | Problemas | Patrón objetivo | Prioridad |
+| --- | --- | --- | --- | --- | --- |
+| Servicio del catálogo (Firma electrónica, 12 planes) | 20 250 / 27 144 | 29 / 188 | Un formulario completo por plan, más requisitos, pasos, preguntas, textos y SEO en una página; no se pueden crear servicios | Ficha con pestañas (Planes, Requisitos, Pasos y preguntas, Página y SEO) + Sublista de planes + Formulario por plan | Alta (E14-05) |
+| Por vencer | 10 233 / 12 351 | 67 / 402 | Un formulario de Renovar por fila; desborde lateral a 360 | Lista con acción "Renovar" que abre el formulario del servicio | Alta (E14-08) |
+| Por cobrar | 7 662 / 9 389 | 86 / 1 | Un formulario por fila ("Pagado hoy" y abonos); desborde lateral a 360 | Lista con acción rápida de un botón; el abono, en la ficha | Alta (E14-08) |
+| Ficha del cliente (5 servicios) | 2 090 / 2 979 | 20 / 108 | Editor por servicio, "Agregar servicio" y datos del cliente abiertos en la misma página; tras agregar, el formulario queda abierto y vacío; no hay resumen de saldo ni vencimientos | Ficha resumen + Sublista de servicios + Formularios propios (servicio nuevo, servicio del cliente, editar datos) | Alta (E14-04) |
+| Clientes | 6 142 / 9 287 | 1 / 2 | 61 filas sin paginación | Lista paginada | Alta (E14-04) |
+| Ganancias | 6 274 / 7 184 | 1 / 2 | Cuatro tablas largas seguidas | Lista con pestañas que son rutas (una por vista) | Media (E14-10) |
+| Enlaces | 3 936 / 6 336 | 7 / 42 | Un formulario por botón | Sublista + Formulario por botón | Media (E14-10) |
+| Proyecto | 3 891 / 5 360 | 4 / 36 | Datos, portada, galería y servicios en una página | Ficha con pestañas (Contenido, Imágenes, Publicación) | Media (E14-09) |
+| Leads | 3 467 / 4 136 | 1 / 3 | 36 filas sin paginación (el servidor corta en 200 sin avisar) | Lista paginada | Media (E14-06) |
+| Artículo | 2 774 / 3 661 | 2 / 11 | Artículo y portada en una página | Ficha con pestañas (Contenido, Imágenes, Publicación) | Media (E14-09) |
+| Compras | 2 667 / 3 104 | 0 / 0 | Sin paginación | Lista paginada | Media (E14-07) |
+| Compra | 2 304 / 3 449 | 3 / 35 | Datos, pagos y licencias en una página; desborde lateral a 360 | Ficha + Sublistas de pagos y licencias | Media (E14-07) |
+| Lead con proforma | 1 656 / 2 414 | 2 / 8 | Seguimiento y proforma nueva en la misma página | Ficha + Formulario de proforma | Media (E14-06) |
+| Configuración | 1 795 / 3 251 | 1 / 21 | Un formulario largo; aceptable | Formulario por sección | Baja (E14-10) |
+| Inicio (servicios) | 1 649 / 2 230 | 0 / 0 | La portada del panel es el catálogo, no lo pendiente | Hoy (el catálogo pasa a Catálogo → Servicios) | Alta (E14-03) |
+| Cliente nuevo, Lead nuevo, Compra nueva, Proyecto nuevo, Artículo nuevo, Importar | 900–3 436 | 1 | Ya son Formulario; falta "Cancelar" y el aviso al volver | Formulario | Baja (con su sección) |
+| Asistente, Conversación, Blog, Proyectos | 800–2 081 | 0–1 | Sin problemas de escala | Lista / Ficha | Baja (E14-10) |
+
+Hallazgos comunes:
+
+- **Desborde lateral a 360 px** en Por vencer, Por cobrar y Compra, las tres con columnas de acción dentro de `DataTable`: los textos solo para lectores de pantalla (posición absoluta) de esas columnas escapaban del recorte de la zona desplazable, que no tenía `position: relative`. Corregido en E14-02; `pnpm e2e:medir` ya no marca desborde en ninguna pantalla.
+- **Barra lateral**: 13 enlaces sin grupos; en el celular se apilan arriba de cada página.
+- **Sin paginación** en ninguna lista.
+- **Sin "Cancelar"** en ningún formulario y sin aviso después de redirigir.
 
 ## 13. Tokens para Tailwind (CSS variables)
 

@@ -3,6 +3,8 @@
  * Quito time, which has no daylight saving (UTC-05:00 all year).
  */
 
+import { pageCount as pageCountOf } from "@/lib/pagination";
+
 const QUITO_OFFSET = "-05:00";
 const TIME_ZONE = "America/Guayaquil";
 
@@ -51,7 +53,7 @@ export const POSTS_PER_PAGE = 9;
 
 /** Number of pages for `total` posts; an empty blog still has page 1. */
 export function pageCount(total: number): number {
-  return Math.max(1, Math.ceil(total / POSTS_PER_PAGE));
+  return pageCountOf(total, POSTS_PER_PAGE);
 }
 
 /** Where a post stands; the database decides the same way (RLS on `post`). */
