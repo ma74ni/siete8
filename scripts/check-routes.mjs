@@ -44,6 +44,11 @@ const ROUTES = [
   ["/dev/sentry", production ? 404 : 200],
   ["/admin", 307, "/admin/login"],
   ["/admin/servicios", 307, "/admin/login"],
+  [
+    "/admin/clientes/00000000-0000-4000-8000-000000000000/servicios/nuevo",
+    307,
+    "/admin/login",
+  ],
   ["/admin/login", 200],
   ["/blog/rss.xml", 200],
   ["/robots.txt", 200],

@@ -4,7 +4,7 @@
  * imports and gets `fetch` injected (tests pass a fake one).
  */
 
-import { todayInQuito } from "./clients";
+import { todayInQuito } from "./days";
 import {
   CLIENT_SERVICES_SELECT,
   type ClientServiceRow,

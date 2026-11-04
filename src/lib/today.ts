@@ -1,4 +1,4 @@
-import { addPeriod } from "@/lib/clients";
+import { addPeriod } from "@/lib/days";
 import type { DueClientService } from "@/lib/renewals";
 
 /**

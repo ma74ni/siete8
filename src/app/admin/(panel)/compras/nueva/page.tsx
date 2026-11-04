@@ -4,7 +4,7 @@ import {
   PurchaseFields,
   PurchasePaymentFields,
 } from "@/components/admin/purchase-fields";
-import { addPeriod, todayInQuito } from "@/lib/clients";
+import { addPeriod, todayInQuito } from "@/lib/days";
 import { getPurchaseOptions } from "@/server/admin-purchases";
 import { createPurchase } from "@/server/admin-purchases-actions";
 

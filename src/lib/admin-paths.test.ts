@@ -8,6 +8,9 @@ describe("adminPaths", () => {
     expect(adminPaths.clientService("c1", "s2")).toBe(
       "/admin/clientes/c1/servicios/s2",
     );
+    expect(adminPaths.clientServicePeriod("c1", "s2", "p3")).toBe(
+      "/admin/clientes/c1/servicios/s2/periodos/p3",
+    );
     expect(adminPaths.plan("s1", "p2")).toBe("/admin/servicios/s1/planes/p2");
     expect(adminPaths.acceptProforma("l1", "f2")).toBe(
       "/admin/leads/l1/aceptar/f2",

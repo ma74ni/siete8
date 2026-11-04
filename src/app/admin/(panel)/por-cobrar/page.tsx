@@ -6,11 +6,14 @@ import { DataTable } from "@/components/admin/data-table";
 import { Section } from "@/components/admin/fields";
 import { PageHeader } from "@/components/admin/page-header";
 import { FormField } from "@/components/form/form-field";
-import { formatDayShort, todayInQuito } from "@/lib/clients";
+import { formatDayShort, todayInQuito } from "@/lib/days";
 import { ageLabel } from "@/lib/payments";
 import { formatCents } from "@/lib/price";
 import { listReceivables } from "@/server/admin-clients";
-import { markPaidBefore, markPaidToday } from "@/server/admin-clients-actions";
+import {
+  markPaidBefore,
+  markPaidToday,
+} from "@/server/admin-client-payments-actions";
 
 // Texts from docs/COPY.md §13.
 

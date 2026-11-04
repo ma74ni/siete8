@@ -14,11 +14,8 @@ import { Button } from "@/components/sitio/button";
 import { FormField } from "@/components/form/form-field";
 import { isUuid } from "@/lib/admin-forms";
 import { formatDateTime as dateTime } from "@/lib/blog";
-import {
-  type CatalogService,
-  formatDayShort,
-  todayInQuito,
-} from "@/lib/clients";
+import { type CatalogService } from "@/lib/clients";
+import { formatDayShort, todayInQuito } from "@/lib/days";
 import {
   LEAD_SOURCE_LABELS,
   LEAD_STATUS_LABELS,

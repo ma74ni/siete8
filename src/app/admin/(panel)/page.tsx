@@ -6,7 +6,7 @@ import { PageHeader } from "@/components/admin/page-header";
 import { StatusText } from "@/components/admin/status-text";
 import { adminPaths } from "@/lib/admin-paths";
 import { formatPostDate } from "@/lib/blog";
-import { formatDay, todayInQuito } from "@/lib/clients";
+import { formatDay, todayInQuito } from "@/lib/days";
 import { LEAD_SOURCE_LABELS } from "@/lib/lead-status";
 import { formatCents, priceWithVatCents } from "@/lib/price";
 import { getTodayReport } from "@/server/admin-today";

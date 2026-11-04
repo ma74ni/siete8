@@ -8,6 +8,7 @@ import { FormPage } from "@/components/admin/form-page";
 import { Notice } from "@/components/admin/notice";
 import { Pagination } from "@/components/admin/pagination";
 import { SectionTabs } from "@/components/admin/section-tabs";
+import { KeyFigures } from "@/components/admin/key-figures";
 import { SubList } from "@/components/admin/sub-list";
 import { DataTable } from "@/components/admin/data-table";
 import { Disclosure } from "@/components/admin/disclosure";
@@ -421,6 +422,20 @@ export default function DevUiPage() {
       <Section title="Plantillas del panel">
         <div className="panel flex flex-col gap-8">
           <Notice value="servicio-agregado" />
+          <KeyFigures
+            items={[
+              {
+                label: "Debe",
+                large: true,
+                value: <StatusText tone="alert">$63,85</StatusText>,
+              },
+              {
+                label: "Próximo vencimiento",
+                value: "Hosting, 12 de noviembre de 2026",
+              },
+              { label: "Servicios activos", large: true, value: 3 },
+            ]}
+          />
           <SectionTabs
             label="Partes del servicio"
             current="Planes"

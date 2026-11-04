@@ -4,7 +4,8 @@ import { DataTable } from "@/components/admin/data-table";
 import { PageHeader } from "@/components/admin/page-header";
 import { StatusText } from "@/components/admin/status-text";
 import { Button } from "@/components/sitio/button";
-import { expiry, needsAttention, todayInQuito } from "@/lib/clients";
+import { expiry, needsAttention } from "@/lib/clients";
+import { todayInQuito } from "@/lib/days";
 import { formatCents } from "@/lib/price";
 import { listPurchases } from "@/server/admin-purchases";
 

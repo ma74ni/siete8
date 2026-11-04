@@ -3,7 +3,7 @@
 import { useActionState, useState } from "react";
 
 import { Button } from "@/components/sitio/button";
-import type { ImportState } from "@/lib/clients";
+import type { ImportState } from "@/lib/client-import";
 
 // Texts from docs/COPY.md §13 (Clientes: Importar).
 

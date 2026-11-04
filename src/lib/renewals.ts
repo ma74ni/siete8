@@ -7,15 +7,12 @@
  */
 
 import {
-  addPeriod,
   type DurationUnit,
   expiry,
-  formatDay,
-  formatDayShort,
   formatDecimal,
   renewalText,
-  todayInQuito,
 } from "./clients";
+import { addPeriod, formatDay, formatDayShort, todayInQuito } from "./days";
 import { periodBalance } from "./payments";
 import { formatCents, priceWithVatCents } from "./price";
 import { paymentTotalCents, renewalModeLabel } from "./purchases";
@@ -132,6 +129,29 @@ export function nextPeriod(
     vat_rate: current.vat_rate,
     cost_without_vat: current.cost_without_vat,
   };
+}
+
+/**
+ * What "Renovar" offers for a client's service (E11-04, E14-04): its next
+ * period, or null when there is nothing to renew. One-off and cancelled
+ * services do not renew; a service without periods has nothing to follow.
+ */
+export function renewalOf(
+  service: Pick<
+    ClientServiceRow,
+    "status" | "renews_every_value" | "renews_every_unit"
+  > & {
+    /** Latest first: the first one is the current period. */
+    client_service_period: readonly Pick<
+      Period,
+      "ends_on" | "price_without_vat" | "vat_rate" | "cost_without_vat"
+    >[];
+  },
+  today: string,
+): NextPeriod | null {
+  return service.status === "active"
+    ? nextPeriod(service, service.client_service_period[0] ?? null, today)
+    : null;
 }
 
 /** "Hosting, heladeria.test". */

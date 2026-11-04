@@ -116,6 +116,10 @@ jobs:
       - name: Create the test admin
         run: pnpm e2e:admin
 
+      # Lists with more than one page (E14-04) need more rows than the seed.
+      - name: Load the volume seed
+        run: pnpm db:seed:volumen
+
       - name: Build
         run: pnpm build
 

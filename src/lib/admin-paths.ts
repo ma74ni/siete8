@@ -1,7 +1,7 @@
 // The panel's addresses in one place (E14-02), so links, redirects and
 // revalidations never spell a route by hand. The redesigned screens (E14-03
 // onwards) use these. Some do not exist yet and answer 404 until their task:
-// the sub-pages of clients and plans (E14-04, E14-05).
+// the sub-pages of plans (E14-05).
 
 const id = (value: string) => encodeURIComponent(value);
 
@@ -17,12 +17,25 @@ export const adminPaths = {
   clients: "/admin/clientes",
   newClient: "/admin/clientes/nuevo",
   importClients: "/admin/clientes/importar",
+  exportClients: "/admin/clientes/exportar",
   client: (clientId: string) => `/admin/clientes/${id(clientId)}`,
   editClient: (clientId: string) => `/admin/clientes/${id(clientId)}/editar`,
   newClientService: (clientId: string) =>
     `/admin/clientes/${id(clientId)}/servicios/nuevo`,
   clientService: (clientId: string, serviceId: string) =>
     `/admin/clientes/${id(clientId)}/servicios/${id(serviceId)}`,
+  editClientService: (clientId: string, serviceId: string) =>
+    `/admin/clientes/${id(clientId)}/servicios/${id(serviceId)}/editar`,
+  renewClientService: (clientId: string, serviceId: string) =>
+    `/admin/clientes/${id(clientId)}/servicios/${id(serviceId)}/renovar`,
+  clientServicePayment: (clientId: string, serviceId: string) =>
+    `/admin/clientes/${id(clientId)}/servicios/${id(serviceId)}/pago`,
+  clientServicePeriod: (
+    clientId: string,
+    serviceId: string,
+    periodId: string,
+  ) =>
+    `/admin/clientes/${id(clientId)}/servicios/${id(serviceId)}/periodos/${id(periodId)}`,
 
   due: "/admin/por-vencer",
   owed: "/admin/por-cobrar",

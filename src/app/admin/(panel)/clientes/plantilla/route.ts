@@ -1,4 +1,5 @@
-import { CSV_COLUMNS, toCsv } from "@/lib/clients";
+import { CSV_COLUMNS } from "@/lib/client-import";
+import { toCsv } from "@/lib/csv";
 import { requireAdmin } from "@/server/auth";
 
 /** Empty import template: only the column names (RF-CRM-07). */

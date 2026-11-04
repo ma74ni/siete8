@@ -2,12 +2,12 @@ import { z } from "zod";
 
 import {
   EMAIL,
-  isDay,
   normalizePhone,
   normalizeTaxId,
   PHONE,
   TAX_ID,
-} from "@/lib/clients";
+} from "@/lib/client-contact";
+import { isDay } from "@/lib/days";
 
 /**
  * Schemas of the panel forms (E4-02, E4-03). They parse `FormData` values
